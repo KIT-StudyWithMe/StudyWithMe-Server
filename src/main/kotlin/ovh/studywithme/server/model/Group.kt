@@ -7,19 +7,31 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 @Entity
-data class User (
+data class Group (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val userID: Long,
+    val groupID: Long,
 
     @get: NotBlank
     val name: String,
 
     @get: NotBlank
-    val collegeID: Int,
+    val description: String,
 
     @get: NotBlank
-    val majorID: Int,
+    val lectureID: Long,
 
     @get: NotBlank
-    val contact: String
+    val sessionFrequency: SessionFrequency,
+
+    @get: NotBlank
+    val sessionType: SessionMode,
+
+    @get: NotBlank
+    val lectureChapter: Int,
+
+    @get: NotBlank
+    val exercise: Int,
+
+    @get: NotBlank
+    val hidden: Boolean
 )

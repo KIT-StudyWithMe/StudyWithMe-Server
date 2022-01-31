@@ -5,21 +5,22 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.validation.constraints.NotBlank
+import java.sql.Date
 
 @Entity
-data class User (
+data class Session (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val userID: Long,
+    val sessionID: Long,
 
     @get: NotBlank
-    val name: String,
+    val groupID: Long,
 
     @get: NotBlank
-    val collegeID: Int,
+    val place: String,
 
     @get: NotBlank
-    val majorID: Int,
+    val startTime: Date,
 
     @get: NotBlank
-    val contact: String
+    val duration: Int
 )
