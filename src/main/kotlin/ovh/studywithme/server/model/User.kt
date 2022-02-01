@@ -21,5 +21,8 @@ data class User (
     val majorID: Int,
 
     @get: NotBlank
-    val contact: String
+    val contact: String,
+
+    @get: NotBlank
+    val firebaseUID: String
 )

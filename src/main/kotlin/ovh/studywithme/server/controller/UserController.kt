@@ -12,7 +12,7 @@ public class UserController(private val userRepository: UserRepository) : UserCo
          return userRepository.findAll()
     }
 
-    override fun getUserById(userId:Long):User? {
+    override fun getUserByID(userId:Long):User? {
         return userRepository.findById(userId).unwrap()
     }
 
@@ -36,6 +36,10 @@ public class UserController(private val userRepository: UserRepository) : UserCo
         //    userRepository.delete(post)
         //    ResponseEntity<Void>(HttpStatus.OK)
         //}.orElse(ResponseEntity.notFound().build())
+    }
+
+    override fun getUserByFUID(firebaseUID:String): User? {
+        return userRepository.findByFUID(firebaseUID)
     }
 
     fun <T> Optional<T>.unwrap(): T? = orElse(null)

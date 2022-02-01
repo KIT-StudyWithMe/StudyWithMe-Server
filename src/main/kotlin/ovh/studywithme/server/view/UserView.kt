@@ -15,6 +15,13 @@ class UserView(private val userController: UserController) {
     @GetMapping("")
     fun getAllUsers(): List<User> =  userController.getAllUsers()
 
+    @GetMapping("")
+    fun getAllUsers(@RequestParam("FUID") fuid: String): ResponseEntity<User> {
+        val user : User? =  userController.getUserByFUID(fuid)
+        if (user != null) return ResponseEntity.ok(user)
+        return ResponseEntity.notFound().build()
+    }
+
 
     @PostMapping("")
     fun createNewUser(@Valid @RequestBody user: User): User =
@@ -22,9 +29,9 @@ class UserView(private val userController: UserController) {
 
     @GetMapping("/{id}")
     fun getUserById(@PathVariable(value = "id") userID: Long): ResponseEntity<User> {
-        val user : User? = userController.getUserById(userID)
-        if (user == null) return ResponseEntity.notFound().build()
-        return ResponseEntity.ok(user)
+        val user : User? = userController.getUserByID(userID)
+        if (user != null) return ResponseEntity.ok(user)
+        return ResponseEntity.notFound().build()
     }
 
     @PutMapping("/{id}")
