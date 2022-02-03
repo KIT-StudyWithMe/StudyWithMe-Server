@@ -22,13 +22,20 @@ before_script:
 
 build:
   stage: build
-  script: gradle --build-cache assemble
+  script:
+    - ./gradlew bootJar
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
     paths:
       - build
       - .gradle
+  artifacts:
+    paths:
+      - build/libs/*.jar
+    expire_in: 1 week
+  only:
+    - main
 
 test:
   stage: test
@@ -39,4 +46,3 @@ test:
     paths:
       - build
       - .gradle
-      
