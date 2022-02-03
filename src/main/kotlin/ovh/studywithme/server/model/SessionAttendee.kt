@@ -11,7 +11,7 @@ data class SessionAttendee (
     @Id
     val sessionID: Long,
 
-    @Id
+    //@Id //not working currently
     val userID: Long,
 
     @get: NotBlank

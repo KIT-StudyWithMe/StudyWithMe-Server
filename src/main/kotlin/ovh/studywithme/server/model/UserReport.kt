@@ -11,7 +11,7 @@ data class UserReport (
     @Id
     val reporterID: Long,
 
-    @Id
+    //@Id //currently not working
     val userID: Long,
 
     @get: NotBlank

@@ -7,7 +7,7 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 @Entity
-data class Group (
+data class StudyGroup (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val groupID: Long,
 
@@ -18,7 +18,7 @@ data class Group (
     val description: String,
 
     @get: NotBlank
-    val lectureID: Long,
+    val lectureID: Int,
 
     @get: NotBlank
     val sessionFrequency: SessionFrequency,

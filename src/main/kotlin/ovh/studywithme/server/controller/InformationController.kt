@@ -6,7 +6,7 @@ import java.util.*
 import org.springframework.stereotype.Service
 
 @Service
-public class UserController(private val userRepository: UserRepository) : UserControllerInterface {
+public class InformationController(private val informationRepository: InformationRepository) : UserControllerInterface {
 
     override fun getAllUsers():List<User> {
          return userRepository.findAll()
@@ -27,12 +27,6 @@ public class UserController(private val userRepository: UserRepository) : UserCo
         oldUser = newUser
         userRepository.save(oldUser)
         return newUser
-        //return userRepository.findById(userID).map { existingUser ->
-        //    val updatedUser: User = existingUser
-        //            .copy(userName = newUser.userName, contact = newUser.contact)
-
-        //    ResponseEntity.ok().body(userRepository.save(updatedUser))
-        //}.orElse(ResponseEntity.notFound().build())
     }
 
     override fun deleteUser(userID:Long): Boolean {
@@ -43,10 +37,6 @@ public class UserController(private val userRepository: UserRepository) : UserCo
             userRepository.delete(userToDelete)
             return true
         }
-        //return userRepository.findById(postId).map { post  ->
-        //    userRepository.delete(post)
-        //    ResponseEntity<Void>(HttpStatus.OK)
-        //}.orElse(ResponseEntity.notFound().build())
     }
 
     override fun getUserByFUID(firebaseUID:String): List<User> {

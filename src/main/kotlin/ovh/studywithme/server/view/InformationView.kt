@@ -1,7 +1,7 @@
 package ovh.studywithme.server.view
 
-import ovh.studywithme.server.model.User
-import ovh.studywithme.server.controller.UserController
+import ovh.studywithme.server.model.Institution
+import ovh.studywithme.server.controller.InformationController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -9,19 +9,18 @@ import java.util.*
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/users")
-class UserView(private val userController: UserController) {
+@RequestMapping("")
+class InformationView(private val informationController: InformationController) {
 
-    @GetMapping("")
-    fun getAllUsers(@RequestParam("FUID") fuid: String?): ResponseEntity<List<User>> {
-        if (fuid == null) {
-            //TODO this cannot exist in final Application
-            return ResponseEntity.ok(userController.getAllUsers())
+    @GetMapping("/institutions")
+    fun getAllUsers(@RequestParam("name") institutionName: String?): ResponseEntity<List<Institution>> {
+        if (institutionName == null) {
+            return ResponseEntity.ok(informationController.getAllInstitutions()) //TODO
         }
         else {
-            val users : List<User> =  userController.getUserByFUID(fuid)
-            if (!users.isEmpty())
-                return ResponseEntity.ok(users)
+            val institutions : List<Institution> =  informationController.getUserByFUID(institutionName)
+            if (!institutions.isEmpty())
+                return ResponseEntity.ok(institutions)
             else
                 return ResponseEntity.notFound().build()
         }

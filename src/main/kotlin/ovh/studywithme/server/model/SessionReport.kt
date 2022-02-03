@@ -11,8 +11,8 @@ data class SessionReport (
     @Id
     val sessionID: Long,
 
-    @Id
-    val userID: Long,
+    //@Id //currently not working
+    val reporterID: Long,
 
     @get: NotBlank
     val sessionField: SessionField

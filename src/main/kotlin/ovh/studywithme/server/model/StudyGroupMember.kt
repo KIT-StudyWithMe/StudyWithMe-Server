@@ -11,7 +11,7 @@ data class GroupMember (
     @Id
     val groupID: Long,
 
-    @Id
+    //@Id //currently not working
     val userID: Long,
 
     @get: NotBlank
