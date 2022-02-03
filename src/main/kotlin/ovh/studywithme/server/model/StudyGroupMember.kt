@@ -7,7 +7,7 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 @Entity
-data class GroupMember (
+data class StudyGroupMember (
     @Id
     val groupID: Long,
 

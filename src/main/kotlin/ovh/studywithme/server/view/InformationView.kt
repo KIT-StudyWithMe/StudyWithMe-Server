@@ -15,10 +15,10 @@ class InformationView(private val informationController: InformationController) 
     @GetMapping("/institutions")
     fun getAllUsers(@RequestParam("name") institutionName: String?): ResponseEntity<List<Institution>> {
         if (institutionName == null) {
-            return ResponseEntity.ok(informationController.getAllInstitutions()) //TODO
+            return ResponseEntity.ok(informationController.getAllInstitutions())
         }
         else {
-            val institutions : List<Institution> =  informationController.getUserByFUID(institutionName)
+            val institutions : List<Institution> =  informationController.getInstitutionsByName(institutionName)
             if (!institutions.isEmpty())
                 return ResponseEntity.ok(institutions)
             else
@@ -26,28 +26,13 @@ class InformationView(private val informationController: InformationController) 
         }
     }
 
-    @PostMapping("")
-    fun createNewUser(@Valid @RequestBody user: User): User =
-        userController.createUser(user)
+    @PostMapping("/institutions")
+    fun createNewInstitution(@Valid @RequestBody institution: Institution): Institution =
+        informationController.createNewInstitution(institution)
 
-    @GetMapping("/{id}")
-    fun getUserById(@PathVariable(value = "id") userID: Long): ResponseEntity<User> {
-        val user : User? = userController.getUserByID(userID)
-        if (user != null) return ResponseEntity.ok(user)
-        return ResponseEntity.notFound().build()
-    }
-
-    @PutMapping("/{id}")
-    fun updateUserById(@PathVariable(value = "id") userID: Long,
-                          @Valid @RequestBody newUser: User): ResponseEntity<User> {
-        val user : User? = userController.updateUser(userID, newUser)
-        if (user == null) return ResponseEntity.notFound().build()
-        return ResponseEntity.ok(user)
-    }
-
-    @DeleteMapping("/{id}")
-    fun deleteUserById(@PathVariable(value = "id") userID: Long): ResponseEntity<Void> {
-        if(userController.deleteUser(userID)) return ResponseEntity<Void>(HttpStatus.OK) 
+    @DeleteMapping("/institutions/{id}")
+    fun deleteUserById(@PathVariable(value = "id") institutionID: Long): ResponseEntity<Void> {
+        if(informationController.deleteInstitution(institutionID)) return ResponseEntity<Void>(HttpStatus.OK) 
         return ResponseEntity.notFound().build()
     }
 }

@@ -30,5 +30,5 @@ data class User (
     val isBlocked: Boolean = false,
 
     @get: NotBlank
-    val isModerator Boolean = false
+    val isModerator: Boolean = false
 )
