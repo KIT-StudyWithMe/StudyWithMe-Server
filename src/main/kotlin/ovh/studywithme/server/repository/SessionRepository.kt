@@ -1,8 +1,16 @@
 package ovh.studywithme.server.repository
 
-import ovh.studywithme.server.model.User
+import ovh.studywithme.server.model.SessionAttendee
+import ovh.studywithme.server.model.Session
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import ovh.studywithme.server.model.SessionAttendeeID
 
 @Repository
-interface SessionRepository : JpaRepository<User, Long>
+interface SessionRepository : JpaRepository<Session, Long> {
+
+    fun findBygroupID(groupID : Long) : List<Session>
+}
+
+@Repository
+interface AttendeeRepository : JpaRepository<SessionAttendee, SessionAttendeeID>
