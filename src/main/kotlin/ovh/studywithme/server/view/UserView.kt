@@ -38,10 +38,9 @@ class UserView(private val userController: UserController) {
         return ResponseEntity.notFound().build()
     }
 
-    @PutMapping("/{id}")
-    fun updateUserById(@PathVariable(value = "id") userID: Long,
-                          @Valid @RequestBody newUser: User): ResponseEntity<User> {
-        val user : User? = userController.updateUser(userID, newUser)
+    @PutMapping("")
+    fun updateUserById(@Valid @RequestBody newUser: User): ResponseEntity<User> {
+        val user : User? = userController.updateUser(newUser)
         if (user == null) return ResponseEntity.notFound().build()
         return ResponseEntity.ok(user)
     }
