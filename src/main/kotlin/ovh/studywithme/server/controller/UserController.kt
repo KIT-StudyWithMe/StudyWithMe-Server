@@ -2,11 +2,11 @@ package ovh.studywithme.server.controller
 
 import ovh.studywithme.server.model.User
 import ovh.studywithme.server.repository.UserRepository
-import java.util.*
+import java.util.Optional
 import org.springframework.stereotype.Service
 
 @Service
-public class UserController(private val userRepository: UserRepository) : UserControllerInterface {
+    class UserController(private val userRepository: UserRepository) : UserControllerInterface {
 
     override fun getAllUsers():List<User> {
          return userRepository.findAll()
@@ -21,22 +21,20 @@ public class UserController(private val userRepository: UserRepository) : UserCo
         return user
     }
 
-    override fun updateUser(newUser : User) : User? {
-        var oldUser : User? = userRepository.findById(newUser.userID).unwrap()
-        if (oldUser == null) return null
-        oldUser = newUser
-        userRepository.save(oldUser)
-        return newUser
+    override fun updateUser(updatedUser : User) : User? {
+        if (userRepository.existsById(updatedUser.userID)) {
+            userRepository.save(updatedUser)
+            return updatedUser
+        }
+        return null
     }
 
     override fun deleteUser(userID:Long): Boolean {
-        val userToDelete : User? = userRepository.findById(userID).unwrap()
-        if (userToDelete == null) {
-            return false
-        } else {
-            userRepository.delete(userToDelete)
+        if (userRepository.existsById(userID)) {
+            userRepository.deleteById(userID)
             return true
         }
+        return false
     }
 
     override fun getUserByFUID(firebaseUID:String): List<User> {

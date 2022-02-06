@@ -9,7 +9,7 @@ import java.util.*
 import org.springframework.stereotype.Service
 
 @Service
-public class InformationController(private val institutionRepository: InstitutionRepository, private val majorRepository: MajorRepository, private val lectureRepository: LectureRepository) : InformationControllerInterface {
+    class InformationController(private val institutionRepository: InstitutionRepository, private val majorRepository: MajorRepository, private val lectureRepository: LectureRepository) : InformationControllerInterface {
 
 
     fun getAllInstitutions():List<Institution> {

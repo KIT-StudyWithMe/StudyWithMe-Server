@@ -8,7 +8,7 @@ import java.util.Optional
 import org.springframework.stereotype.Service
 
 @Service
-public class SessionController(private val sessionRepository:SessionRepository, private val attendeeRepository:AttendeeRepository) : SessionControllerInterface {
+    class SessionController(private val sessionRepository:SessionRepository, private val attendeeRepository:AttendeeRepository) : SessionControllerInterface {
 
     override fun createSession(session:Session): Session {
         sessionRepository.save(session)
