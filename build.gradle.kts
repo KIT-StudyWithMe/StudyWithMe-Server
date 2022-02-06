@@ -24,12 +24,16 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	//implementation("com.google.firebase:firebase-admin:8.1.0")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	//implementation("org.hibernate.search:hibernate-search-orm:6.0.0.Alpha9")
 	//implementation("org.hibernate.search:hibernate-search-mapper-orm:6.0.0.Alpha9")
 	//implementation("org.hibernate.search:hibernate-search-backend-lucene:6.0.0.Alpha9")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("mysql:mysql-connector-java")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<KotlinCompile> {
