@@ -18,3 +18,20 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
                 .jwt()
     }
 }
+
+//class CustomAccessTokenEnhancer : TokenEnhancer() {
+
+//    @Override
+//    override fun enhance(accessToken: OAuth2AccessToken, authentication: OAuth2Authentication) : OAuth2AccessToken {
+//        var userAuthentication : Authentication  = authentication.getUserAuthentication()
+//        if (userAuthentication != null) {
+//            var principal Object = authentication.getUserAuthentication().getPrincipal()
+//            if (principal instanceof CustomUserDetails) {
+//                var additionalInfo Map<String, Object> = new HashMap<>()
+//                additionalInfo.put("userDetails", principal)
+//                ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo)
+//            }
+//        }
+//        return accessToken;
+//    }
+//}

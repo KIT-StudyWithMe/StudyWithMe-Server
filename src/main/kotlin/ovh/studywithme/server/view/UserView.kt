@@ -5,8 +5,10 @@ import ovh.studywithme.server.controller.UserController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException
 import java.util.*
 import javax.validation.Valid
+import java.security.Principal
 
 @RestController
 @RequestMapping("/users")
@@ -46,8 +48,8 @@ class UserView(private val userController: UserController) {
     }
 
     @DeleteMapping("/{id}")
-    fun deleteUserById(@PathVariable(value = "id") userID: Long): ResponseEntity<Void> {
-        if(userController.deleteUser(userID)) return ResponseEntity<Void>(HttpStatus.OK) 
+    fun deleteUserById(@PathVariable(value = "id") userID: Long, user: Principal): ResponseEntity<Void> {
+        if(userController.deleteUser(userID)) return ResponseEntity<Void>(HttpStatus.OK)
         return ResponseEntity.notFound().build()
     }
 }
