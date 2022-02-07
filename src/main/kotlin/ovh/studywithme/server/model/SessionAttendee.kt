@@ -2,16 +2,17 @@ package ovh.studywithme.server.model
 
 import javax.persistence.Entity
 import javax.persistence.Id
-import javax.persistence.IdClass
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.validation.constraints.NotBlank
 
 @Entity
-@IdClass(SessionAttendeeID::class)
 data class SessionAttendee (
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val SessionAttendeeID: Long,
+
     val sessionID: Long = 0,
 
-    @Id
     val userID: Long = 0,
 
     @get: NotBlank

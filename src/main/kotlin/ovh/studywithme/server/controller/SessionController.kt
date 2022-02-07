@@ -39,10 +39,12 @@ import org.springframework.stereotype.Service
         return false
     }
 
-    override fun setParticipation(sessionID:Long, userID:Long, participates:Boolean) {
+    override fun setParticipation(sessionID:Long, userID:Long, participates:Boolean): Boolean {
         if (sessionRepository.existsById(sessionID)) {
-            attendeeRepository.save(SessionAttendee(sessionID, userID, participates))
+            attendeeRepository.save(SessionAttendee(0, sessionID, userID, participates))
+            return true
         }
+        return false
     }
 
     fun <T> Optional<T>.unwrap(): T? = orElse(null)

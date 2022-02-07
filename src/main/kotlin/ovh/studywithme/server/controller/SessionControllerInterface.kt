@@ -13,5 +13,5 @@ interface SessionControllerInterface {
 
     fun deleteSession(sessionID:Long): Boolean
 
-    fun setParticipation(sessionID:Long, userID:Long, participates:Boolean)
+    fun setParticipation(sessionID:Long, userID:Long, participates:Boolean): Boolean
 }

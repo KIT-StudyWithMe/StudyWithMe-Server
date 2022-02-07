@@ -4,7 +4,6 @@ import ovh.studywithme.server.model.SessionAttendee
 import ovh.studywithme.server.model.Session
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import ovh.studywithme.server.model.SessionAttendeeID
 
 @Repository
 interface SessionRepository : JpaRepository<Session, Long> {
@@ -13,4 +12,4 @@ interface SessionRepository : JpaRepository<Session, Long> {
 }
 
 @Repository
-interface AttendeeRepository : JpaRepository<SessionAttendee, SessionAttendeeID>
+interface AttendeeRepository : JpaRepository<SessionAttendee, Long>

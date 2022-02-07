@@ -5,12 +5,6 @@ import ovh.studywithme.server.repository.UserRepository
 import java.util.Optional
 import org.springframework.stereotype.Service
 
-/**
- * User controller
- *
- * @property userRepository
- * @constructor Create empty User controller
- */
 @Service
     class UserController(private val userRepository: UserRepository) : UserControllerInterface {
 
