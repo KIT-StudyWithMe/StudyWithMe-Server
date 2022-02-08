@@ -9,12 +9,22 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 @EnableWebSecurity
 class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
 
+    private val authEnabled: Boolean = false
+
     override fun configure(http: HttpSecurity) {
-        http.authorizeRequests()
+        if(authEnabled){
+            http.authorizeRequests()
                 .anyRequest()
                 .authenticated()
 
-        http.oauth2ResourceServer()
+            http.oauth2ResourceServer()
                 .jwt()
+        } else {
+            http.csrf().disable()
+                .authorizeRequests().anyRequest()
+                .anonymous()
+                .and()
+                .httpBasic().disable();
+        }
     }
 }
