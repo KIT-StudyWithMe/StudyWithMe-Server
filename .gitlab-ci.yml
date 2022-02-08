@@ -54,17 +54,17 @@ test:
 
 docker:
   image: docker:latest
-  services: 
+  services:
     - docker:dind
   stage: package
-  before_script:     
+  before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
     - export VERSION=$(cat build.gradle.kts | grep "version = " | awk '{print $3}' | tr -d '"')
     - cd build/libs/
     - docker build 
       -f ../../Dockerfile . 
-      --build-arg VERSION=0.0.1 
+      --build-arg VERSION="${VERSION}"
       -t "${CI_REGISTRY_IMAGE}:${VERSION}"
       -t "${CI_REGISTRY_IMAGE}:latest" 
     - docker push "${CI_REGISTRY_IMAGE}:latest"     
@@ -75,3 +75,5 @@ docker:
     paths:
       - build
       - .gradle
+  only:
+    - main
