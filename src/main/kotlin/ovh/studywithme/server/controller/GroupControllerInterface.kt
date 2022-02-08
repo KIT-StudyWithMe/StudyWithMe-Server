@@ -1,3 +1,5 @@
+package ovh.studywithme.server.controller
+
 import ovh.studywithme.server.model.StudyGroup
 import ovh.studywithme.server.model.User
 
@@ -16,7 +18,7 @@ interface GroupControllerInterface {
 
     fun getGroupByID(groupID:Long): StudyGroup?
 
-    fun getGroupDetails(groupID:Long): StudyGroup
+    fun getGroupDetails(groupID:Long): StudyGroup?
 
     fun updateGroup(updatedGroup:StudyGroup): StudyGroup?
 

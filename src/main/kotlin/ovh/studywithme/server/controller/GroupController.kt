@@ -1,5 +1,6 @@
+package ovh.studywithme.server.controller
+
 import org.springframework.stereotype.Service
-import ovh.studywithme.server.controller.InformationController
 import ovh.studywithme.server.model.Lecture
 import ovh.studywithme.server.model.StudyGroup
 import ovh.studywithme.server.model.StudyGroupMember
@@ -27,6 +28,7 @@ class GroupController(private val groupRepository: GroupRepository,
 
     override fun getGroupsIndex(start: Int, size: Int): List<StudyGroup> {
         //TODO
+        return ArrayList()
     }
 
     override fun searchGroup(query: String): List<StudyGroup> {
@@ -52,8 +54,9 @@ class GroupController(private val groupRepository: GroupRepository,
         return groupRepository.findById(groupID).unwrap()
     }
 
-    override fun getGroupDetails(groupID: Long): StudyGroup {
+    override fun getGroupDetails(groupID: Long): StudyGroup? {
         //TODO
+        return null
     }
 
     override fun updateGroup(updatedGroup: StudyGroup): StudyGroup? {
