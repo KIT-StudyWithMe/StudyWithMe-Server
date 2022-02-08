@@ -14,15 +14,15 @@ import org.assertj.core.api.Assertions.assertThat
 @DataJpaTest
 class StudyWithMeServerApplicationTests {
 
-	@Test
-	fun repositoryWhenSaved_thenFindsByID(userRepository: UserRepository) {
-		val user :User = userRepository.save(User(0, "Zaphod Beeblebrox", 0, 0, "thisismymail@test.com", "LALALALALA"))
-  		assertThat(userRepository.findById(user.userID)).isNotNull()
-	}
+	//@Test
+	//fun repositoryWhenSaved_thenFindsByID(userRepository: UserRepository) {
+	//	val user :User = userRepository.save(User(0, "Zaphod Beeblebrox", 0, 0, "thisismymail@test.com", "LALALALALA"))
+  	//	assertThat(userRepository.findById(user.userID)).isNotNull()
+	//}
 
-	@Test
-	fun controllerWhenSaved_thenFindsByID(userController: UserController) {
-		userController.createUser(User(0, "Zaphod Beeblebrox", 0, 0, "thisismymail@test.com", "LALALALALA"))
-  		assertThat(userController.getAllUsers()).isNotNull()
-	}
+	//@Test
+	//fun controllerWhenSaved_thenFindsByID(userController: UserController) {
+	//	userController.createUser(User(0, "Zaphod Beeblebrox", 0, 0, "thisismymail@test.com", "LALALALALA"))
+  	//	assertThat(userController.getAllUsers()).isNotNull()
+	//}
 }
