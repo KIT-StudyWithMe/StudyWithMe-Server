@@ -20,6 +20,11 @@ variables:
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
+stages:
+  - build
+  - test
+  - package
+
 build:
   stage: build
   script:
@@ -40,6 +45,30 @@ build:
 test:
   stage: test
   script: gradle check
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+
+docker:
+  image: docker:latest
+  services: 
+    - docker:dind
+  stage: package
+  before_script:     
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - export VERSION=$(cat build.gradle.kts | grep "version = " | awk '{print $3}' | tr -d '"')
+    - cd build/libs/
+    - docker build 
+      -f ../../Dockerfile . 
+      --build-arg VERSION=0.0.1 
+      -t "${CI_REGISTRY_IMAGE}:${VERSION}"
+      -t "${CI_REGISTRY_IMAGE}:latest" 
+    - docker push "${CI_REGISTRY_IMAGE}:latest"     
+    - docker push "${CI_REGISTRY_IMAGE}:${VERSION}"
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
