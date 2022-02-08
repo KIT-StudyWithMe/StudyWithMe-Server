@@ -9,7 +9,7 @@ interface UserControllerInterface {
 
     fun createUser(user:User): User
 
-    fun updateUser(newUser:User): User?
+    fun updateUser(updatedUser:User): User?
 
     fun deleteUser(userID:Long): Boolean
 

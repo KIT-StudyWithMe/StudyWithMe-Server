@@ -48,7 +48,7 @@ class UserView(private val userController: UserController) {
     }
 
     @DeleteMapping("/{id}")
-    fun deleteUserById(@PathVariable(value = "id") userID: Long, user: Principal): ResponseEntity<Void> {
+    fun deleteUserById(@PathVariable(value = "id") userID: Long): ResponseEntity<Void> {
         if(userController.deleteUser(userID)) return ResponseEntity<Void>(HttpStatus.OK)
         return ResponseEntity.notFound().build()
     }

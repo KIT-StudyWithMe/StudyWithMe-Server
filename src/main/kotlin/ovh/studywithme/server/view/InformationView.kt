@@ -5,15 +5,31 @@ import ovh.studywithme.server.controller.InformationController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.security.oauth2.core.user.OAuth2User
+import org.springframework.security.core.context.SecurityContextHolder
 import java.util.*
+import java.security.Principal
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("")
 class InformationView(private val informationController: InformationController) {
 
+    @GetMapping("/getUserID")
+    fun getVersion(user: Principal): ResponseEntity<String> {
+        return ResponseEntity.ok(user.toString())
+    }
+
+    @RequestMapping("/user")
+    fun user() : String {
+        //LinkedHashMap<String, Object> details = (LinkedHashMap<String, Object>) authentication.getUserAuthentication().getDetails()
+        //return details.get("email")
+        
+        return SecurityContextHolder.getContext().getAuthentication().toString()
+    }
+
     @GetMapping("/institutions")
-    fun getAllUsers(@RequestParam("name") institutionName: String?): ResponseEntity<List<Institution>> {
+    fun getAllInstitutions(@RequestParam("name") institutionName: String?): ResponseEntity<List<Institution>> {
         if (institutionName == null) {
             return ResponseEntity.ok(informationController.getAllInstitutions())
         }
@@ -31,7 +47,7 @@ class InformationView(private val informationController: InformationController) 
         informationController.createNewInstitution(institution)
 
     @DeleteMapping("/institutions/{id}")
-    fun deleteUserById(@PathVariable(value = "id") institutionID: Long): ResponseEntity<Void> {
+    fun deleteInstitutionByID(@PathVariable(value = "id") institutionID: Long): ResponseEntity<Void> {
         if(informationController.deleteInstitution(institutionID)) return ResponseEntity<Void>(HttpStatus.OK) 
         return ResponseEntity.notFound().build()
     }

@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter 
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+//import org.springframework.boot.autoconfigure.security.oauth2.PrincipalExtractor
+//import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +20,14 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
                 .jwt()
     }
 }
+
+//class FirebasePrincipalExtractor : PrincipalExtractor {
+
+//    @Override
+//    override fun extractPrincipal(map: Map<String, Object>):Object? {
+//        return map.get("sub")
+//    }
+//}
 
 //class CustomAccessTokenEnhancer : TokenEnhancer() {
 
