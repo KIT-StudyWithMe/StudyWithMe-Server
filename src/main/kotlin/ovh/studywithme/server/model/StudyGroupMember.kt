@@ -15,8 +15,8 @@ data class StudyGroupMember (
     val userID: Long,
 
     @get: NotBlank
-    val isAdmin: Boolean,
+    var isAdmin: Boolean,
 
     @get: NotBlank
-    val isMember: Boolean
+    var isMember: Boolean
 )
