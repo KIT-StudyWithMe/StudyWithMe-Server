@@ -8,10 +8,12 @@ import javax.validation.constraints.NotBlank
 
 @Entity
 data class StudyGroupMember (
-    @Id
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val StudyGroupMemberID: Long,
+
     val groupID: Long,
 
-    //@Id //currently not working
     val userID: Long,
 
     var isAdmin: Boolean,

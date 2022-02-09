@@ -5,8 +5,10 @@ import ovh.studywithme.server.controller.SessionController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.model.Session
 import ovh.studywithme.server.model.StudyGroup
+import ovh.studywithme.server.model.StudyGroupField
 import ovh.studywithme.server.model.User
 import javax.validation.Valid
 
@@ -91,9 +93,56 @@ class GroupView(private val groupController: GroupController, private val sessio
         return ResponseEntity.notFound().build()
     }
 
-    @GetMapping("/{id}/sessions")
-    fun getAllGroupSessions(@PathVariable(value = "id") groupID: Long): ResponseEntity<List<Session>> {
+    @GetMapping("/{gid}/requests")
+    fun openGroupRequests(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<UserDAO>> {
+        val groupRequests : List<UserDAO> = groupController.getGroupRequests(groupID)
+        return ResponseEntity.ok(groupRequests)
+    }
 
+    @PutMapping("/{gid}/users/{uid}/membership")
+    fun toggleGroupRequest(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") userID: Long,
+                           @Valid @RequestBody decision: Boolean): ResponseEntity<Void> {
+        if (groupController.toggleGroupMembership(groupID, userID, decision)) {
+            return ResponseEntity<Void>(HttpStatus.OK)
+        }
+        return ResponseEntity.notFound().build()
+    }
+
+    @DeleteMapping("/{gid}/users/{uid}")
+    fun removeGroupUser(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") userID: Long): ResponseEntity<Void> {
+        if (groupController.deleteUserFromGroup(groupID, userID)) {
+            return ResponseEntity<Void>(HttpStatus.OK)
+        }
+        return ResponseEntity.notFound().build()
+    }
+
+    @DeleteMapping("/{gid}")
+    fun deleteGroup(@PathVariable(value = "gid") groupID: Long): ResponseEntity<Void> {
+        if (groupController.deleteGroup(groupID)) {
+            return ResponseEntity<Void>(HttpStatus.OK)
+        }
+        return ResponseEntity.notFound().build()
+    }
+
+    @PostMapping("/{gid}/users/{uid}/makeadmin")
+    fun makeUserAdmin(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") userID: Long): ResponseEntity<Void> {
+        if (groupController.makeUserAdminInGroup(groupID, userID)) {
+            return ResponseEntity<Void>(HttpStatus.OK)
+        }
+        return ResponseEntity.notFound().build()
+    }
+
+    @PutMapping("/{gid}/report/{uid}")
+    fun reportGroupField(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "gid") reporterID: Long,
+                         @Valid @RequestBody field: StudyGroupField): ResponseEntity<Void> {
+        if (groupController.reportGroupField(groupID, reporterID, field)) {
+            return ResponseEntity<Void>(HttpStatus.OK)
+        }
+        return ResponseEntity.notFound().build()
+    }
+
+    @GetMapping("/{gid}/sessions")
+    fun getAllGroupSessions(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<Session>> {
         val sessions : List<Session> = sessionController.getAllGroupSessions(groupID)
         if (!sessions.isEmpty())
             return ResponseEntity.ok(sessions)
@@ -101,7 +150,7 @@ class GroupView(private val groupController: GroupController, private val sessio
             return ResponseEntity.notFound().build()
     }
 
-    @PostMapping("/{id}/sesssions")
+    @PostMapping("/{gid}/sessions")
     fun createNewSession(@Valid @RequestBody session: Session): Session =
         sessionController.createSession(session)
 }

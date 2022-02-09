@@ -20,5 +20,7 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
 
     fun findByGroupIDAndUserID(groupID:Long, userID:Long): StudyGroupMember
 
+    fun existsByGroupIDAndUserID(groupID:Long, userID:Long): Boolean
+
     fun deleteByGroupIDAndUserID(groupID:Long, userID:Long)
 }

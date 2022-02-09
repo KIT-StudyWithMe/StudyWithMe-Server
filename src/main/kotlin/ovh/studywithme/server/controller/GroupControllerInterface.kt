@@ -1,6 +1,8 @@
 package ovh.studywithme.server.controller
 
+import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.model.StudyGroup
+import ovh.studywithme.server.model.StudyGroupField
 import ovh.studywithme.server.model.User
 
 interface GroupControllerInterface {
@@ -24,13 +26,17 @@ interface GroupControllerInterface {
 
     fun joinGroupRequest(groupID:Long, userID:Long): Boolean
 
-    fun getRequests(groupID:Long): List<User>
+    fun getGroupRequests(groupID: Long): List<UserDAO>
 
-    fun changeGroupMemberShip(groupID:Long, userID:Long, isMember:Boolean)
+    fun toggleGroupMembership(groupID:Long, userID:Long, isMember:Boolean): Boolean
 
     fun getUsersInGroup(groupID:Long): List<User>
 
-    fun deleteUserFromGroup(groupID:Long, userID:Long)
+    fun deleteUserFromGroup(groupID:Long, userID:Long): Boolean
 
-    fun makeUserAdminInGroup(groupID:Long, userID:Long)
+    fun deleteGroup(groupID: Long): Boolean
+
+    fun makeUserAdminInGroup(groupID:Long, userID:Long): Boolean
+
+    fun reportGroupField(groupID:Long, userID:Long, field:StudyGroupField): Boolean
 }
