@@ -23,36 +23,36 @@ class GroupView(private val groupController: GroupController) {
         }
     }
 
-    @PostMapping("")
-    fun createNewGroup(@Valid @RequestBody newGroup: StudyGroup): StudyGroup =
-        groupController.createGroup(newGroup)
+    //@PostMapping("")
+    //fun createNewGroup(@Valid @RequestBody newGroup: StudyGroup): StudyGroup =
+    //    groupController.createGroup(newGroup)
 
-    @GetMapping("")
-    fun searchGroups(@RequestParam("text") query: String): ResponseEntity<List<StudyGroup>> {
-        val groups : List<StudyGroup> =  groupController.searchGroup(query)
-        if (groups.isNotEmpty())
-            return ResponseEntity.ok(groups)
-        else
-            return ResponseEntity.notFound().build()
-    }
+    //@GetMapping("")
+    //fun searchGroups(@RequestParam("text") query: String): ResponseEntity<List<StudyGroup>> {
+    //    val groups : List<StudyGroup> =  groupController.searchGroup(query)
+    //    if (groups.isNotEmpty())
+    //        return ResponseEntity.ok(groups)
+    //    else
+    //        return ResponseEntity.notFound().build()
+    //}
 
-    @GetMapping("")
-    fun searchGroupsByLecture(@RequestParam("lecture") lecture: String): ResponseEntity<List<StudyGroup>> {
-        val groups : List<StudyGroup> =  groupController.searchGroupByLecture(lecture)
-        if (groups.isNotEmpty())
-            return ResponseEntity.ok(groups)
-        else
-            return ResponseEntity.notFound().build()
-    }
+    //@GetMapping("")
+    //fun searchGroupsByLecture(@RequestParam("lecture") lecture: String): ResponseEntity<List<StudyGroup>> {
+    //    val groups : List<StudyGroup> =  groupController.searchGroupByLecture(lecture)
+    //    if (groups.isNotEmpty())
+    //        return ResponseEntity.ok(groups)
+    //    else
+    //        return ResponseEntity.notFound().build()
+    //}
 
-    @GetMapping("")
-    fun searchGroupsByName(@RequestParam("name") name: String): ResponseEntity<List<StudyGroup>> {
-        val groups : List<StudyGroup> =  groupController.searchGroupByLecture(name)
-        if (groups.isNotEmpty())
-            return ResponseEntity.ok(groups)
-        else
-            return ResponseEntity.notFound().build()
-    }
+    //@GetMapping("")
+    //fun searchGroupsByName(@RequestParam("name") name: String): ResponseEntity<List<StudyGroup>> {
+    //    val groups : List<StudyGroup> =  groupController.searchGroupByLecture(name)
+    //    if (groups.isNotEmpty())
+    //        return ResponseEntity.ok(groups)
+    //    else
+    //        return ResponseEntity.notFound().build()
+    //}
 
     @GetMapping("/{id}")
     fun getGroupByID(@PathVariable(value = "id") groupID: Long): ResponseEntity<StudyGroup> {
@@ -88,8 +88,8 @@ class GroupView(private val groupController: GroupController) {
         }
     }
 
-    @PutMapping("/{id}/join/{id}")
-    fun joinGroupRequest(@PathVariable(value = "id") groupID: Long, @PathVariable(value = "id") userID: Long): ResponseEntity<Void> {
+    @PutMapping("/{gid}/join/{uid}")
+    fun joinGroupRequest(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") userID: Long): ResponseEntity<Void> {
         if (groupController.joinGroupRequest(groupID, userID)) {
             return ResponseEntity<Void>(HttpStatus.OK)
         }
