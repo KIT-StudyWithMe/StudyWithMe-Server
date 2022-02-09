@@ -133,7 +133,7 @@ class GroupView(private val groupController: GroupController, private val sessio
     }
 
     @PutMapping("/{gid}/report/{uid}")
-    fun reportGroupField(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "gid") reporterID: Long,
+    fun reportGroupField(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") reporterID: Long,
                          @Valid @RequestBody field: StudyGroupField): ResponseEntity<Void> {
         if (groupController.reportGroupField(groupID, reporterID, field)) {
             return ResponseEntity<Void>(HttpStatus.OK)

@@ -3,6 +3,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ovh.studywithme.server.controller.SessionController
 import ovh.studywithme.server.model.Session
+import ovh.studywithme.server.model.SessionField
 import javax.validation.Valid
 
 @RestController
@@ -35,12 +36,21 @@ class SessionView(private val sessionController: SessionController) {
             return ResponseEntity.notFound().build()
     }
 
-    @PutMapping("/{id}/participate")
-    fun setParticipation(@PathVariable(value = "id") sessionID: Long): ResponseEntity<Void> {
-        // TODO How to get userID and participates?
-        if (sessionController.setParticipation(sessionID, 0, true))
+    @PutMapping("/{sid}/participate/{uid}")
+    fun setParticipation(@PathVariable(value = "sid") sessionID: Long, @PathVariable(value = "uid") userID: Long,
+                         @Valid @RequestBody participates: Boolean): ResponseEntity<Void> {
+        if (sessionController.setParticipation(sessionID, userID, participates))
             return ResponseEntity<Void>(HttpStatus.OK)
         else
             return ResponseEntity.notFound().build()
+    }
+
+    @PutMapping("/{id}/report/{uid}")
+    fun reportSessionField(@PathVariable(value = "id") sessionID: Long, @PathVariable(value = "uid") reporterID: Long,
+                           @Valid @RequestBody field: SessionField): ResponseEntity<Void> {
+        if (sessionController.reportSessionField(sessionID, reporterID, field)) {
+            return ResponseEntity<Void>(HttpStatus.OK)
+        }
+        return ResponseEntity.notFound().build()
     }
 }

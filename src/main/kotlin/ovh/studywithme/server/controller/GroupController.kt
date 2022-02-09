@@ -151,6 +151,5 @@ class GroupController(private val groupRepository: GroupRepository,
         return false
     }
 
-
     fun <T> Optional<T>.unwrap(): T? = orElse(null)
 }

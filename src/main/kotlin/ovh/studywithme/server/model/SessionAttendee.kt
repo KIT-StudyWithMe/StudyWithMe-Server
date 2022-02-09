@@ -15,5 +15,5 @@ data class SessionAttendee (
 
     val userID: Long = 0,
 
-    val participates: Boolean
+    var participates: Boolean
 )
