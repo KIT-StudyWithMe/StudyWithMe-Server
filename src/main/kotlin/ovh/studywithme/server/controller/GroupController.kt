@@ -67,10 +67,13 @@ class GroupController(private val groupRepository: GroupRepository,
         return null
     }
 
-    override fun joinGroup(groupID: Long, userID: Long) {
-        val newMember : StudyGroupMember = groupMemberRepository.findByGroupIDAndUserID(groupID, userID)
-        newMember.isMember = true
-        groupMemberRepository.save(newMember)
+    override fun joinGroupRequest(groupID: Long, userID: Long): Boolean {
+        if (groupRepository.existsById(groupID) && userRepository.existsById(userID)) {
+            val newMember = StudyGroupMember(groupID, userID, false, false)
+            groupMemberRepository.save(newMember)
+            return true
+        }
+        return false
      }
 
     override fun getRequests(groupID: Long): List<User> {

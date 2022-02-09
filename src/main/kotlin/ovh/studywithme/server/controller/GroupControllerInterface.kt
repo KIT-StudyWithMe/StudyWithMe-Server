@@ -22,7 +22,7 @@ interface GroupControllerInterface {
 
     fun updateGroup(updatedGroup:StudyGroup): StudyGroup?
 
-    fun joinGroup(groupID:Long, userID:Long)
+    fun joinGroupRequest(groupID:Long, userID:Long): Boolean
 
     fun getRequests(groupID:Long): List<User>
 
