@@ -1,7 +1,7 @@
 package ovh.studywithme.server.view
 
 import ovh.studywithme.server.model.User
-import ovh.studywithme.server.dao.UserLight
+import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.controller.UserController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,8 +13,8 @@ import javax.validation.Valid
 class UserView(private val userController: UserController) {
 
     @GetMapping("/{id}")
-    fun getUserLightById(@PathVariable(value = "id") userID: Long): ResponseEntity<UserLight> {
-        val userLight : UserLight? = userController.getUserLightByID(userID)
+    fun getUserLightById(@PathVariable(value = "id") userID: Long): ResponseEntity<UserDAO> {
+        val userLight : UserDAO? = userController.getUserLightByID(userID)
         if (userLight != null) return ResponseEntity.ok(userLight)
         return ResponseEntity.notFound().build()
     }

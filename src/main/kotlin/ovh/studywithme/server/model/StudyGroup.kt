@@ -17,7 +17,7 @@ data class StudyGroup (
     @get: NotBlank
     val description: String,
 
-    val lectureID: Int,
+    val lectureID: Long,
 
     //@get: NotBlank todo, working?
     val sessionFrequency: SessionFrequency,

@@ -9,10 +9,10 @@ import javax.validation.constraints.NotBlank
 @Entity
 data class Lecture (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val lectureID: Int,
+    val lectureID: Long,
 
     @get: NotBlank
     val name: String,
 
-    val majorID: Int
+    val majorID: Long
 )

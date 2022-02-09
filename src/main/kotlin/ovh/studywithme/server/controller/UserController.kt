@@ -1,7 +1,7 @@
 package ovh.studywithme.server.controller
 
 import ovh.studywithme.server.model.User
-import ovh.studywithme.server.dao.UserLight
+import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.repository.UserRepository
 import java.util.Optional
 import org.springframework.stereotype.Service
@@ -17,10 +17,10 @@ import org.springframework.stereotype.Service
         return userRepository.findById(userID).unwrap()
     }
 
-    override fun getUserLightByID(userID:Long):UserLight? {
+    override fun getUserLightByID(userID:Long):UserDAO? {
         val user : User? = userRepository.findById(userID).unwrap()
         if (user != null) {
-            return UserLight(user)
+            return UserDAO(user)
         }
         return null
     }

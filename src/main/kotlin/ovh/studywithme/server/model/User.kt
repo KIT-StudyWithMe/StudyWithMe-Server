@@ -14,9 +14,9 @@ data class User (
     @get: NotBlank
     val name: String,
 
-    val institutionID: Int,
+    val institutionID: Long,
 
-    val majorID: Int,
+    val majorID: Long,
 
     @get: NotBlank
     val contact: String,
