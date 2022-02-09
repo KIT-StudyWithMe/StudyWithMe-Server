@@ -11,17 +11,15 @@ import javax.validation.constraints.NotBlank
 import org.hibernate.mapping.ManyToOne
 
 @Entity 
-//@IdClass(GroupReportKey.class)
 data class StudyGroupReport (
-    @Id
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name =  "userID")
-    val reporterID: Long,
 
-    //@Id //currently not working
-    val groupID: Long,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val StudyGroupReportID: Long,
 
-    //@Id //currently not working
+    val reporterID: Long = 0,
+
+    val groupID: Long = 0,
+
     val groupField: StudyGroupField
 )
 

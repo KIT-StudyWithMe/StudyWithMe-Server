@@ -10,7 +10,7 @@ interface GroupRepository : JpaRepository<StudyGroup, Long> {
 
     fun findByName(name:String): List<StudyGroup>
 
-    fun findByLectureID(lectureId:Int): List<StudyGroup>
+    fun findByLectureID(lectureId:Long): List<StudyGroup>
 }
 
 @Repository

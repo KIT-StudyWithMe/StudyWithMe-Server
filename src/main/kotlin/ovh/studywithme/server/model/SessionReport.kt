@@ -8,11 +8,13 @@ import javax.validation.constraints.NotBlank
 
 @Entity
 data class SessionReport (
-    @Id
-    val sessionID: Long,
 
-    //@Id //currently not working
-    val reporterID: Long,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val SessionReportID: Long,
+
+    val sessionID: Long = 0,
+
+    val reporterID: Long = 0,
 
     //@get: NotBlank //todo? working?
     val sessionField: SessionField
