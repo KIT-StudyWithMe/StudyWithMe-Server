@@ -13,14 +13,14 @@ import javax.validation.Valid
 class UserView(private val userController: UserController) {
 
     @GetMapping("/{id}")
-    fun getUserLightById(@PathVariable(value = "id") userID: Long): ResponseEntity<UserDAO> {
-        val userLight : UserDAO? = userController.getUserLightByID(userID)
-        if (userLight != null) return ResponseEntity.ok(userLight)
+    fun getUserDAO(@PathVariable(value = "id") userID: Long): ResponseEntity<UserDAO> {
+        val userDAO : UserDAO? = userController.getUserLightByID(userID)
+        if (userDAO != null) return ResponseEntity.ok(userDAO)
         return ResponseEntity.notFound().build()
     }
 
     @GetMapping("/{id}/detail")
-    fun getUserById(@PathVariable(value = "id") userID: Long): ResponseEntity<User> {
+    fun getUserDetailDAO(@PathVariable(value = "id") userID: Long): ResponseEntity<User> {
         val user : User? = userController.getUserByID(userID)
         if (user != null) return ResponseEntity.ok(user)
         return ResponseEntity.notFound().build()

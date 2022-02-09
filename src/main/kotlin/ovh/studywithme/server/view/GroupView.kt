@@ -1,16 +1,18 @@
 package ovh.studywithme.server.view
 
 import ovh.studywithme.server.controller.GroupController
+import ovh.studywithme.server.controller.SessionController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import ovh.studywithme.server.model.Session
 import ovh.studywithme.server.model.StudyGroup
 import ovh.studywithme.server.model.User
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/groups")
-class GroupView(private val groupController: GroupController) {
+class GroupView(private val groupController: GroupController, private val sessionController: SessionController) {
 
     @GetMapping("")
     fun getAllGroups(@RequestParam("text") query: String?, @RequestParam("lecture") lecture: String?, 
@@ -70,7 +72,7 @@ class GroupView(private val groupController: GroupController) {
         }
     }
 
-    @PutMapping("/{gid}/detail")
+    @PutMapping("/{gid}")
     fun updateGroupById(@PathVariable(value = "gid") groupID: Long, @Valid @RequestBody updatedGroup: StudyGroup): ResponseEntity<StudyGroup> {
         val group : StudyGroup? = groupController.updateGroup(updatedGroup)
         if (group == null) {
@@ -88,4 +90,18 @@ class GroupView(private val groupController: GroupController) {
         }
         return ResponseEntity.notFound().build()
     }
+
+    @GetMapping("/{id}/sessions")
+    fun getAllGroupSessions(@PathVariable(value = "id") groupID: Long): ResponseEntity<List<Session>> {
+
+        val sessions : List<Session> = sessionController.getAllGroupSessions(groupID)
+        if (!sessions.isEmpty())
+            return ResponseEntity.ok(sessions)
+        else
+            return ResponseEntity.notFound().build()
+    }
+
+    @PostMapping("/{id}/sesssions")
+    fun createNewSession(@Valid @RequestBody session: Session): Session =
+        sessionController.createSession(session)
 }

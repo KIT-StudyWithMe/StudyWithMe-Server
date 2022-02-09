@@ -6,22 +6,8 @@ import ovh.studywithme.server.model.Session
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/groups/{id}/detail/sessions")
+@RequestMapping("/sessions")
 class SessionView(private val sessionController: SessionController) {
-
-    @GetMapping("")
-    fun getAllGroupSessions(@PathVariable(value = "id") groupID: Long): ResponseEntity<List<Session>> {
-
-        val sessions : List<Session> = sessionController.getAllGroupSessions(groupID)
-        if (!sessions.isEmpty())
-            return ResponseEntity.ok(sessions)
-        else
-            return ResponseEntity.notFound().build()
-    }
-
-    @PostMapping("")
-    fun createNewSession(@Valid @RequestBody session: Session): Session =
-        sessionController.createSession(session)
 
     @GetMapping("/{id}")
     fun getSessionById(@PathVariable(value = "id") sessionID: Long): ResponseEntity<Session> {
