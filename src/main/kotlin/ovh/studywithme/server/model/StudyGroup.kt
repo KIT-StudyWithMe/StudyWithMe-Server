@@ -17,21 +17,17 @@ data class StudyGroup (
     @get: NotBlank
     val description: String,
 
-    @get: NotBlank
     val lectureID: Int,
 
-    @get: NotBlank
+    //@get: NotBlank todo, working?
     val sessionFrequency: SessionFrequency,
 
-    @get: NotBlank
+    //@get: NotBlank todo
     val sessionType: SessionMode,
 
-    @get: NotBlank
     val lectureChapter: Int,
 
-    @get: NotBlank
     val exercise: Int,
 
-    @get: NotBlank
     val hidden: Boolean
 )

@@ -14,6 +14,5 @@ data class Lecture (
     @get: NotBlank
     val name: String,
 
-    @get: NotBlank
     val majorID: Int
 )

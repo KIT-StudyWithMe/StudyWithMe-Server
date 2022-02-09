@@ -14,9 +14,7 @@ data class StudyGroupMember (
     //@Id //currently not working
     val userID: Long,
 
-    @get: NotBlank
     var isAdmin: Boolean,
 
-    @get: NotBlank
     var isMember: Boolean
 )

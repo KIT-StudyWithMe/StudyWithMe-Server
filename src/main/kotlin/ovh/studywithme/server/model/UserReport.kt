@@ -14,6 +14,6 @@ data class UserReport (
     //@Id //currently not working
     val userID: Long,
 
-    @get: NotBlank
+    //@get: NotBlank //todo? working?
     val userField: UserField
 )

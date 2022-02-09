@@ -12,15 +12,13 @@ data class Session (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val sessionID: Long,
 
-    @get: NotBlank
     val groupID: Long,
 
     @get: NotBlank
     val place: String,
 
-    @get: NotBlank
+    //@get: NotBlank //todo?
     val startTime: Date,
 
-    @get: NotBlank
     val duration: Int
 )

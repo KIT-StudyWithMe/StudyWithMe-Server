@@ -15,6 +15,5 @@ data class SessionAttendee (
 
     val userID: Long = 0,
 
-    @get: NotBlank
     val participates: Boolean
 )

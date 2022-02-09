@@ -14,10 +14,8 @@ data class User (
     @get: NotBlank
     val name: String,
 
-    @get: NotBlank
     val institutionID: Int,
 
-    @get: NotBlank
     val majorID: Int,
 
     @get: NotBlank
@@ -26,9 +24,7 @@ data class User (
     @get: NotBlank
     val firebaseUID: String,
 
-    @get: NotBlank
     val isBlocked: Boolean = false,
 
-    @get: NotBlank
     val isModerator: Boolean = false
 )
