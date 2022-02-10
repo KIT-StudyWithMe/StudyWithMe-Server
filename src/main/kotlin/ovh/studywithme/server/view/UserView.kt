@@ -75,7 +75,7 @@ class UserView(private val userController: UserController) {
     }
 
     @PutMapping("/{uid}/report/{rid}")
-    fun reportGroupField(@PathVariable(value = "uid") userID: Long, @PathVariable(value = "rid") reporterID: Long,
+    fun reportUserField(@PathVariable(value = "uid") userID: Long, @PathVariable(value = "rid") reporterID: Long,
                          @Valid @RequestBody field: UserField): ResponseEntity<Void> {
         if (userController.reportUserField(userID, reporterID, field)) {
             return ResponseEntity<Void>(HttpStatus.OK)
