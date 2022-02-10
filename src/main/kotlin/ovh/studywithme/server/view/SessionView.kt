@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ovh.studywithme.server.controller.SessionController
-import ovh.studywithme.server.model.Session
 import ovh.studywithme.server.model.SessionField
+import ovh.studywithme.server.dao.SessionDAO
 import javax.validation.Valid
 
 /**
@@ -25,8 +25,8 @@ class SessionView(private val sessionController: SessionController) {
      * @return
      */
     @GetMapping("/{id}")
-    fun getSessionById(@PathVariable(value = "id") sessionID: Long): ResponseEntity<Session> {
-        val session : Session? = sessionController.getSessionByID(sessionID)
+    fun getSessionById(@PathVariable(value = "id") sessionID: Long): ResponseEntity<SessionDAO> {
+        val session : SessionDAO? = sessionController.getSessionByID(sessionID)
         if (session != null)
             return ResponseEntity.ok(session)
         else
@@ -41,8 +41,8 @@ class SessionView(private val sessionController: SessionController) {
      * @return
      */
     @PutMapping("/{id}")
-    fun updateSessionById(@PathVariable(value = "id") sessionID: Long, @Valid @RequestBody updatedSession: Session): ResponseEntity<Session> {
-        val session : Session? = sessionController.updateSession(updatedSession)
+    fun updateSessionById(@PathVariable(value = "id") sessionID: Long, @Valid @RequestBody updatedSession: SessionDAO): ResponseEntity<SessionDAO> {
+        val session : SessionDAO? = sessionController.updateSession(updatedSession)
         if (session != null)
             return ResponseEntity.ok(session)
         else

@@ -32,18 +32,21 @@ import ovh.studywithme.server.dao.SessionDAO
         return session
     }
 
-    override fun getSessionByID(sessionID:Long): Session? {
-        return sessionRepository.findById(sessionID).unwrap()
+    override fun getSessionByID(sessionID:Long): SessionDAO? {
+        val session: Session? = sessionRepository.findById(sessionID).unwrap()
+        if (session!=null){
+            return SessionDAO(session)
+        }
+        return null
     }
 
     override fun getAllGroupSessions(groupID:Long): List<SessionDAO> {
         return sessionRepository.findBygroupID(groupID).map{SessionDAO(it)}
     }
 
-    override fun updateSession(updatedSession:Session): Session? {
+    override fun updateSession(updatedSession:SessionDAO): SessionDAO? {
         if (sessionRepository.existsById(updatedSession.sessionID)) {
-            sessionRepository.save(updatedSession)
-            return updatedSession
+            return SessionDAO(sessionRepository.save(updatedSession.toSession()))
         }
         return null
     }

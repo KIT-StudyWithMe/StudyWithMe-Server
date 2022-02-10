@@ -1,7 +1,6 @@
 package ovh.studywithme.server.controller
 
 import ovh.studywithme.server.dao.SessionDAO
-import ovh.studywithme.server.model.Session
 import ovh.studywithme.server.model.SessionField
 
 /**
@@ -24,7 +23,7 @@ interface SessionControllerInterface {
      * @param sessionID
      * @return
      */
-    fun getSessionByID(sessionID:Long):Session?
+    fun getSessionByID(sessionID:Long):SessionDAO?
 
     /**
      * Create session
@@ -40,7 +39,7 @@ interface SessionControllerInterface {
      * @param updatedSession
      * @return
      */
-    fun updateSession(updatedSession:Session): Session?
+    fun updateSession(updatedSession:SessionDAO): SessionDAO?
 
     /**
      * Delete session

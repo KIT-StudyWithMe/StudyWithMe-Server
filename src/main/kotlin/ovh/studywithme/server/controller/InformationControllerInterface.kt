@@ -1,8 +1,8 @@
 package ovh.studywithme.server.controller
 
-import ovh.studywithme.server.model.Institution
-import ovh.studywithme.server.model.Lecture
-import ovh.studywithme.server.model.Major
+import ovh.studywithme.server.dao.InstitutionDAO
+import ovh.studywithme.server.dao.LectureDAO
+import ovh.studywithme.server.dao.MajorDAO
 
 /**
  * Information controller interface
@@ -16,7 +16,7 @@ interface InformationControllerInterface {
      *
      * @return
      */
-    fun getAllInstitutions():List<Institution>
+    fun getAllInstitutions():List<InstitutionDAO>
 
     /**
      * Get institution by i d
@@ -24,7 +24,7 @@ interface InformationControllerInterface {
      * @param institutionID
      * @return
      */
-    fun getInstitutionByID(institutionID:Long): Institution?
+    fun getInstitutionByID(institutionID:Long): InstitutionDAO?
 
     /**
      * Get institutions by name
@@ -32,7 +32,7 @@ interface InformationControllerInterface {
      * @param searchName
      * @return
      */
-    fun getInstitutionsByName(searchName:String):List<Institution>
+    fun getInstitutionsByName(searchName:String):List<InstitutionDAO>
 
     /**
      * Create new institution
@@ -40,7 +40,7 @@ interface InformationControllerInterface {
      * @param institution
      * @return
      */
-    fun createNewInstitution(institution: Institution) : Institution
+    fun createNewInstitution(institution: InstitutionDAO) : InstitutionDAO
 
     /**
      * Delete institution
@@ -55,7 +55,7 @@ interface InformationControllerInterface {
      *
      * @return
      */
-    fun getAllMajors():List<Major>
+    fun getAllMajors():List<MajorDAO>
 
     /**
      * Get major by i d
@@ -63,7 +63,7 @@ interface InformationControllerInterface {
      * @param majorID
      * @return
      */
-    fun getMajorByID(majorID:Long): Major?
+    fun getMajorByID(majorID:Long): MajorDAO?
 
     /**
      * Get majors by name
@@ -71,7 +71,7 @@ interface InformationControllerInterface {
      * @param searchName
      * @return
      */
-    fun getMajorsByName(searchName:String):List<Major>
+    fun getMajorsByName(searchName:String):List<MajorDAO>
 
     /**
      * Create new major
@@ -79,7 +79,7 @@ interface InformationControllerInterface {
      * @param major
      * @return
      */
-    fun createNewMajor(major: Major) : Major
+    fun createNewMajor(major: MajorDAO) : MajorDAO
 
     /**
      * Delete major
@@ -95,7 +95,7 @@ interface InformationControllerInterface {
      * @param majorID
      * @return
      */
-    fun getAllLectures(majorID: Long):List<Lecture>
+    fun getAllLectures(majorID: Long):List<LectureDAO>
 
     /**
      * Get lecture by i d
@@ -104,7 +104,7 @@ interface InformationControllerInterface {
      * @param lectureID
      * @return
      */
-    fun getLectureByID(majorID: Long, lectureID:Long): Lecture?
+    fun getLectureByID(majorID: Long, lectureID:Long): LectureDAO?
 
     /**
      * Get lectures by name
@@ -113,7 +113,7 @@ interface InformationControllerInterface {
      * @param searchName
      * @return
      */
-    fun getLecturesByName(majorID: Long, searchName:String):List<Lecture>
+    fun getLecturesByName(majorID: Long, searchName:String):List<LectureDAO>
 
     /**
      * Create new lecture
@@ -122,7 +122,7 @@ interface InformationControllerInterface {
      * @param lecture
      * @return
      */
-    fun createNewLecture(majorID: Long, lecture: Lecture) : Lecture
+    fun createNewLecture(majorID: Long, lecture: LectureDAO) : LectureDAO
 
     /**
      * Delete lecture

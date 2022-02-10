@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.dao.StudyGroupMemberDAO
+import ovh.studywithme.server.dao.LectureDAO
 import ovh.studywithme.server.model.*
 import ovh.studywithme.server.repository.GroupRepository
 import ovh.studywithme.server.repository.GroupMemberRepository
@@ -55,7 +56,7 @@ class GroupController(private val groupRepository: GroupRepository,
     }
 
     override fun searchGroupByLecture(lectureName: String): List<StudyGroupDAO> {
-        val allLectures : List<Lecture> = informationController.getLecturesByName(0, lectureName)
+        val allLectures : List<LectureDAO> = informationController.getLecturesByName(0, lectureName)
         val allGroups : MutableList<StudyGroup> = ArrayList()
         for (currentLecture in allLectures) {
             allGroups.addAll(groupRepository.findByLectureID(currentLecture.lectureID))

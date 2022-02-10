@@ -1,6 +1,11 @@
 package ovh.studywithme.server.controller
 
-import ovh.studywithme.server.model.*
+import ovh.studywithme.server.dao.StudyGroupReportDAO
+import ovh.studywithme.server.dao.UserReportDAO
+import ovh.studywithme.server.dao.SessionReportDAO
+import ovh.studywithme.server.model.StudyGroupField
+import ovh.studywithme.server.model.UserField
+import ovh.studywithme.server.model.SessionField
 
 /**
  * Report controller interface
@@ -14,21 +19,21 @@ interface ReportControllerInterface {
      *
      * @return
      */
-    fun getAllGroupReports(): List<StudyGroupReport>
+    fun getAllGroupReports(): List<StudyGroupReportDAO>
 
     /**
      * Get all user reports
      *
      * @return
      */
-    fun getAllUserReports(): List<UserReport>
+    fun getAllUserReports(): List<UserReportDAO>
 
     /**
      * Get all session reports
      *
      * @return
      */
-    fun getAllSessionReports(): List<SessionReport>
+    fun getAllSessionReports(): List<SessionReportDAO>
 
     /**
      * Delete group report

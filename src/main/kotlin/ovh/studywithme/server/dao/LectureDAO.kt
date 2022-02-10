@@ -17,4 +17,13 @@ data class LectureDAO(
     val majorID: Long
     ) {
     constructor(lecture : Lecture) : this(lecture.lectureID, lecture.name, lecture.majorID)
+
+    /**
+     * Convert a LectureDAO to a Lecture
+     *
+     * @return corresponding Lecture
+     */
+    fun toLecture(): Lecture {
+        return Lecture(this.lectureID, this.name, this.majorID)
+    }
 }

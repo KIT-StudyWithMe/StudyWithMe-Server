@@ -14,4 +14,13 @@ data class MajorDAO(
     val name: String
     ) {
     constructor(major : Major) : this(major.majorID, major.name)
+
+    /**
+     * Convert a MajorDAO to a Major
+     *
+     * @return corresponding Major
+     */
+    fun toMajor(): Major {
+        return Major(this.majorID, this.name)
+    }
 }

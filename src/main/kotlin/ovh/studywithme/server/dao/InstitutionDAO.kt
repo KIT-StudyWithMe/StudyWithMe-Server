@@ -15,4 +15,13 @@ data class InstitutionDAO(
     val name: String
     ) {
     constructor(institution : Institution) : this(institution.institutionID, institution.name)
+
+    /**
+     * Convert a InstitutionDAO to a Institution
+     *
+     * @return corresponding Institution
+     */
+    fun toInstitution(): Institution {
+        return Institution(this.institutionID, this.name)
+    }
 }

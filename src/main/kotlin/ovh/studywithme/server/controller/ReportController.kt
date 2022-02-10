@@ -1,7 +1,12 @@
 package ovh.studywithme.server.controller
 
 import org.springframework.stereotype.Service
-import ovh.studywithme.server.model.*
+import ovh.studywithme.server.dao.StudyGroupReportDAO
+import ovh.studywithme.server.dao.UserReportDAO
+import ovh.studywithme.server.dao.SessionReportDAO
+import ovh.studywithme.server.model.StudyGroupField
+import ovh.studywithme.server.model.UserField
+import ovh.studywithme.server.model.SessionField
 import ovh.studywithme.server.repository.GroupReportRepository
 import ovh.studywithme.server.repository.UserReportRepository
 import ovh.studywithme.server.repository.SessionReportRepository
@@ -19,16 +24,16 @@ class ReportController(private val groupReportRepository: GroupReportRepository,
                        private val userReportRepository: UserReportRepository,
                        private val sessionReportRepository: SessionReportRepository) : ReportControllerInterface {
 
-    override fun getAllGroupReports(): List<StudyGroupReport> {
-        return groupReportRepository.findAll()
+    override fun getAllGroupReports(): List<StudyGroupReportDAO> {
+        return groupReportRepository.findAll().map{StudyGroupReportDAO(it)}
     }
 
-    override fun getAllUserReports(): List<UserReport> {
-        return userReportRepository.findAll()
+    override fun getAllUserReports(): List<UserReportDAO> {
+        return userReportRepository.findAll().map{UserReportDAO(it)}
     }
 
-    override fun getAllSessionReports(): List<SessionReport> {
-        return sessionReportRepository.findAll()
+    override fun getAllSessionReports(): List<SessionReportDAO> {
+        return sessionReportRepository.findAll().map{SessionReportDAO(it)}
     }
 
     override fun deleteGroupReport(reporterID:Long, groupID:Long, field: StudyGroupField): Boolean {
@@ -53,7 +58,6 @@ class ReportController(private val groupReportRepository: GroupReportRepository,
             return true
         }
         return false
-
     }
 
 }

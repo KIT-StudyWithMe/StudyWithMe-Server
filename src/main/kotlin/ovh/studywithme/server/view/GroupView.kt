@@ -101,7 +101,7 @@ class GroupView(
      * @return
      */
     @GetMapping("/{gid}/users")
-    fun getUsersInGroup(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<StudyGroupMemberDAO>> { //StudyGroupMemberDAO TODO
+    fun getUsersInGroup(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<StudyGroupMemberDAO>> {
         val users: List<StudyGroupMemberDAO> = groupController.getUsersInGroup(groupID)
         return ResponseEntity.ok(users)
     }

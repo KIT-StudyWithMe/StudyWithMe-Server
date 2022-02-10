@@ -4,7 +4,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ovh.studywithme.server.controller.ReportController
-import ovh.studywithme.server.model.*
+import ovh.studywithme.server.model.UserField
+import ovh.studywithme.server.model.StudyGroupField
+import ovh.studywithme.server.model.SessionField
+import ovh.studywithme.server.dao.StudyGroupReportDAO
+import ovh.studywithme.server.dao.UserReportDAO
+import ovh.studywithme.server.dao.SessionReportDAO
+
 
 /**
  * Report view
@@ -22,9 +28,9 @@ class ReportView(private val reportController: ReportController) {
      * @return
      */
     @GetMapping("/group")
-    fun getAllGroupReports(): ResponseEntity<List<StudyGroupReport>> {
+    fun getAllGroupReports(): ResponseEntity<List<StudyGroupReportDAO>> {
 
-        val reports: List<StudyGroupReport> = reportController.getAllGroupReports()
+        val reports: List<StudyGroupReportDAO> = reportController.getAllGroupReports()
         if (!reports.isEmpty())
             return ResponseEntity.ok(reports)
         else
@@ -37,9 +43,9 @@ class ReportView(private val reportController: ReportController) {
      * @return
      */
     @GetMapping("/user")
-    fun getAllUserReports(): ResponseEntity<List<UserReport>> {
+    fun getAllUserReports(): ResponseEntity<List<UserReportDAO>> {
 
-        val reports: List<UserReport> = reportController.getAllUserReports()
+        val reports: List<UserReportDAO> = reportController.getAllUserReports()
         if (!reports.isEmpty())
             return ResponseEntity.ok(reports)
         else
@@ -52,9 +58,9 @@ class ReportView(private val reportController: ReportController) {
      * @return
      */
     @GetMapping("/session")
-    fun getAllSessionReports(): ResponseEntity<List<SessionReport>> {
+    fun getAllSessionReports(): ResponseEntity<List<SessionReportDAO>> {
 
-        val reports: List<SessionReport> = reportController.getAllSessionReports()
+        val reports: List<SessionReportDAO> = reportController.getAllSessionReports()
         if (!reports.isEmpty())
             return ResponseEntity.ok(reports)
         else
