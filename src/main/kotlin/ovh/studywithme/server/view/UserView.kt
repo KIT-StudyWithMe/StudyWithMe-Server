@@ -96,8 +96,8 @@ class UserView(private val userController: UserController) {
      * @return
      */
     @PostMapping("")
-    fun createNewUser(@Valid @RequestBody user: UserDetailDAO, @RequestBody firebaseUID: String): UserDetailDAO =
-        userController.createUser(user, firebaseUID)
+    fun createNewUser(@Valid @RequestBody user: UserDetailDAO): UserDetailDAO =
+        userController.createUser(user)
 
     /**
      * Update user by id
@@ -107,8 +107,8 @@ class UserView(private val userController: UserController) {
      * @return
      */
     @PutMapping("/{id}/detail")
-    fun updateUserById(@PathVariable(value = "id") userID: Long, @Valid @RequestBody newUser: UserDetailDAO, @RequestBody firebaseUID: String): ResponseEntity<UserDetailDAO> {
-        val user : UserDetailDAO? = userController.updateUser(userID, newUser, firebaseUID)
+    fun updateUserById(@PathVariable(value = "id") userID: Long, @Valid @RequestBody newUser: UserDetailDAO): ResponseEntity<UserDetailDAO> {
+        val user : UserDetailDAO? = userController.updateUser(userID, newUser)
         if (user == null) return ResponseEntity.notFound().build()
         return ResponseEntity.ok(user)
     }

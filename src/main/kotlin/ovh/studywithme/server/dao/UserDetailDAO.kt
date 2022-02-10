@@ -23,11 +23,12 @@ data class UserDetailDAO(
     val majorID: Long, 
     val majorName: String,
     val contact: String, 
+    val firebaseUID: String,
     val isModerator: Boolean
     ) {
-    constructor(user : User, institutionName: String, majorName: String) : this(user.userID, user.name, user.institutionID, institutionName, user.majorID,majorName, user.contact, user.isModerator)
+    constructor(user : User, institutionName: String, majorName: String) : this(user.userID, user.name, user.institutionID, institutionName, user.majorID,majorName, user.contact, user.firebaseUID, user.isModerator)
     
-    fun toUser(firebaseUID: String): User {
-        return User(this.userID, this.name, this.institutionID, this.majorID, this.contact, firebaseUID)
+    fun toUser(): User {
+        return User(this.userID, this.name, this.institutionID, this.majorID, this.contact, this.firebaseUID)
     }
 }

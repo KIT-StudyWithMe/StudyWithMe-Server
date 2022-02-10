@@ -53,7 +53,7 @@ interface UserControllerInterface {
      * @param user
      * @return
      */
-    fun createUser(userDetailDAO:UserDetailDAO, firebaseUID: String): UserDetailDAO
+    fun createUser(userDetailDAO:UserDetailDAO): UserDetailDAO
 
     /**
      * Update user with the Information provided.
@@ -64,7 +64,7 @@ interface UserControllerInterface {
      * @param updatedUser
      * @return
      */
-    fun updateUser(userID: Long, updatedUser:UserDetailDAO, firebaseUID: String): UserDetailDAO?
+    fun updateUser(userID: Long, updatedUser:UserDetailDAO): UserDetailDAO?
 
     /**
      * Delete user by its ID.

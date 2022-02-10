@@ -59,15 +59,15 @@ import ovh.studywithme.server.controller.UserControllerInterface
         return studyGroups.map{StudyGroupDAO(it)}
      }
 
-    override fun createUser(userDetailDAO:UserDetailDAO, firebaseUID: String): UserDetailDAO {
-        val createdUser : User =  userRepository.save(userDetailDAO.toUser(firebaseUID))
+    override fun createUser(userDetailDAO:UserDetailDAO): UserDetailDAO {
+        val createdUser : User =  userRepository.save(userDetailDAO.toUser())
         return getUserDetailDAO(createdUser)
     }
 
-    override fun updateUser(userID: Long, updatedUser : UserDetailDAO, firebaseUID: String) : UserDetailDAO? {
+    override fun updateUser(userID: Long, updatedUser : UserDetailDAO) : UserDetailDAO? {
         if (userID == updatedUser.userID){
             if (userRepository.existsById(updatedUser.userID)) {
-                userRepository.save(updatedUser.toUser(firebaseUID))
+                userRepository.save(updatedUser.toUser())
                 return updatedUser
             }
         }
@@ -129,7 +129,7 @@ import ovh.studywithme.server.controller.UserControllerInterface
         val institutionName : String = institution?.name ?: "unknown"
         val majorID : Long = major?.majorID ?: 0
         val majorName : String = major?.name ?: "unknown"
-        val userDetailDAO : UserDetailDAO = UserDetailDAO(user.userID, user.name, institutionID, institutionName, majorID, majorName, user.contact, user.isModerator)
+        val userDetailDAO : UserDetailDAO = UserDetailDAO(user.userID, user.name, institutionID, institutionName, majorID, majorName, user.contact, user.firebaseUID, user.isModerator)
         return userDetailDAO
     }
 
