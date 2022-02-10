@@ -45,8 +45,8 @@ class SessionView(private val sessionController: SessionController) {
             return ResponseEntity.notFound().build()
     }
 
-    @PutMapping("/{id}/report/{uid}")
-    fun reportSessionField(@PathVariable(value = "id") sessionID: Long, @PathVariable(value = "uid") reporterID: Long,
+    @PutMapping("/{sid}/report/{uid}")
+    fun reportSessionField(@PathVariable(value = "sid") sessionID: Long, @PathVariable(value = "uid") reporterID: Long,
                            @Valid @RequestBody field: SessionField): ResponseEntity<Void> {
         if (sessionController.reportSessionField(sessionID, reporterID, field)) {
             return ResponseEntity<Void>(HttpStatus.OK)

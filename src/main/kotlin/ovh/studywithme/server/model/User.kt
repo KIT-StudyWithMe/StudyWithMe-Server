@@ -26,5 +26,5 @@ data class User (
 
     val isBlocked: Boolean = false,
 
-    val isModerator: Boolean = false
+    var isModerator: Boolean = false
 )

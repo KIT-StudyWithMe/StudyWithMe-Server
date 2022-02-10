@@ -6,6 +6,8 @@ import ovh.studywithme.server.controller.UserController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import ovh.studywithme.server.model.StudyGroupMember
+import ovh.studywithme.server.model.UserField
 import javax.validation.Valid
 
 @RestController
@@ -27,7 +29,11 @@ class UserView(private val userController: UserController) {
     }
 
     @GetMapping("")
-    fun getAllUsers(@RequestParam("FUID") fuid: String?): ResponseEntity<List<User>> {
+    fun getAllUsers(@RequestParam("state") state: String?, @RequestParam("FUID") fuid: String?): ResponseEntity<List<User>> {
+        if (state.equals("blocked")) {
+            val blockedUsers = userController.getBlockedUsers()
+            return ResponseEntity.ok(blockedUsers)
+        }
         if (fuid == null) {
             //TODO this cannot exist in final Application
             val users : List<User> = userController.getAllUsers()
@@ -40,6 +46,15 @@ class UserView(private val userController: UserController) {
             else
                 return ResponseEntity.notFound().build()
         }
+    }
+
+    @GetMapping("/{id}/groups")
+    fun getUsersGroups(@PathVariable(value = "id") userID: Long): ResponseEntity<List<StudyGroupMember>?> {
+        val usersGroups = userController.getUsersGroups(userID)
+        if (usersGroups == null) {
+            return ResponseEntity.notFound().build()
+        }
+        return ResponseEntity.ok(usersGroups)
     }
 
     @PostMapping("")
@@ -58,4 +73,22 @@ class UserView(private val userController: UserController) {
         if(userController.deleteUser(userID)) return ResponseEntity<Void>(HttpStatus.OK) 
         return ResponseEntity.notFound().build()
     }
+
+    @PutMapping("/{uid}/report/{rid}")
+    fun reportGroupField(@PathVariable(value = "uid") userID: Long, @PathVariable(value = "rid") reporterID: Long,
+                         @Valid @RequestBody field: UserField): ResponseEntity<Void> {
+        if (userController.reportUserField(userID, reporterID, field)) {
+            return ResponseEntity<Void>(HttpStatus.OK)
+        }
+        return ResponseEntity.notFound().build()
+    }
+
+    @PutMapping("/{uid}/state/{mid}")
+    fun blockUser(@PathVariable(value = "uid") userID: Long, @PathVariable(value = "mid") moderatorID: Long): ResponseEntity<Void> {
+        if (userController.blockUser(userID, moderatorID)) {
+            return ResponseEntity<Void>(HttpStatus.OK)
+        }
+        return ResponseEntity.notFound().build()
+    }
+
 }

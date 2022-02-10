@@ -1,13 +1,19 @@
 package ovh.studywithme.server.controller
 
-import ovh.studywithme.server.model.User
 import ovh.studywithme.server.dao.UserDAO
+import ovh.studywithme.server.repository.GroupRepository
+import ovh.studywithme.server.repository.GroupMemberRepository
 import ovh.studywithme.server.repository.UserRepository
+import ovh.studywithme.server.repository.UserReportRepository
 import java.util.Optional
 import org.springframework.stereotype.Service
+import ovh.studywithme.server.model.*
 
 @Service
-    class UserController(private val userRepository: UserRepository) : UserControllerInterface {
+    class UserController(private val userRepository: UserRepository,
+                         private val userReportRepository: UserReportRepository,
+                         private val groupRepository: GroupRepository,
+                         private val groupMemberRepository: GroupMemberRepository) : UserControllerInterface {
 
     override fun getAllUsers():List<User> {
          return userRepository.findAll()
@@ -24,6 +30,14 @@ import org.springframework.stereotype.Service
         }
         return null
     }
+
+    override fun getUsersGroups(userID:Long): List<StudyGroupMember>? {
+        if (!userRepository.existsById(userID)) {
+            return null
+        }
+        //TODO discuss return type
+        return groupMemberRepository.findAll().filter { it.userID == userID }
+     }
 
     override fun createUser(user:User): User {
         userRepository.save(user)
@@ -50,6 +64,34 @@ import org.springframework.stereotype.Service
 
     override fun getUserByFUID(firebaseUID:String): List<User> {
         return userRepository.findByfirebaseUID(firebaseUID)
+    }
+
+    override fun reportUserField(userID:Long, reporterID:Long, field: UserField): Boolean {
+        if (userRepository.existsById(userID) && userRepository.existsById(reporterID)) {
+            userReportRepository.save(UserReport(0, reporterID, userID, field))
+            return true
+        }
+        return false
+    }
+
+    override fun blockUser(userID:Long, moderatorID:Long): Boolean {
+        if (userRepository.existsById(userID) && userRepository.existsById(moderatorID)) {
+            val moderator = userRepository.findById(moderatorID).get()
+            val user = userRepository.findById(userID).get()
+
+            if (!moderator.isModerator || user.isModerator) {
+                return false
+            }
+
+            user.isModerator = true
+            userRepository.save(user)
+            return true
+        }
+        return false
+    }
+
+    override fun getBlockedUsers(): List<User> {
+        return userRepository.findAll().filter { it.isBlocked }
     }
 
     fun <T> Optional<T>.unwrap(): T? = orElse(null)
