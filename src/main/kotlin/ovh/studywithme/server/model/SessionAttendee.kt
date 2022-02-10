@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank
 @Entity
 data class SessionAttendee (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val SessionAttendeeID: Long,
+    val sessionAttendeeID: Long,
 
     val sessionID: Long = 0,
 

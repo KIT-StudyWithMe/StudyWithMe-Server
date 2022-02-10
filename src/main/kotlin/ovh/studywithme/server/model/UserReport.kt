@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank
 data class UserReport (
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val UserReportID: Long,
+    val userReportID: Long,
 
     val reporterID: Long = 0,
 

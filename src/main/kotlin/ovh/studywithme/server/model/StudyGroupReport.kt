@@ -14,7 +14,7 @@ import org.hibernate.mapping.ManyToOne
 data class StudyGroupReport (
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val StudyGroupReportID: Long,
+    val studyGroupReportID: Long,
 
     val reporterID: Long = 0,
 
