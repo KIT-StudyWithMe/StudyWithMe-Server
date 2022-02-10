@@ -2,6 +2,7 @@ package ovh.studywithme.server.controller
 
 import org.springframework.stereotype.Service
 import ovh.studywithme.server.dao.UserDAO
+import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.model.*
 import ovh.studywithme.server.repository.GroupRepository
 import ovh.studywithme.server.repository.GroupMemberRepository
@@ -17,51 +18,50 @@ class GroupController(private val groupRepository: GroupRepository,
                       private val groupReportRepository: GroupReportRepository,
                       private val informationController: InformationController) : GroupControllerInterface {
 
-    override fun getAllGroups(): List<StudyGroup> {
-        return groupRepository.findAll()
+    override fun getAllGroups(): List<StudyGroupDAO> {
+        return groupRepository.findAll().map{StudyGroupDAO(it)}
     }
 
-    override fun createGroup(group: StudyGroup): StudyGroup {
-        groupRepository.save(group)
+    override fun createGroup(group: StudyGroupDAO): StudyGroupDAO {
+        groupRepository.save(group.toStudyGroup(false))
         return group
     }
 
-    override fun getGroupsIndex(start: Int, size: Int): List<StudyGroup> {
+    override fun getGroupsIndex(start: Int, size: Int): List<StudyGroupDAO> {
         //TODO
         return ArrayList()
     }
 
-    override fun searchGroup(query: String): List<StudyGroup> {
-        val result : MutableList<StudyGroup> = ArrayList(searchGroupByName(query))
+    override fun searchGroup(query: String): List<StudyGroupDAO> {
+        val result : MutableList<StudyGroupDAO> = ArrayList(searchGroupByName(query))
         result.addAll(searchGroupByLecture(query))
         return result
     }
 
-    override fun searchGroupByName(name: String): List<StudyGroup> {
-        return groupRepository.findByName(name)
+    override fun searchGroupByName(name: String): List<StudyGroupDAO> {
+        return groupRepository.findByName(name).map{StudyGroupDAO(it)}
     }
 
-    override fun searchGroupByLecture(lectureName: String): List<StudyGroup> {
+    override fun searchGroupByLecture(lectureName: String): List<StudyGroupDAO> {
         val allLectures : List<Lecture> = informationController.getLecturesByName(0, lectureName)
         val allGroups : MutableList<StudyGroup> = ArrayList()
         for (currentLecture in allLectures) {
             allGroups.addAll(groupRepository.findByLectureID(currentLecture.lectureID))
         }
-        return allGroups
+        return allGroups.map{StudyGroupDAO(it)}
     }
 
-    override fun getGroupByID(groupID: Long): StudyGroup? {
-        return groupRepository.findById(groupID).unwrap()
-    }
-
-    override fun getGroupDetails(groupID: Long): StudyGroup? {
-        //TODO
+    override fun getGroupByID(groupID: Long): StudyGroupDAO? {
+        val studyGroup: StudyGroup? = groupRepository.findById(groupID).unwrap()
+        if (studyGroup != null) {
+            return StudyGroupDAO(studyGroup)
+        }
         return null
     }
 
-    override fun updateGroup(updatedGroup: StudyGroup): StudyGroup? {
+    override fun updateGroup(updatedGroup: StudyGroupDAO): StudyGroupDAO? {
         if (groupRepository.existsById(updatedGroup.groupID)) {
-            groupRepository.save(updatedGroup)
+            groupRepository.save(updatedGroup.toStudyGroup(groupRepository.getById(updatedGroup.groupID).hidden))
             return updatedGroup
         }
         return null
@@ -81,8 +81,7 @@ class GroupController(private val groupRepository: GroupRepository,
         val allRequestUserDAOs : MutableList<UserDAO> = ArrayList()
         for (currentMember in allRequestMembers) {
             if (userRepository.existsById(currentMember.userID)) {
-                val user : User = userRepository.findById(currentMember.userID).get()
-                allRequestUserDAOs.add(UserDAO(user.userID, user.name))
+                allRequestUserDAOs.add(UserDAO(userRepository.findById(currentMember.userID).get()))
             }
         }
         return allRequestUserDAOs
@@ -102,7 +101,7 @@ class GroupController(private val groupRepository: GroupRepository,
         return true
     }
 
-    override fun getUsersInGroup(groupID: Long): List<User> {
+    override fun getUsersInGroup(groupID: Long): List<UserDAO> {
         val allGroupMembers : List<StudyGroupMember> = groupMemberRepository.findByGroupID(groupID).filter { it.isMember }
         val allGroupUsers : MutableList<User> = ArrayList()
         for (currentMember in allGroupMembers) {
@@ -110,7 +109,7 @@ class GroupController(private val groupRepository: GroupRepository,
                 allGroupUsers.add(userRepository.findById(currentMember.userID).get())
             }
         }
-        return allGroupUsers
+        return allGroupUsers.map { UserDAO(it) }
     }
 
     override fun deleteUserFromGroup(groupID: Long, userID: Long): Boolean {

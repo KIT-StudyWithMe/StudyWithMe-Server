@@ -10,6 +10,7 @@ import ovh.studywithme.server.model.SessionField
 import ovh.studywithme.server.model.SessionReport
 import ovh.studywithme.server.repository.SessionReportRepository
 import ovh.studywithme.server.repository.UserRepository
+import ovh.studywithme.server.dao.SessionDAO
 
 @Service
     class SessionController(private val sessionRepository:SessionRepository,
@@ -17,8 +18,8 @@ import ovh.studywithme.server.repository.UserRepository
                             private val userRepository: UserRepository,
                             private val attendeeRepository:AttendeeRepository) : SessionControllerInterface {
 
-    override fun createSession(session:Session): Session {
-        sessionRepository.save(session)
+    override fun createSession(session:SessionDAO): SessionDAO {
+        sessionRepository.save(session.toSession())
         return session
     }
 
@@ -26,8 +27,8 @@ import ovh.studywithme.server.repository.UserRepository
         return sessionRepository.findById(sessionID).unwrap()
     }
 
-    override fun getAllGroupSessions(groupID:Long): List<Session> {
-        return sessionRepository.findBygroupID(groupID)
+    override fun getAllGroupSessions(groupID:Long): List<SessionDAO> {
+        return sessionRepository.findBygroupID(groupID).map{SessionDAO(it)}
     }
 
     override fun updateSession(updatedSession:Session): Session? {

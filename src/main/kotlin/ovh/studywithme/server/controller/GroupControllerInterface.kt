@@ -1,29 +1,26 @@
 package ovh.studywithme.server.controller
 
 import ovh.studywithme.server.dao.UserDAO
-import ovh.studywithme.server.model.StudyGroup
+import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.model.StudyGroupField
-import ovh.studywithme.server.model.User
 
 interface GroupControllerInterface {
 
-    fun getAllGroups(): List<StudyGroup>
+    fun getAllGroups(): List<StudyGroupDAO>
 
-    fun createGroup(group:StudyGroup): StudyGroup
+    fun createGroup(group:StudyGroupDAO): StudyGroupDAO
 
-    fun getGroupsIndex(start:Int, size:Int): List<StudyGroup>
+    fun getGroupsIndex(start:Int, size:Int): List<StudyGroupDAO>
 
-    fun searchGroup(query:String): List<StudyGroup>
+    fun searchGroup(query:String): List<StudyGroupDAO>
 
-    fun searchGroupByName(name:String): List<StudyGroup>
+    fun searchGroupByName(name:String): List<StudyGroupDAO>
 
-    fun searchGroupByLecture(lectureName:String): List<StudyGroup>
+    fun searchGroupByLecture(lectureName:String): List<StudyGroupDAO>
 
-    fun getGroupByID(groupID:Long): StudyGroup?
+    fun getGroupByID(groupID:Long): StudyGroupDAO?
 
-    fun getGroupDetails(groupID:Long): StudyGroup?
-
-    fun updateGroup(updatedGroup:StudyGroup): StudyGroup?
+    fun updateGroup(updatedGroup:StudyGroupDAO): StudyGroupDAO?
 
     fun joinGroupRequest(groupID:Long, userID:Long): Boolean
 
@@ -31,7 +28,7 @@ interface GroupControllerInterface {
 
     fun toggleGroupMembership(groupID:Long, userID:Long, isMember:Boolean): Boolean
 
-    fun getUsersInGroup(groupID:Long): List<User>
+    fun getUsersInGroup(groupID:Long): List<UserDAO>
 
     fun deleteUserFromGroup(groupID:Long, userID:Long): Boolean
 

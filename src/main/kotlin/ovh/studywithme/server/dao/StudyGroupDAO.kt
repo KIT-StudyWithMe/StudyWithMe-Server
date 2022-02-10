@@ -16,4 +16,8 @@ data class StudyGroupDAO(
     val exercise: Int
     ) {
     constructor(group : StudyGroup) : this(group.groupID, group.name, group.description, group.lectureID, group.sessionFrequency, group.sessionType, group.lectureChapter, group.exercise)
+
+    fun toStudyGroup(hidden: Boolean): StudyGroup {
+        return StudyGroup(this.groupID, this.name, this.description, this.lectureID, this.sessionFrequency, this.sessionType, this.lectureChapter, this.exercise, hidden)
+    }
 }

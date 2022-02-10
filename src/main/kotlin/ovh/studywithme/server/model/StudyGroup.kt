@@ -31,3 +31,24 @@ data class StudyGroup (
 
     val hidden: Boolean
 )
+
+@JvmInline
+value class GroupID(private val groupID: Long)
+
+@JvmInline
+value class GroupName(private val name: String)
+
+@JvmInline
+value class GroupDescription(private val description: String)
+
+@JvmInline
+value class LectureID(private val lectureID: Long)
+
+@JvmInline
+value class lectureChapter(private val lectureChapter: Int)
+
+@JvmInline
+value class exercise(private val exercise: Int)
+
+@JvmInline
+value class hidden(private val hidden: Boolean)

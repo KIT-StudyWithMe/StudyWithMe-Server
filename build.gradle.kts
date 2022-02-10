@@ -26,12 +26,20 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	runtimeOnly("mysql:mysql-connector-java")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.security:spring-security-test")
-	//testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 	dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.6.10")
+	runtimeOnly("mysql:mysql-connector-java")
+
+	testRuntimeOnly( "org.junit.jupiter:junit-jupiter-engine:5.8.2")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "junit")
+        exclude(module="junit-vintage-engine")
+        exclude(module = "mockito-core")
+    }
+	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation( "org.junit.jupiter:junit-jupiter-api:5.8.2")
+	testImplementation("io.mockk:mockk:1.9.3")
 }
 
 tasks.withType<KotlinCompile> {

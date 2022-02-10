@@ -11,4 +11,8 @@ data class SessionDAO(
     val duration: Int
     ) {
     constructor(session : Session) : this(session.sessionID, session.groupID, session.place, session.startTime, session.duration)
+
+    fun toSession(): Session {
+        return Session(this.sessionID, this.groupID, this.place, this.startTime, this.duration)
+    }
 }
