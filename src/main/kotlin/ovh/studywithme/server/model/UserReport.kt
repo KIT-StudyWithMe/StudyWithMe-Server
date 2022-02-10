@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank
  * @property reporterID The reporting user's unique identifier.
  * @property userID The reported user's unique identifier.
  * @property userField The reported user's freetext field which was reported.
- * @constructor Create a new UserReport
+ * @constructor Create a new UserReport.
  */
 @Entity
 data class UserReport (

@@ -3,10 +3,10 @@ package ovh.studywithme.server.dao
 import ovh.studywithme.server.model.User
 
 /**
- * User d a o
+ * A data access object that contains restricted information about a user of the application.
  *
- * @property userID
- * @property name
+ * @property userID The user's unique identifier, which is auto-generated.
+ * @property name The name the user chose.
  * @constructor Create empty User d a o
  */
 data class UserDAO(

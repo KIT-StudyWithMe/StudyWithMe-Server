@@ -4,14 +4,14 @@ import ovh.studywithme.server.model.Session
 import java.sql.Date
 
 /**
- * Session d a o
+ * A data access object that contains relevant data about a study-group's study-session.
  *
- * @property sessionID
- * @property groupID
- * @property place
- * @property startTime
- * @property duration
- * @constructor Create empty Session d a o
+ * @property sessionID The session's unique identifier.
+ * @property groupID The unique identifier of the group holding the session.
+ * @property place The location where the session will take place.
+ * @property startTime The exact time when the session will start.
+ * @property duration The session's estimated duration.
+ * @constructor Create a new SessionDAO.
  */
 data class SessionDAO(
     val sessionID: Long,

@@ -7,12 +7,12 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 /**
- * Contains all relevant data about a lecture held at an institution. Could also be a course or a seminar, generally
- * whatever for a student regards creating a study-group helpful.
+ * Contains all relevant data about a lecture held at an institution. Could also be about a course or a seminar,
+ * generally whatever a student regards creating a study-group for helpful.
  *
  * @property lectureID The lecture's unique identifier, which is auto-generated.
  * @property name The lecture's name.
- * @property majorID The student's majorID who created a study-group for this lecture. Used to generate improved
+ * @property majorID The student's majorID who created a study-group for this lecture. Used to generate optimized
  * search results for students with the same majorID.
  * @constructor Create a new Lecture.
  */

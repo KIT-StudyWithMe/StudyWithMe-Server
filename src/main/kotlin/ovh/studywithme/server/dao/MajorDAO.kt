@@ -3,11 +3,11 @@ package ovh.studywithme.server.dao
 import ovh.studywithme.server.model.Major
 
 /**
- * Major d a o
+ * A data access object that contains relevant data about a degree course / course of studies.
  *
- * @property majorID
- * @property name
- * @constructor Create empty Major d a o
+ * @property majorID The major's unique identifier.
+ * @property name The major's name.
+ * @constructor Create a new MajorDAO.
  */
 data class MajorDAO(
     val majorID: Long,

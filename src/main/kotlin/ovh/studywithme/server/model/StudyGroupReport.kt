@@ -17,7 +17,7 @@ import org.hibernate.mapping.ManyToOne
  * @property reporterID The reporting user's unique identifier.
  * @property groupID The study-group's unique identifier.
  * @property groupField The group's freetext field which was reported.
- * @constructor Create a new StudyGroupReport
+ * @constructor Create a new StudyGroupReport.
  */
 @Entity
 data class StudyGroupReport (

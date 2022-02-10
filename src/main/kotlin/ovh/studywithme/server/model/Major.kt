@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank
  * Contains all relevant data about a degree course / course of studies.
  *
  * @property majorID The major's unique identifier, which is auto-generated.
- * @property name The Major's name.
+ * @property name The major's name.
  * @constructor Create a new Major.
  */
 @Entity

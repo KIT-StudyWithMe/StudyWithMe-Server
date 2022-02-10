@@ -18,7 +18,7 @@ import javax.validation.constraints.NotBlank
  * @property lectureChapter The approximate lecture-chapter the session might address.
  * @property exercise The exercise sheet the session might address.
  * @property hidden A boolean which is true if the group shall not be shown in the search results and false otherwise.
- * @constructor Create a new StudyGroup
+ * @constructor Create a new StudyGroup.
  */
 @Entity
 data class StudyGroup (

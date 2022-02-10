@@ -7,7 +7,7 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 /**
- * Contains all relevant data about an institution. This is usually a university or a university of applied sciences.
+ * Contains all relevant data about an institution, which is usually a university or a university of applied sciences.
  *
  * @property institutionID The institution's unique identifier, which is auto-generated.
  * @property name The institution's name.

@@ -3,11 +3,12 @@ package ovh.studywithme.server.dao
 import ovh.studywithme.server.model.Institution
 
 /**
- * Institution d a o
+ * A data access object that contains relevant data about an institution,
+ * which is usually a university or a university of applied sciences.
  *
- * @property institutionID
- * @property name
- * @constructor Create empty Institution d a o
+ * @property institutionID The institution's unique identifier.
+ * @property name The institution's name.
+ * @constructor Create a new InstitutionDAO.
  */
 data class InstitutionDAO(
     val institutionID: Long,
