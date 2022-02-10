@@ -134,8 +134,10 @@ class GroupController(private val groupRepository: GroupRepository,
     }
 
     override fun deleteGroup(groupID: Long): Boolean {
-        if (groupMemberRepository.existsById(groupID)) {
-            groupMemberRepository.deleteById(groupID)
+        if (groupRepository.existsById(groupID)) {
+            groupMemberRepository.deleteByGroupID(groupID)
+            groupRepository.deleteById(groupID)
+            //TODO delete Lecture if its no longer needed
             return true
         }
         return false
