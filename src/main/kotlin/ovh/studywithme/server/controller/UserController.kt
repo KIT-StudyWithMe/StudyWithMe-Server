@@ -12,7 +12,6 @@ import ovh.studywithme.server.model.*
 @Service
     class UserController(private val userRepository: UserRepository,
                          private val userReportRepository: UserReportRepository,
-                         private val groupRepository: GroupRepository,
                          private val groupMemberRepository: GroupMemberRepository) : UserControllerInterface {
 
     override fun getAllUsers():List<User> {

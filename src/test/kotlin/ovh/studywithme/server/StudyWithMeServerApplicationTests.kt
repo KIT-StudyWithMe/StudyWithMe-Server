@@ -16,10 +16,9 @@ import ovh.studywithme.server.repository.UserRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.hibernate.annotations.NotFound
 import java.net.URI
 
-//@SpringBootTest
-//@DataJpaTest
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -37,12 +36,12 @@ class StudyWithMeServerApplicationTests {
 	  @Test
 	  fun simpleGetTest() {
 		//val result = testRestTemplate.exchange(
-		//	URI("http://localhost:8080" + "/institutions"),
+		//	URI("http://localhost:8080" + "/institutions/126"),
 		//	HttpMethod.GET,
 		//	HttpEntity(""),
 		//	String::class.java)
 	  
-		//Assertions.assertEquals(HttpStatus.OK, result.statusCode)
+		//Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
 	  }
 	  
 

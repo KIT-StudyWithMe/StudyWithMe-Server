@@ -3,6 +3,7 @@ package ovh.studywithme.server.controller
 import org.springframework.stereotype.Service
 import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.dao.StudyGroupDAO
+import ovh.studywithme.server.dao.StudyGroupMemberDAO
 import ovh.studywithme.server.model.*
 import ovh.studywithme.server.repository.GroupRepository
 import ovh.studywithme.server.repository.GroupMemberRepository
@@ -101,15 +102,15 @@ class GroupController(private val groupRepository: GroupRepository,
         return true
     }
 
-    override fun getUsersInGroup(groupID: Long): List<UserDAO> {
+    override fun getUsersInGroup(groupID: Long): List<StudyGroupMemberDAO> {
         val allGroupMembers : List<StudyGroupMember> = groupMemberRepository.findByGroupID(groupID).filter { it.isMember }
-        val allGroupUsers : MutableList<User> = ArrayList()
+        val allGroupUsers : MutableList<StudyGroupMemberDAO> = ArrayList()
         for (currentMember in allGroupMembers) {
             if (userRepository.existsById(currentMember.userID)) {
-                allGroupUsers.add(userRepository.findById(currentMember.userID).get())
+                allGroupUsers.add(StudyGroupMemberDAO(userRepository.findById(currentMember.userID).get(), groupID, currentMember.isAdmin))
             }
         }
-        return allGroupUsers.map { UserDAO(it) }
+        return allGroupUsers
     }
 
     override fun deleteUserFromGroup(groupID: Long, userID: Long): Boolean {

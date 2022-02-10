@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.dao.SessionDAO
+import ovh.studywithme.server.dao.StudyGroupMemberDAO
 import ovh.studywithme.server.model.StudyGroupField
 import javax.validation.Valid
 
@@ -66,8 +67,8 @@ class GroupView(
     }
 
     @GetMapping("/{gid}/users")
-    fun getUsersInGroup(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<UserDAO>> {
-        val users: List<UserDAO> = groupController.getUsersInGroup(groupID)
+    fun getUsersInGroup(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<StudyGroupMemberDAO>> { //StudyGroupMemberDAO TODO
+        val users: List<StudyGroupMemberDAO> = groupController.getUsersInGroup(groupID)
         if (users.isNotEmpty()) {
             return ResponseEntity.ok(users)
         }
