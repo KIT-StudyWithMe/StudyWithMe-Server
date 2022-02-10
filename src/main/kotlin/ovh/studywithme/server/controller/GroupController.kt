@@ -33,8 +33,9 @@ class GroupController(private val groupRepository: GroupRepository,
         return groupRepository.findAll().map{StudyGroupDAO(it)}
     }
 
-    override fun createGroup(group: StudyGroupDAO): StudyGroupDAO {
+    override fun createGroup(group: StudyGroupDAO, userID: Long): StudyGroupDAO {
         groupRepository.save(group.toStudyGroup(false))
+        groupMemberRepository.save(StudyGroupMember(0, group.groupID, userID, true, true))
         return group
     }
 

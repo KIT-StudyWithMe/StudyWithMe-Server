@@ -25,7 +25,7 @@ interface GroupControllerInterface {
      * @param group
      * @return
      */
-    fun createGroup(group:StudyGroupDAO): StudyGroupDAO
+    fun createGroup(group:StudyGroupDAO, userID: Long): StudyGroupDAO
 
     /**
      * Get groups index
