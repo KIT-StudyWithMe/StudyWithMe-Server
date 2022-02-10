@@ -9,6 +9,14 @@ import java.util.Optional
 import org.springframework.stereotype.Service
 import ovh.studywithme.server.model.*
 
+/**
+ * User controller
+ *
+ * @property userRepository
+ * @property userReportRepository
+ * @property groupMemberRepository
+ * @constructor Create empty User controller
+ */
 @Service
     class UserController(private val userRepository: UserRepository,
                          private val userReportRepository: UserReportRepository,
@@ -93,5 +101,11 @@ import ovh.studywithme.server.model.*
         return userRepository.findAll().filter { it.isBlocked }
     }
 
+    /**
+     * Unwrap
+     *
+     * @param T
+     * @return
+     */
     fun <T> Optional<T>.unwrap(): T? = orElse(null)
 }

@@ -6,6 +6,15 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
+/**
+ * User report
+ *
+ * @property userReportID
+ * @property reporterID
+ * @property userID
+ * @property userField
+ * @constructor Create empty User report
+ */
 @Entity
 data class UserReport (
 

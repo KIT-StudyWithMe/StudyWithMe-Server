@@ -12,6 +12,16 @@ import ovh.studywithme.server.repository.UserRepository
 import java.util.Optional
 import kotlin.collections.ArrayList
 
+/**
+ * Group controller
+ *
+ * @property groupRepository
+ * @property groupMemberRepository
+ * @property userRepository
+ * @property groupReportRepository
+ * @property informationController
+ * @constructor Create empty Group controller
+ */
 @Service
 class GroupController(private val groupRepository: GroupRepository,
                       private val groupMemberRepository: GroupMemberRepository,
@@ -151,5 +161,11 @@ class GroupController(private val groupRepository: GroupRepository,
         return false
     }
 
+    /**
+     * Unwrap
+     *
+     * @param T
+     * @return
+     */
     fun <T> Optional<T>.unwrap(): T? = orElse(null)
 }

@@ -10,6 +10,14 @@ import ovh.studywithme.server.repository.LectureRepository
 import java.util.*
 import org.springframework.stereotype.Service
 
+/**
+ * Information controller
+ *
+ * @property institutionRepository
+ * @property majorRepository
+ * @property lectureRepository
+ * @constructor Create empty Information controller
+ */
 @Service
     class InformationController(private val institutionRepository: InstitutionRepository, private val majorRepository: MajorRepository, private val lectureRepository: LectureRepository) : InformationControllerInterface {
 
@@ -94,5 +102,11 @@ import org.springframework.stereotype.Service
         }
     }
 
+    /**
+     * Unwrap
+     *
+     * @param T
+     * @return
+     */
     fun <T> Optional<T>.unwrap(): T? = orElse(null)
 }

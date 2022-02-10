@@ -2,6 +2,19 @@ package ovh.studywithme.server.dao
 
 import ovh.studywithme.server.model.User
 
+/**
+ * User detail d a o
+ *
+ * @property userID
+ * @property name
+ * @property institutionID
+ * @property institutionName
+ * @property majorID
+ * @property majorName
+ * @property contact
+ * @property isModerator
+ * @constructor Create empty User detail d a o
+ */
 data class UserDetailDAO(
     val userID: Long, 
     val name: String, 

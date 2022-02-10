@@ -10,7 +10,16 @@ import javax.persistence.IdClass
 import javax.validation.constraints.NotBlank
 import org.hibernate.mapping.ManyToOne
 
-@Entity 
+/**
+ * Study group report
+ *
+ * @property studyGroupReportID
+ * @property reporterID
+ * @property groupID
+ * @property groupField
+ * @constructor Create empty Study group report
+ */
+@Entity
 data class StudyGroupReport (
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

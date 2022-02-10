@@ -6,6 +6,19 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
+/**
+ * User
+ *
+ * @property userID
+ * @property name
+ * @property institutionID
+ * @property majorID
+ * @property contact
+ * @property firebaseUID
+ * @property isBlocked
+ * @property isModerator
+ * @constructor Create empty User
+ */
 @Entity
 data class User (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

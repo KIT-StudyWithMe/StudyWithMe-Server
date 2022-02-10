@@ -6,6 +6,14 @@ import ovh.studywithme.server.repository.GroupReportRepository
 import ovh.studywithme.server.repository.UserReportRepository
 import ovh.studywithme.server.repository.SessionReportRepository
 
+/**
+ * Report controller
+ *
+ * @property groupReportRepository
+ * @property userReportRepository
+ * @property sessionReportRepository
+ * @constructor Create empty Report controller
+ */
 @Service
 class ReportController(private val groupReportRepository: GroupReportRepository,
                        private val userReportRepository: UserReportRepository,

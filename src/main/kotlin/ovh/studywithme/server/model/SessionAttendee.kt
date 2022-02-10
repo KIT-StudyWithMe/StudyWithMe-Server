@@ -6,6 +6,15 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.validation.constraints.NotBlank
 
+/**
+ * Session attendee
+ *
+ * @property sessionAttendeeID
+ * @property sessionID
+ * @property userID
+ * @property participates
+ * @constructor Create empty Session attendee
+ */
 @Entity
 data class SessionAttendee (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

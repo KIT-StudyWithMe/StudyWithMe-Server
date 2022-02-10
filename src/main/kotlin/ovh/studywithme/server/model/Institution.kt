@@ -6,6 +6,13 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
+/**
+ * Institution
+ *
+ * @property institutionID
+ * @property name
+ * @constructor Create empty Institution
+ */
 @Entity
 data class Institution (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,6 +6,13 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
+/**
+ * Major
+ *
+ * @property majorID
+ * @property name
+ * @constructor Create empty Major
+ */
 @Entity
 data class Major (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

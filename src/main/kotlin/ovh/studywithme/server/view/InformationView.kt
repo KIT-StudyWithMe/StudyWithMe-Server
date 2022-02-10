@@ -9,10 +9,22 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
+/**
+ * Information view
+ *
+ * @property informationController
+ * @constructor Create empty Information view
+ */
 @RestController
 @RequestMapping("")
 class InformationView(private val informationController: InformationController) {
 
+    /**
+     * Get all institutions
+     *
+     * @param institutionName
+     * @return
+     */
     @GetMapping("/institutions")
     fun getAllInstitutions(@RequestParam("name") institutionName: String?): ResponseEntity<List<Institution>> {
         if (institutionName == null) {
@@ -27,6 +39,12 @@ class InformationView(private val informationController: InformationController) 
         }
     }
 
+    /**
+     * Get institution by id
+     *
+     * @param institutionID
+     * @return
+     */
     @GetMapping("/institutions/{id}")
     fun getInstitutionById(@PathVariable(value = "id") institutionID: Long): ResponseEntity<Institution> {
         val institution : Institution? = informationController.getInstitutionByID(institutionID)
@@ -34,16 +52,34 @@ class InformationView(private val informationController: InformationController) 
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Create new institution
+     *
+     * @param institution
+     * @return
+     */
     @PostMapping("/institutions")
     fun createNewInstitution(@Valid @RequestBody institution: Institution): Institution =
         informationController.createNewInstitution(institution)
 
+    /**
+     * Delete institution by id
+     *
+     * @param institutionID
+     * @return
+     */
     @DeleteMapping("/institutions/{id}")
     fun deleteInstitutionById(@PathVariable(value = "id") institutionID: Long): ResponseEntity<Void> {
         if(informationController.deleteInstitution(institutionID)) return ResponseEntity<Void>(HttpStatus.OK) 
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Get major by id
+     *
+     * @param majorID
+     * @return
+     */
     @GetMapping("/majors/{id}")
     fun getMajorById(@PathVariable(value = "id") majorID: Long): ResponseEntity<Major> {
         val major : Major? = informationController.getMajorByID(majorID)
@@ -51,6 +87,12 @@ class InformationView(private val informationController: InformationController) 
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Get all majors
+     *
+     * @param majorName
+     * @return
+     */
     @GetMapping("/majors")
     fun getAllMajors(@RequestParam("name") majorName: String?): ResponseEntity<List<Major>> {
         if (majorName == null) {
@@ -65,16 +107,35 @@ class InformationView(private val informationController: InformationController) 
         }
     }
 
+    /**
+     * Create new major
+     *
+     * @param major
+     * @return
+     */
     @PostMapping("/majors")
     fun createNewMajor(@Valid @RequestBody major: Major): Major =
         informationController.createNewMajor(major)
 
+    /**
+     * Delete major by id
+     *
+     * @param majorID
+     * @return
+     */
     @DeleteMapping("/majors/{id}")
     fun deleteMajorById(@PathVariable(value = "id") majorID: Long): ResponseEntity<Void> {
         if(informationController.deleteMajor(majorID)) return ResponseEntity<Void>(HttpStatus.OK) 
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Get lecture by id
+     *
+     * @param majorID
+     * @param lectureID
+     * @return
+     */
     @GetMapping("/majors/{id}/lectures/{lid}")
     fun getLectureById(@PathVariable(value = "id") majorID: Long, @PathVariable(value = "lid") lectureID: Long): ResponseEntity<Lecture> {
         val lecture : Lecture? = informationController.getLectureByID(majorID, lectureID)
@@ -82,6 +143,13 @@ class InformationView(private val informationController: InformationController) 
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Get all lectures
+     *
+     * @param majorID
+     * @param lectureName
+     * @return
+     */
     @GetMapping("/majors/{id}/lectures")
     fun getAllLectures(@PathVariable(value = "id") majorID: Long, @RequestParam("name") lectureName: String?): ResponseEntity<List<Lecture>> {
         if (lectureName == null) {
@@ -96,10 +164,24 @@ class InformationView(private val informationController: InformationController) 
         }
     }
 
+    /**
+     * Create new lecture
+     *
+     * @param majorID
+     * @param lecture
+     * @return
+     */
     @PostMapping("/majors/{id}/lectures")
     fun createNewLecture(@PathVariable(value = "id") majorID: Long, @Valid @RequestBody lecture: Lecture): Lecture =
         informationController.createNewLecture(majorID, lecture)
 
+    /**
+     * Delete lecture by id
+     *
+     * @param majorID
+     * @param lectureID
+     * @return
+     */
     @DeleteMapping("/majors/{id}/lectures/{lid}")
     fun deleteLectureById(@PathVariable(value = "id") majorID: Long, @PathVariable(value = "lid") lectureID: Long): ResponseEntity<Void> {
         if(informationController.deleteLecture(majorID, lectureID)) return ResponseEntity<Void>(HttpStatus.OK) 

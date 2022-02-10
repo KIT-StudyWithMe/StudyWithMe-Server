@@ -6,10 +6,22 @@ import ovh.studywithme.server.model.Session
 import ovh.studywithme.server.model.SessionField
 import javax.validation.Valid
 
+/**
+ * Session view
+ *
+ * @property sessionController
+ * @constructor Create empty Session view
+ */
 @RestController
 @RequestMapping("/sessions")
 class SessionView(private val sessionController: SessionController) {
 
+    /**
+     * Get session by id
+     *
+     * @param sessionID
+     * @return
+     */
     @GetMapping("/{id}")
     fun getSessionById(@PathVariable(value = "id") sessionID: Long): ResponseEntity<Session> {
         val session : Session? = sessionController.getSessionByID(sessionID)
@@ -19,6 +31,13 @@ class SessionView(private val sessionController: SessionController) {
             return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Update session by id
+     *
+     * @param sessionID
+     * @param updatedSession
+     * @return
+     */
     @PutMapping("/{id}")
     fun updateSessionById(@PathVariable(value = "id") sessionID: Long, @Valid @RequestBody updatedSession: Session): ResponseEntity<Session> {
         val session : Session? = sessionController.updateSession(updatedSession)
@@ -28,6 +47,12 @@ class SessionView(private val sessionController: SessionController) {
             return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Delete session by id
+     *
+     * @param sessionID
+     * @return
+     */
     @DeleteMapping("/{id}")
     fun deleteSessionById(@PathVariable(value = "id") sessionID: Long): ResponseEntity<Void> {
         if (sessionController.deleteSession(sessionID))
@@ -36,6 +61,14 @@ class SessionView(private val sessionController: SessionController) {
             return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Set participation
+     *
+     * @param sessionID
+     * @param userID
+     * @param participates
+     * @return
+     */
     @PutMapping("/{sid}/participate/{uid}")
     fun setParticipation(@PathVariable(value = "sid") sessionID: Long, @PathVariable(value = "uid") userID: Long,
                          @Valid @RequestBody participates: Boolean): ResponseEntity<Void> {
@@ -45,6 +78,14 @@ class SessionView(private val sessionController: SessionController) {
             return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Report session field
+     *
+     * @param sessionID
+     * @param reporterID
+     * @param field
+     * @return
+     */
     @PutMapping("/{sid}/report/{uid}")
     fun reportSessionField(@PathVariable(value = "sid") sessionID: Long, @PathVariable(value = "uid") reporterID: Long,
                            @Valid @RequestBody field: SessionField): ResponseEntity<Void> {

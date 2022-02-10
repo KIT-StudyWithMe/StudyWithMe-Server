@@ -12,6 +12,13 @@ import ovh.studywithme.server.dao.StudyGroupMemberDAO
 import ovh.studywithme.server.model.StudyGroupField
 import javax.validation.Valid
 
+/**
+ * Group view
+ *
+ * @property groupController
+ * @property sessionController
+ * @constructor Create empty Group view
+ */
 @RestController
 @RequestMapping("/groups")
 class GroupView(
@@ -19,6 +26,14 @@ class GroupView(
     private val sessionController: SessionController
     ) {
 
+    /**
+     * Get all groups
+     *
+     * @param query
+     * @param lecture
+     * @param name
+     * @return
+     */
     @GetMapping("")
     fun getAllGroups(@RequestParam("text") query: String?, @RequestParam("lecture") lecture: String?, 
             @RequestParam("name") name: String?): ResponseEntity<List<StudyGroupDAO>> {
@@ -40,10 +55,22 @@ class GroupView(
         }
     }
 
+    /**
+     * Create new group
+     *
+     * @param newGroup
+     * @return
+     */
     @PostMapping("")
     fun createNewGroup(@Valid @RequestBody newGroup: StudyGroupDAO): StudyGroupDAO =
         groupController.createGroup(newGroup)
 
+    /**
+     * Get group by i d
+     *
+     * @param groupID
+     * @return
+     */
     @GetMapping("/{gid}")
     fun getGroupByID(@PathVariable(value = "gid") groupID: Long): ResponseEntity<StudyGroupDAO> {
         val group: StudyGroupDAO? = groupController.getGroupByID(groupID)
@@ -55,6 +82,12 @@ class GroupView(
         }
     }
 
+    /**
+     * Get group detail by i d
+     *
+     * @param groupID
+     * @return
+     */
     @GetMapping("/{gid}/detail")
     fun getGroupDetailByID(@PathVariable(value = "gid") groupID: Long): ResponseEntity<StudyGroupDAO> {
         val group: StudyGroupDAO? = groupController.getGroupByID(groupID)
@@ -66,6 +99,12 @@ class GroupView(
         }
     }
 
+    /**
+     * Get users in group
+     *
+     * @param groupID
+     * @return
+     */
     @GetMapping("/{gid}/users")
     fun getUsersInGroup(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<StudyGroupMemberDAO>> { //StudyGroupMemberDAO TODO
         val users: List<StudyGroupMemberDAO> = groupController.getUsersInGroup(groupID)
@@ -77,6 +116,13 @@ class GroupView(
         }
     }
 
+    /**
+     * Update group by id
+     *
+     * @param groupID
+     * @param updatedGroup
+     * @return
+     */
     @PutMapping("/{gid}")
     fun updateGroupById(@PathVariable(value = "gid") groupID: Long, @Valid @RequestBody updatedGroup: StudyGroupDAO): ResponseEntity<StudyGroupDAO> {
         val group : StudyGroupDAO? = groupController.updateGroup(updatedGroup)
@@ -88,6 +134,13 @@ class GroupView(
         }
     }
 
+    /**
+     * Join group request
+     *
+     * @param groupID
+     * @param userID
+     * @return
+     */
     @PutMapping("/{gid}/join/{uid}")
     fun joinGroupRequest(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") userID: Long): ResponseEntity<Void> {
         if (groupController.joinGroupRequest(groupID, userID)) {
@@ -96,12 +149,26 @@ class GroupView(
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Open group requests
+     *
+     * @param groupID
+     * @return
+     */
     @GetMapping("/{gid}/requests")
     fun openGroupRequests(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<UserDAO>> {
         val groupRequests : List<UserDAO> = groupController.getGroupRequests(groupID)
         return ResponseEntity.ok(groupRequests)
     }
 
+    /**
+     * Toggle group request
+     *
+     * @param groupID
+     * @param userID
+     * @param decision
+     * @return
+     */
     @PutMapping("/{gid}/users/{uid}/membership")
     fun toggleGroupRequest(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") userID: Long,
                            @Valid @RequestBody decision: Boolean): ResponseEntity<Void> {
@@ -111,6 +178,13 @@ class GroupView(
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Remove group user
+     *
+     * @param groupID
+     * @param userID
+     * @return
+     */
     @DeleteMapping("/{gid}/users/{uid}")
     fun removeGroupUser(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") userID: Long): ResponseEntity<Void> {
         if (groupController.deleteUserFromGroup(groupID, userID)) {
@@ -119,6 +193,12 @@ class GroupView(
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Delete group
+     *
+     * @param groupID
+     * @return
+     */
     @DeleteMapping("/{gid}")
     fun deleteGroup(@PathVariable(value = "gid") groupID: Long): ResponseEntity<Void> {
         if (groupController.deleteGroup(groupID)) {
@@ -127,6 +207,13 @@ class GroupView(
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Make user admin
+     *
+     * @param groupID
+     * @param userID
+     * @return
+     */
     @PostMapping("/{gid}/users/{uid}/makeadmin")
     fun makeUserAdmin(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") userID: Long): ResponseEntity<Void> {
         if (groupController.makeUserAdminInGroup(groupID, userID)) {
@@ -135,6 +222,14 @@ class GroupView(
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Report group field
+     *
+     * @param groupID
+     * @param reporterID
+     * @param field
+     * @return
+     */
     @PutMapping("/{gid}/report/{uid}")
     fun reportGroupField(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") reporterID: Long,
                          @Valid @RequestBody field: StudyGroupField): ResponseEntity<Void> {
@@ -144,6 +239,12 @@ class GroupView(
         return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Get all group sessions
+     *
+     * @param groupID
+     * @return
+     */
     @GetMapping("/{gid}/sessions")
     fun getAllGroupSessions(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<SessionDAO>> {
         val sessions : List<SessionDAO> = sessionController.getAllGroupSessions(groupID)
@@ -153,6 +254,12 @@ class GroupView(
             return ResponseEntity.notFound().build()
     }
 
+    /**
+     * Create new session
+     *
+     * @param session
+     * @return
+     */
     @PostMapping("/{gid}/sessions")
     fun createNewSession(@Valid @RequestBody session: SessionDAO): SessionDAO =
         sessionController.createSession(session)

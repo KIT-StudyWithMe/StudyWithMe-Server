@@ -12,6 +12,15 @@ import ovh.studywithme.server.repository.SessionReportRepository
 import ovh.studywithme.server.repository.UserRepository
 import ovh.studywithme.server.dao.SessionDAO
 
+/**
+ * Session controller
+ *
+ * @property sessionRepository
+ * @property sessionReportRepository
+ * @property userRepository
+ * @property attendeeRepository
+ * @constructor Create empty Session controller
+ */
 @Service
     class SessionController(private val sessionRepository:SessionRepository,
                             private val sessionReportRepository: SessionReportRepository,
@@ -71,5 +80,11 @@ import ovh.studywithme.server.dao.SessionDAO
         return false
     }
 
+    /**
+     * Unwrap
+     *
+     * @param T
+     * @return
+     */
     fun <T> Optional<T>.unwrap(): T? = orElse(null)
 }

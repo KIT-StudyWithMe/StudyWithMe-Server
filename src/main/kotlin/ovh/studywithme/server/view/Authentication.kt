@@ -5,6 +5,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 
+/**
+ * Web security configuration
+ *
+ * @constructor Create empty Web security configuration
+ */
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {

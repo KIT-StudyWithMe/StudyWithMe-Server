@@ -7,6 +7,16 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 import java.sql.Date
 
+/**
+ * Session
+ *
+ * @property sessionID
+ * @property groupID
+ * @property place
+ * @property startTime
+ * @property duration
+ * @constructor Create empty Session
+ */
 @Entity
 data class Session (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

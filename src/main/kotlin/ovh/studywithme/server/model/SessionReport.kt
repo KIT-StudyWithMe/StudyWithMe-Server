@@ -6,6 +6,15 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
+/**
+ * Session report
+ *
+ * @property sessionReportID
+ * @property sessionID
+ * @property reporterID
+ * @property sessionField
+ * @constructor Create empty Session report
+ */
 @Entity
 data class SessionReport (
 
