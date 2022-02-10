@@ -7,11 +7,11 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 /**
- * Major
+ * Contains all relevant data about a degree course / course of studies.
  *
- * @property majorID
- * @property name
- * @constructor Create empty Major
+ * @property majorID The major's unique identifier, which is auto-generated.
+ * @property name The Major's name.
+ * @constructor Create a new Major.
  */
 @Entity
 data class Major (

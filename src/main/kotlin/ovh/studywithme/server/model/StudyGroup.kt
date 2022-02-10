@@ -7,18 +7,18 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 /**
- * Study group
+ * Contains all relevant data about a study-group.
  *
- * @property groupID
- * @property name
- * @property description
- * @property lectureID
- * @property sessionFrequency
- * @property sessionType
- * @property lectureChapter
- * @property exercise
- * @property hidden
- * @constructor Create empty Study group
+ * @property groupID The study-group's unique identifier, which is auto-generated.
+ * @property name The group's name.
+ * @property description The group's description.
+ * @property lectureID The lecture's unique identifier the study-group was created for.
+ * @property sessionFrequency The projected frequency in which the group will hold study-sessions.
+ * @property sessionType The projected mode the study-group wants to meet up in.
+ * @property lectureChapter The approximate lecture-chapter the session might address.
+ * @property exercise The exercise sheet the session might address.
+ * @property hidden A boolean which is true if the group shall not be shown in the search results and false otherwise.
+ * @constructor Create a new StudyGroup
  */
 @Entity
 data class StudyGroup (

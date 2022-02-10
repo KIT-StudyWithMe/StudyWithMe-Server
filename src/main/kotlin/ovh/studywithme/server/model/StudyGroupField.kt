@@ -1,29 +1,21 @@
 package ovh.studywithme.server.model
 
 /**
- * Study group field
- *
- * @constructor Create empty Study group field
+ * All fields of a study-group that can contain freetext.
  */
 enum class StudyGroupField {
     /**
-     * N a m e
-     *
-     * @constructor Create empty N a m e
+     * The field "name" in which the group's chosen name can be written.
      */
     NAME,
 
     /**
-     * L e c t u r e
-     *
-     * @constructor Create empty L e c t u r e
+     * The field containing the lecture's name the study-group wants to meet for.
      */
     LECTURE,
 
     /**
-     * D e s c r i p t i o n
-     *
-     * @constructor Create empty D e s c r i p t i o n
+     * A description telling a bit about the group, for example who they are, which semester etc.
      */
     DESCRIPTION
 }

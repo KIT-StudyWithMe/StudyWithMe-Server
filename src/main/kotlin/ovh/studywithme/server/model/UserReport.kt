@@ -7,13 +7,13 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 /**
- * User report
+ * Contains all relevant data about a user's report regarding another user.
  *
- * @property userReportID
- * @property reporterID
- * @property userID
- * @property userField
- * @constructor Create empty User report
+ * @property userReportID The user-report's unique identifier, which is auto-generated.
+ * @property reporterID The reporting user's unique identifier.
+ * @property userID The reported user's unique identifier.
+ * @property userField The reported user's freetext field which was reported.
+ * @constructor Create a new UserReport
  */
 @Entity
 data class UserReport (

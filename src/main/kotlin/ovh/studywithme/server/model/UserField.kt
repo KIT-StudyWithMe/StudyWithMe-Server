@@ -1,36 +1,26 @@
 package ovh.studywithme.server.model
 
 /**
- * User field
- *
- * @constructor Create empty User field
+ * All fields of a user that can contain freetext.
  */
 enum class UserField {
     /**
-     * N a m e
-     *
-     * @constructor Create empty N a m e
+     * The field containing the user's chosen name.
      */
     NAME,
 
     /**
-     * I n s t i t u t i o n
-     *
-     * @constructor Create empty I n s t i t u t i o n
+     * The field containing the institution's name the user is enrolled at.
      */
     INSTITUTION,
 
     /**
-     * M a j o r
-     *
-     * @constructor Create empty M a j o r
+     * The field containing the name of course of studies the user is enrolled in.
      */
     MAJOR,
 
     /**
-     * C o n t a c t
-     *
-     * @constructor Create empty C o n t a c t
+     * The user's contact information that he wants other users to use to contact him.
      */
     CONTACT
 }

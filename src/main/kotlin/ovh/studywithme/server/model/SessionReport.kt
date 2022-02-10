@@ -7,13 +7,13 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 /**
- * Session report
+ * Contains all relevant data about a user's report regarding a session.
  *
- * @property sessionReportID
- * @property sessionID
- * @property reporterID
- * @property sessionField
- * @constructor Create empty Session report
+ * @property sessionReportID The session-report's unique identifier, which is auto-generated.
+ * @property sessionID The study-session's unique identifier.
+ * @property reporterID The reporting user's unique identifier.
+ * @property sessionField The session's freetext field which was reported.
+ * @constructor Create a new SessionReport.
  */
 @Entity
 data class SessionReport (

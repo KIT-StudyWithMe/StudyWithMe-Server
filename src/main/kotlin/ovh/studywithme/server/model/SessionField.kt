@@ -1,15 +1,11 @@
 package ovh.studywithme.server.model
 
 /**
- * Session field
- *
- * @constructor Create empty Session field
+ * All fields of a study-session that can contain freetext.
  */
 enum class SessionField {
     /**
-     * P l a c e
-     *
-     * @constructor Create empty P l a c e
+     * The field "place" in which the session's location can be written.
      */
     PLACE
 }

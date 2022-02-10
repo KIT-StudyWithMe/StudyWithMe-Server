@@ -11,13 +11,13 @@ import javax.validation.constraints.NotBlank
 import org.hibernate.mapping.ManyToOne
 
 /**
- * Study group report
+ * Contains all relevant data about a user's report regarding a study-group.
  *
- * @property studyGroupReportID
- * @property reporterID
- * @property groupID
- * @property groupField
- * @constructor Create empty Study group report
+ * @property studyGroupReportID The group-report's unique identifier, which is auto-generated.
+ * @property reporterID The reporting user's unique identifier.
+ * @property groupID The study-group's unique identifier.
+ * @property groupField The group's freetext field which was reported.
+ * @constructor Create a new StudyGroupReport
  */
 @Entity
 data class StudyGroupReport (

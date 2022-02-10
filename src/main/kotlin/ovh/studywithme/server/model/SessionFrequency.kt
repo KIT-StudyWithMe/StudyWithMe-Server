@@ -1,43 +1,31 @@
 package ovh.studywithme.server.model
 
 /**
- * Session frequency
- *
- * @constructor Create empty Session frequency
+ * The projected frequency in which a study group will hold study-sessions.
  */
 enum class SessionFrequency {
     /**
-     * O n c e
-     *
-     * @constructor Create empty O n c e
+     * Only a single study-session is planned. Useful for example for exam-preparation.
      */
     ONCE,
 
     /**
-     * W e e k l y
-     *
-     * @constructor Create empty W e e k l y
+     * The study-group plans to meet once a week for study sessions.
      */
     WEEKLY,
 
     /**
-     * T w o w e e k l y
-     *
-     * @constructor Create empty T w o w e e k l y
+     * The study-group plans to meet every two weeks for study sessions.
      */
     TWOWEEKLY,
 
     /**
-     * T h r e e w e e k l y
-     *
-     * @constructor Create empty T h r e e w e e k l y
+     * The study-group plans to meet every three weeks for study sessions.
      */
     THREEWEEKLY,
 
     /**
-     * M o n t h l y
-     *
-     * @constructor Create empty M o n t h l y
+     * The study-group plans to meet once a month for study sessions.
      */
     MONTHLY
 }

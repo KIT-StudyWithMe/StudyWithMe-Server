@@ -7,11 +7,11 @@ import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 
 /**
- * Institution
+ * Contains all relevant data about an institution. This is usually a university or a university of applied sciences.
  *
- * @property institutionID
- * @property name
- * @constructor Create empty Institution
+ * @property institutionID The institution's unique identifier, which is auto-generated.
+ * @property name The institution's name.
+ * @constructor Create a new Institution.
  */
 @Entity
 data class Institution (

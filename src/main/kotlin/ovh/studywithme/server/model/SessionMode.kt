@@ -1,29 +1,23 @@
 package ovh.studywithme.server.model
 
 /**
- * Session mode
+ * The projected mode the study-group wants to meet up in.
  *
  * @constructor Create empty Session mode
  */
 enum class SessionMode {
     /**
-     * O n l i n e
-     *
-     * @constructor Create empty O n l i n e
+     * Sessions will be held online.
      */
     ONLINE,
 
     /**
-     * P r e s e n c e
-     *
-     * @constructor Create empty P r e s e n c e
+     * Sessions will be held in presence.
      */
     PRESENCE,
 
     /**
-     * H y b r i d
-     *
-     * @constructor Create empty H y b r i d
+     * Sessions will switch between online- and presence-mode or use both.
      */
     HYBRID
 }

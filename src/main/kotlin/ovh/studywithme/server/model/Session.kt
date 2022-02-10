@@ -8,14 +8,14 @@ import javax.validation.constraints.NotBlank
 import java.sql.Date
 
 /**
- * Session
+ * Contains all relevant data about a study-group's study-session.
  *
- * @property sessionID
- * @property groupID
- * @property place
- * @property startTime
- * @property duration
- * @constructor Create empty Session
+ * @property sessionID The session's unique identifier, which is auto-generated.
+ * @property groupID The unique identifier of the group holding the session.
+ * @property place The location where the session will take place.
+ * @property startTime The exact time when the session will start.
+ * @property duration The session's estimated duration.
+ * @constructor Create a new Session.
  */
 @Entity
 data class Session (
