@@ -12,7 +12,6 @@ import ovh.studywithme.server.repository.InstitutionRepository
 import java.util.Optional
 import org.springframework.stereotype.Service
 import ovh.studywithme.server.model.*
-import ovh.studywithme.server.controller.UserControllerInterface
 
 /**
  * User controller
@@ -116,10 +115,10 @@ import ovh.studywithme.server.controller.UserControllerInterface
 
 
     /**
-     * Converts a User to a UserDetaliDAO.
+     * Converts a User to a UserDetailDAO.
      * Also gets the InstitutionName and the MajorName of that User
      *
-     * @param User
+     * @param user
      * @return UserDetailDAO
      */
     fun getUserDetailDAO(user: User): UserDetailDAO {
@@ -129,8 +128,7 @@ import ovh.studywithme.server.controller.UserControllerInterface
         val institutionName : String = institution?.name ?: "unknown"
         val majorID : Long = major?.majorID ?: 0
         val majorName : String = major?.name ?: "unknown"
-        val userDetailDAO : UserDetailDAO = UserDetailDAO(user.userID, user.name, institutionID, institutionName, majorID, majorName, user.contact, user.firebaseUID, user.isModerator)
-        return userDetailDAO
+        return UserDetailDAO(user.userID, user.name, institutionID, institutionName, majorID, majorName, user.contact, user.firebaseUID, user.isModerator)
     }
 
     /**

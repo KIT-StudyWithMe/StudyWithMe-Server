@@ -5,18 +5,20 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 /**
- * User repository
+ * This user repository is used to access the user data in the database in a generic way.
+ * Many functions are inherited from the JpaRepository. Even the functions declared below are automatically implemented.
  *
- * @constructor Create empty User repository
+ * @constructor Create a user repository.
  */
 @Repository
 interface UserRepository : JpaRepository<User, Long> {
 
     /**
-     * Find byfirebase u i d
+     * Finds and returns all users in the database that belong to the given firebaseUID.
+     * This should only be a single user as the firebase uid is supposed to uniquely identify a user.
      *
-     * @param firebaseUID
-     * @return
+     * @param firebaseUID A firebase user ID.
+     * @return A list of all users that the given firebase token is stored for.
      */
     fun findByfirebaseUID(firebaseUID : String) : List<User>
 } //TODO check that firebase uid is unique

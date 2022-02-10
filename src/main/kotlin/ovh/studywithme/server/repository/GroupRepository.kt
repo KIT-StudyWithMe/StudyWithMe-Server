@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
  * This Group repository is used to access the Group-Data in the Database in a generic way.
  * Many functions are inherited from the JpaRepository. Even the functions declared below are automatically implemented.
  *
- * @constructor Create Group repository
+ * @constructor Create a group repository
  */
 @Repository
 interface GroupRepository : JpaRepository<StudyGroup, Long> {

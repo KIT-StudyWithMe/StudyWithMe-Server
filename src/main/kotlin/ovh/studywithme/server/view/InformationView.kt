@@ -32,7 +32,7 @@ class InformationView(private val informationController: InformationController) 
         }
         else {
             val institutions : List<InstitutionDAO> =  informationController.getInstitutionsByName(institutionName)
-            if (!institutions.isEmpty())
+            if (institutions.isNotEmpty())
                 return ResponseEntity.ok(institutions)
             else
                 return ResponseEntity.notFound().build()

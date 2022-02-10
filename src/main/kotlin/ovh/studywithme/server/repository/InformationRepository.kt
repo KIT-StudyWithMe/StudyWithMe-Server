@@ -7,25 +7,34 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 /**
- * Institution repository
+ * The following repositories are grouped under the name "information repositories", as they all contain information
+ * about what and where a user studies.
+ */
+
+
+/**
+ * This institute repository is used to access the institute data in the database in a generic way.
+ * Functions are inherited from the JpaRepository.
  *
- * @constructor Create empty Institution repository
+ * @constructor Create an institute repository.
  */
 @Repository
 interface InstitutionRepository : JpaRepository<Institution, Long>
 
 /**
- * Major repository
+ * This major repository is used to access the study course data in the database in a generic way.
+ * Functions are inherited from the JpaRepository.
  *
- * @constructor Create empty Major repository
+ * @constructor Create a major repository.
  */
 @Repository
 interface MajorRepository : JpaRepository<Major, Long>
 
 /**
- * Lecture repository
+ * This lecture repository is used to access the lecture data in the database in a generic way.
+ * Functions are inherited from the JpaRepository.
  *
- * @constructor Create empty Lecture repository
+ * @constructor Create a lecture repository.
  */
 @Repository
 interface LectureRepository : JpaRepository<Lecture, Long>

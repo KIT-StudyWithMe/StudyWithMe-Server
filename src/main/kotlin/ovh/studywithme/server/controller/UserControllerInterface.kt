@@ -50,7 +50,7 @@ interface UserControllerInterface {
      * Create a new User. You have to choose 0 as UserID.
      * The method returns the newly created user with the generated UserID
      *
-     * @param user UserInformation with which the User should be created
+     * @param userDetailDAO UserInformation with which the User should be created
      * @return The User that was created
      */
     fun createUser(userDetailDAO:UserDetailDAO): UserDetailDAO
