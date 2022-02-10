@@ -31,7 +31,7 @@ class StudyWithMeServerApplicationTests() {
 	var testRestTemplate = TestRestTemplate()
 
 	@LocalServerPort
-  	var serverPort: Int = 8080
+  	var serverPort: Int = 12808
 
 	  @Test
 	  fun getNonexistentInstitution() {
@@ -66,7 +66,7 @@ class StudyWithMeServerApplicationTests() {
 		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
 	  }
 
-	  
+
 
 	  
 
