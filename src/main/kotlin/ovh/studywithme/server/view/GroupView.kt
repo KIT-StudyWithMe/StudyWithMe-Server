@@ -47,12 +47,7 @@ class GroupView(
         } else {
             results = groupController.getAllGroups()
         }
-        if (results.isNotEmpty()) {
-            return ResponseEntity.ok(results)
-        }
-        else {
-            return ResponseEntity.notFound().build()
-        }
+        return ResponseEntity.ok(results)
     }
 
     /**
@@ -108,12 +103,7 @@ class GroupView(
     @GetMapping("/{gid}/users")
     fun getUsersInGroup(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<StudyGroupMemberDAO>> { //StudyGroupMemberDAO TODO
         val users: List<StudyGroupMemberDAO> = groupController.getUsersInGroup(groupID)
-        if (users.isNotEmpty()) {
-            return ResponseEntity.ok(users)
-        }
-        else {
-            return ResponseEntity.notFound().build()
-        }
+        return ResponseEntity.ok(users)
     }
 
     /**
@@ -248,10 +238,7 @@ class GroupView(
     @GetMapping("/{gid}/sessions")
     fun getAllGroupSessions(@PathVariable(value = "gid") groupID: Long): ResponseEntity<List<SessionDAO>> {
         val sessions : List<SessionDAO> = sessionController.getAllGroupSessions(groupID)
-        if (!sessions.isEmpty())
-            return ResponseEntity.ok(sessions)
-        else
-            return ResponseEntity.notFound().build()
+        return ResponseEntity.ok(sessions)
     }
 
     /**
