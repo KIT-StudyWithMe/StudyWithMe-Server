@@ -17,7 +17,7 @@ import ovh.studywithme.server.model.User
  */
 data class UserDetailDAO(
     val userID: Long, 
-    val name: String, 
+    val name: String,
     val institutionID: Long,
     val institutionName: String,
     val majorID: Long, 
@@ -26,4 +26,8 @@ data class UserDetailDAO(
     val isModerator: Boolean
     ) {
     constructor(user : User, institutionName: String, majorName: String) : this(user.userID, user.name, user.institutionID, institutionName, user.majorID,majorName, user.contact, user.isModerator)
+    
+    fun toUser(firebaseUID: String): User {
+        return User(this.userID, this.name, this.institutionID, this.majorID, this.contact, firebaseUID)
+    }
 }

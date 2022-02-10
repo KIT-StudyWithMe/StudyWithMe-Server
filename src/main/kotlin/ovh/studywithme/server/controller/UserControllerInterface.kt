@@ -1,66 +1,75 @@
 package ovh.studywithme.server.controller
 
-import ovh.studywithme.server.model.User
 import ovh.studywithme.server.dao.UserDAO
-import ovh.studywithme.server.model.StudyGroupMember
+import ovh.studywithme.server.dao.UserDetailDAO
+import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.model.UserField
 
 /**
- * User controller interface
+ * User controller interface that contains all methods needed for user-management.
  *
  * @constructor Create empty User controller interface
  */
 interface UserControllerInterface {
     /**
-     * Get all users
+     * Get all users. Returns an empty List if there are no Users.
      *
      * @return
      */
-    fun getAllUsers():List<User>
+    fun getAllUsers():List<UserDAO>
 
     /**
-     * Get user by i d
-     *
-     * @param userID
-     * @return
-     */
-    fun getUserByID(userID:Long):User?
-
-    /**
-     * Get user light by i d
+     * Get detailed User information about the user with the specified ID
+     * If there is no user with that ID, null is returned
      *
      * @param userID
      * @return
      */
-    fun getUserLightByID(userID:Long):UserDAO?
+    fun getUserDetailByID(userID:Long):UserDetailDAO?
 
     /**
-     * Get users groups
+     * Get basic user information about the user with the specified ID
+     * If there is no user with that ID, null is returned
      *
      * @param userID
      * @return
      */
-    fun getUsersGroups(userID:Long): List<StudyGroupMember>?
+    fun getUserByID(userID:Long):UserDAO?
 
     /**
-     * Create user
+     * Get all Groups the User is in.
+     * If the user is not found null is returned.
+     * If the user has no Groups an empty List is returned.
+     *
+     * @param userID
+     * @return
+     */
+    fun getUsersGroups(userID:Long): List<StudyGroupDAO>?
+
+    /**
+     * Create a new User. You have to choose 0 as UserID.
+     * The method returns the newly created user with the generated UserID
      *
      * @param user
      * @return
      */
-    fun createUser(user:User): User
+    fun createUser(userDetailDAO:UserDetailDAO, firebaseUID: String): UserDetailDAO
 
     /**
-     * Update user
+     * Update user with the Information provided.
+     * If there is no User with the userID then null is returned.
+     * If it was successful the updated User is returned.
      *
      * @param userID
      * @param updatedUser
      * @return
      */
-    fun updateUser(userID: Long, updatedUser:User): User?
+    fun updateUser(userID: Long, updatedUser:UserDetailDAO, firebaseUID: String): UserDetailDAO?
 
     /**
-     * Delete user
+     * Delete user by its ID.
+     * If there is no User with that ID then false is returned.
+     * If there is a user with that ID then it gets deleted and true is returned.
      *
      * @param userID
      * @return
@@ -68,15 +77,18 @@ interface UserControllerInterface {
     fun deleteUser(userID:Long): Boolean
 
     /**
-     * Get user by f u i d
+     * Searches in the Database for Users with that Firebase User ID.
+     * It returns a List of matches. If no match is found an empty List is Returned
      *
      * @param firebaseUID
      * @return
      */
-    fun getUserByFUID(firebaseUID:String): List<User>
+    fun getUserByFUID(firebaseUID:String): List<UserDAO>
 
     /**
-     * Report user field
+     * Reports a UserField. 
+     * If the userID, the reporterID and the field is found, then the Field gets reported and true is returned.
+     * If one of them is not found false is returned.
      *
      * @param userID
      * @param reporterID
@@ -86,7 +98,9 @@ interface UserControllerInterface {
     fun reportUserField(userID:Long, reporterID:Long, field: UserField): Boolean
 
     /**
-     * Block user
+     * Mark user as blocked.
+     * If the userID and the userID of the Moderator exist then the user gets blocked and true is returned.
+     * If either of them is not found false is returned.
      *
      * @param userID
      * @param moderatorID
@@ -95,9 +109,9 @@ interface UserControllerInterface {
     fun blockUser(userID:Long, moderatorID:Long): Boolean
 
     /**
-     * Get blocked users
+     * Returns a list of blocked Users.
      *
      * @return
      */
-    fun getBlockedUsers(): List<User>
+    fun getBlockedUsers(): List<UserDAO>
 }

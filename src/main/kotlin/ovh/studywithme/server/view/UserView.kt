@@ -1,7 +1,8 @@
 package ovh.studywithme.server.view
 
-import ovh.studywithme.server.model.User
 import ovh.studywithme.server.dao.UserDAO
+import ovh.studywithme.server.dao.UserDetailDAO
+import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.controller.UserController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -28,7 +29,7 @@ class UserView(private val userController: UserController) {
      */
     @GetMapping("/{id}")
     fun getUserDAO(@PathVariable(value = "id") userID: Long): ResponseEntity<UserDAO> {
-        val userDAO : UserDAO? = userController.getUserLightByID(userID)
+        val userDAO : UserDAO? = userController.getUserByID(userID)
         if (userDAO != null) return ResponseEntity.ok(userDAO)
         return ResponseEntity.notFound().build()
     }
@@ -40,8 +41,8 @@ class UserView(private val userController: UserController) {
      * @return
      */
     @GetMapping("/{id}/detail")
-    fun getUserDetailDAO(@PathVariable(value = "id") userID: Long): ResponseEntity<User> {
-        val user : User? = userController.getUserByID(userID)
+    fun getUserDetailDAO(@PathVariable(value = "id") userID: Long): ResponseEntity<UserDetailDAO> {
+        val user : UserDetailDAO? = userController.getUserDetailByID(userID)
         if (user != null) return ResponseEntity.ok(user)
         return ResponseEntity.notFound().build()
     }
@@ -54,18 +55,18 @@ class UserView(private val userController: UserController) {
      * @return
      */
     @GetMapping("")
-    fun getAllUsers(@RequestParam("state") state: String?, @RequestParam("FUID") fuid: String?): ResponseEntity<List<User>> {
+    fun getAllUsers(@RequestParam("state") state: String?, @RequestParam("FUID") fuid: String?): ResponseEntity<List<UserDAO>> {
         if (state.equals("blocked")) {
             val blockedUsers = userController.getBlockedUsers()
             return ResponseEntity.ok(blockedUsers)
         }
         if (fuid == null) {
             //TODO this cannot exist in final Application
-            val users : List<User> = userController.getAllUsers()
+            val users : List<UserDAO> = userController.getAllUsers()
                 return ResponseEntity.ok(users)
         }
         else {
-            val users : List<User> =  userController.getUserByFUID(fuid)
+            val users : List<UserDAO> =  userController.getUserByFUID(fuid)
             if (!users.isEmpty())
                 return ResponseEntity.ok(users)
             else
@@ -80,7 +81,7 @@ class UserView(private val userController: UserController) {
      * @return
      */
     @GetMapping("/{id}/groups")
-    fun getUsersGroups(@PathVariable(value = "id") userID: Long): ResponseEntity<List<StudyGroupMember>?> {
+    fun getUsersGroups(@PathVariable(value = "id") userID: Long): ResponseEntity<List<StudyGroupDAO>?> {
         val usersGroups = userController.getUsersGroups(userID)
         if (usersGroups == null) {
             return ResponseEntity.notFound().build()
@@ -95,8 +96,8 @@ class UserView(private val userController: UserController) {
      * @return
      */
     @PostMapping("")
-    fun createNewUser(@Valid @RequestBody user: User): User =
-        userController.createUser(user)
+    fun createNewUser(@Valid @RequestBody user: UserDetailDAO, @RequestBody firebaseUID: String): UserDetailDAO =
+        userController.createUser(user, firebaseUID)
 
     /**
      * Update user by id
@@ -106,8 +107,8 @@ class UserView(private val userController: UserController) {
      * @return
      */
     @PutMapping("/{id}/detail")
-    fun updateUserById(@PathVariable(value = "id") userID: Long, @Valid @RequestBody newUser: User): ResponseEntity<User> {
-        val user : User? = userController.updateUser(userID, newUser)
+    fun updateUserById(@PathVariable(value = "id") userID: Long, @Valid @RequestBody newUser: UserDetailDAO, @RequestBody firebaseUID: String): ResponseEntity<UserDetailDAO> {
+        val user : UserDetailDAO? = userController.updateUser(userID, newUser, firebaseUID)
         if (user == null) return ResponseEntity.notFound().build()
         return ResponseEntity.ok(user)
     }
