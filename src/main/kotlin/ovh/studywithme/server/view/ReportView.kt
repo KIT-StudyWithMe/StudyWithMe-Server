@@ -36,12 +36,7 @@ class ReportView(private val reportController: ReportController) {
      */
     @GetMapping("/group")
     fun getAllGroupReports(): ResponseEntity<List<StudyGroupReportDAO>> {
-
-        val reports: List<StudyGroupReportDAO> = reportController.getAllGroupReports()
-        if (!reports.isEmpty())
-            return ResponseEntity.ok(reports)
-        else
-            return ResponseEntity.notFound().build()
+        return ResponseEntity.ok(reportController.getAllGroupReports())
     }
 
     /**
@@ -55,12 +50,7 @@ class ReportView(private val reportController: ReportController) {
      */
     @GetMapping("/user")
     fun getAllUserReports(): ResponseEntity<List<UserReportDAO>> {
-
-        val reports: List<UserReportDAO> = reportController.getAllUserReports()
-        if (!reports.isEmpty())
-            return ResponseEntity.ok(reports)
-        else
-            return ResponseEntity.notFound().build()
+            return ResponseEntity.ok(reportController.getAllUserReports())
     }
 
     /**
@@ -74,12 +64,7 @@ class ReportView(private val reportController: ReportController) {
      */
     @GetMapping("/session")
     fun getAllSessionReports(): ResponseEntity<List<SessionReportDAO>> {
-
-        val reports: List<SessionReportDAO> = reportController.getAllSessionReports()
-        if (!reports.isEmpty())
-            return ResponseEntity.ok(reports)
-        else
-            return ResponseEntity.notFound().build()
+            return ResponseEntity.ok(reportController.getAllSessionReports())
     }
 
     /**

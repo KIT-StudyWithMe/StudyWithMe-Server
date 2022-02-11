@@ -10,6 +10,7 @@ import ovh.studywithme.server.repository.GroupRepository
 import ovh.studywithme.server.repository.GroupMemberRepository
 import ovh.studywithme.server.repository.GroupReportRepository
 import ovh.studywithme.server.repository.UserRepository
+import ovh.studywithme.server.repository.LectureRepository
 import java.util.Optional
 import kotlin.collections.ArrayList
 
@@ -28,6 +29,7 @@ class GroupController(private val groupRepository: GroupRepository,
                       private val groupMemberRepository: GroupMemberRepository,
                       private val userRepository: UserRepository,
                       private val groupReportRepository: GroupReportRepository,
+                      private val lectureRepository: LectureRepository,
                       private val informationController: InformationController) : GroupControllerInterface {
 
     override fun getAllGroups(): List<StudyGroupDAO> {
@@ -158,6 +160,19 @@ class GroupController(private val groupRepository: GroupRepository,
             return true
         }
         return false
+    }
+
+    override fun getGroupSuggestions(userID:Long): List<StudyGroupDAO>? {
+        val user : User? = userRepository.findById(userID).unwrap()
+        if (user==null) return null
+        val majorID : Long = user.majorID
+        val lectures : List<Lecture> = lectureRepository.findByMajorID(majorID)
+        var results : MutableList<StudyGroup> = mutableListOf<StudyGroup>()
+        //TODO do that much more efficiently with a join request
+        for (lecture in lectures) {
+            results.addAll(groupRepository.findByLectureID(lecture.lectureID))
+        }
+        return results.toList().map{StudyGroupDAO(it)}
     }
 
     override fun reportGroupField(groupID:Long, reporterID:Long, field: StudyGroupField): Boolean {

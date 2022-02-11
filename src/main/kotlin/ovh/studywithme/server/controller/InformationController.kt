@@ -69,7 +69,6 @@ import org.springframework.stereotype.Service
 
     override fun getMajorsByName(searchName:String):List<MajorDAO> {
         return majorRepository.findByNameStartsWith(searchName).map{MajorDAO(it)}
-        //TODO also include prefixed
     }
 
     override fun createNewMajor(major:MajorDAO) : MajorDAO {
@@ -100,7 +99,6 @@ import org.springframework.stereotype.Service
 
     override fun getLecturesByName(majorID: Long, searchName:String):List<LectureDAO> {
         return lectureRepository.findByMajorIDAndNameStartsWith(majorID, searchName).map{LectureDAO(it)}
-        //TODO also include prefixed
     }
 
     override fun createNewLecture(majorID: Long, lecture:LectureDAO) : LectureDAO {

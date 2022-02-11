@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import ovh.studywithme.server.model.User
 import ovh.studywithme.server.model.Institution
+import ovh.studywithme.server.model.StudyGroupField
 import ovh.studywithme.server.controller.UserController
 import ovh.studywithme.server.repository.UserRepository
 import org.junit.jupiter.api.Assertions
@@ -68,7 +69,7 @@ class StudyWithMeServerApplicationTests() {
 
 	  @Test
 	  fun findInstitution() {
-		val created = testRestTemplate.exchange(
+		testRestTemplate.exchange(
 			URI("http://localhost:" + serverPort + "/institutions"),
 			HttpMethod.POST,
 			HttpEntity(Institution(0, "testInstitutionTEEESST")),
@@ -76,6 +77,23 @@ class StudyWithMeServerApplicationTests() {
 		
 		val result = testRestTemplate.exchange(
 			URI("http://localhost:" + serverPort + "/institutions?name=testInstitutionTEEESST"),
+			HttpMethod.GET,
+			HttpEntity(""),
+			String::class.java)
+
+		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
+	  }
+
+	  @Test
+	  fun reportGroup() {
+		testRestTemplate.exchange(
+			URI("http://localhost:" + serverPort + "/groups/1/report/1"),
+			HttpMethod.PUT,
+			HttpEntity(StudyGroupField.NAME),
+			String::class.java)
+		
+		val result = testRestTemplate.exchange(
+			URI("http://localhost:" + serverPort + "/reports/group"),
 			HttpMethod.GET,
 			HttpEntity(""),
 			String::class.java)

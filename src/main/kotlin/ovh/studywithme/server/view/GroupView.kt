@@ -230,6 +230,21 @@ class GroupView(
     }
 
     /**
+     * Get group suggestions that may be relevant to a user.
+     * These may be groups that belong to the same Major as the user
+     *
+     * @return Groups that may be relevant
+     */
+    @GetMapping("/suggestion/{uid}")
+    fun getGroupSuggestions(@PathVariable(value = "uid") userID: Long): ResponseEntity<List<StudyGroupDAO>> {
+        val groups : List<StudyGroupDAO>? = groupController.getGroupSuggestions(userID)
+        if (groups!=null) {
+            return ResponseEntity.ok(groups)
+        }
+        return ResponseEntity.notFound().build()
+    }
+
+    /**
      * Get all group sessions
      *
      * @param groupID

@@ -141,6 +141,14 @@ interface GroupControllerInterface {
     fun makeUserAdminInGroup(groupID:Long, userID:Long): Boolean
 
     /**
+     * Get Group Suggestions for a User based on his major
+     *
+     * @param userID The id of the user which groups should be suggested
+     * @return A list of Groups for the Major of the User, Null if the User doesnt exist
+     */
+    fun getGroupSuggestions(userID:Long): List<StudyGroupDAO>?
+
+    /**
      * Report a certain field of a group's details which might contain inappropriate free text.
      *
      * @param groupID The id of the group whose details contain inappropriate free text.
