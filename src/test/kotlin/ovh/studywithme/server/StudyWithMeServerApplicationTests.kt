@@ -66,6 +66,23 @@ class StudyWithMeServerApplicationTests() {
 		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
 	  }
 
+	  @Test
+	  fun findInstitution() {
+		val created = testRestTemplate.exchange(
+			URI("http://localhost:" + serverPort + "/institutions"),
+			HttpMethod.POST,
+			HttpEntity(Institution(0, "testInstitutionTEEESST")),
+			String::class.java)
+		
+		val result = testRestTemplate.exchange(
+			URI("http://localhost:" + serverPort + "/institutions?name=testInstitutionTEEESST"),
+			HttpMethod.GET,
+			HttpEntity(""),
+			String::class.java)
+
+		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
+	  }
+
 
 
 	  

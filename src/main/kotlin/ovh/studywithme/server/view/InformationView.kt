@@ -34,11 +34,7 @@ class InformationView(private val informationController: InformationController) 
             return ResponseEntity.ok(informationController.getAllInstitutions())
         }
         else {
-            val institutions : List<InstitutionDAO> =  informationController.getInstitutionsByName(institutionName)
-            if (institutions.isNotEmpty())
-                return ResponseEntity.ok(institutions)
-            else
-                return ResponseEntity.notFound().build()
+            return ResponseEntity.ok(informationController.getInstitutionsByName(institutionName))
         }
     }
 
@@ -102,11 +98,7 @@ class InformationView(private val informationController: InformationController) 
             return ResponseEntity.ok(informationController.getAllMajors())
         }
         else {
-            val majors : List<MajorDAO> =  informationController.getMajorsByName(majorName)
-            if (!majors.isEmpty())
-                return ResponseEntity.ok(majors)
-            else
-                return ResponseEntity.notFound().build()
+            return ResponseEntity.ok(informationController.getMajorsByName(majorName))
         }
     }
 
@@ -158,11 +150,7 @@ class InformationView(private val informationController: InformationController) 
             return ResponseEntity.ok(informationController.getAllLectures(majorID))
         }
         else {
-            val lectures : List<LectureDAO> =  informationController.getLecturesByName(majorID, lectureName)
-            if (!lectures.isEmpty())
-                return ResponseEntity.ok(lectures)
-            else
-                return ResponseEntity.notFound().build()
+            return ResponseEntity.ok(informationController.getLecturesByName(majorID, lectureName))
         }
     }
 
@@ -189,5 +177,4 @@ class InformationView(private val informationController: InformationController) 
         if(informationController.deleteLecture(majorID, lectureID)) return ResponseEntity<Void>(HttpStatus.OK) 
         return ResponseEntity.notFound().build()
     }
-
 }

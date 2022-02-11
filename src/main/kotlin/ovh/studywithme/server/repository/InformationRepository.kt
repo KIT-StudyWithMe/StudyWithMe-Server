@@ -19,7 +19,15 @@ import org.springframework.stereotype.Repository
  * @constructor Create an institute repository.
  */
 @Repository
-interface InstitutionRepository : JpaRepository<Institution, Long>
+interface InstitutionRepository : JpaRepository<Institution, Long> {
+    /**
+     * Find a list of all Institutions with a specific name.
+     *
+     * @param name Name of the Institutions to search for.
+     * @return A list of Institutions with that name.
+     */
+    fun findByName(name : String) : List<Institution>
+}
 
 /**
  * This major repository is used to access the study course data in the database in a generic way.
@@ -28,7 +36,15 @@ interface InstitutionRepository : JpaRepository<Institution, Long>
  * @constructor Create a major repository.
  */
 @Repository
-interface MajorRepository : JpaRepository<Major, Long>
+interface MajorRepository : JpaRepository<Major, Long> {
+    /**
+     * Find a list of all Majors with a specific name.
+     *
+     * @param name Name of the Major to search for.
+     * @return A list of Majors with that name.
+     */
+    fun findByName(name : String) : List<Major>
+}
 
 /**
  * This lecture repository is used to access the lecture data in the database in a generic way.
@@ -37,4 +53,14 @@ interface MajorRepository : JpaRepository<Major, Long>
  * @constructor Create a lecture repository.
  */
 @Repository
-interface LectureRepository : JpaRepository<Lecture, Long>
+interface LectureRepository : JpaRepository<Lecture, Long> {
+    /**
+     * Find a list of all Lectures with a specific name and a majorID.
+     * The majorID is needed because there could be a Lecture for many majors.
+     *
+     * @param name Name of the Lecture to search for.
+     * @param majorID Major ID of the Lectures to search for
+     * @return A list of Lectures with that name.
+     */
+    fun findByMajorIDAndName(majorID: Long, name : String) : List<Lecture>
+}
