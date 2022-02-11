@@ -4,6 +4,7 @@ import ovh.studywithme.server.model.StudyGroup
 import ovh.studywithme.server.model.StudyGroupMember
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+//import org.springframework.transaction.annotation.Transactional
 
 /**
  * This Group repository is used to access the Group-Data in the Database in a generic way.
@@ -39,6 +40,7 @@ interface GroupRepository : JpaRepository<StudyGroup, Long> {
  * @constructor Create Group-Member repository
  */
 @Repository
+//@Transactional
 interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
 
     /**

@@ -14,11 +14,24 @@ import org.springframework.http.HttpMethod
 import ovh.studywithme.server.model.User
 import ovh.studywithme.server.model.Institution
 import ovh.studywithme.server.model.StudyGroupField
+import ovh.studywithme.server.model.StudyGroupReport
 import ovh.studywithme.server.controller.UserController
 import ovh.studywithme.server.repository.UserRepository
+import ovh.studywithme.server.repository.GroupRepository
+import ovh.studywithme.server.repository.GroupMemberRepository
+import ovh.studywithme.server.repository.GroupReportRepository
+import ovh.studywithme.server.repository.LectureRepository
+import ovh.studywithme.server.repository.UserReportRepository
+import ovh.studywithme.server.repository.SessionReportRepository
+import ovh.studywithme.server.repository.InstitutionRepository
+import ovh.studywithme.server.repository.MajorRepository
+import ovh.studywithme.server.repository.AttendeeRepository
+import ovh.studywithme.server.repository.SessionRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.params.ParameterizedTest
 import org.hibernate.annotations.NotFound
 import java.net.URI
 
@@ -27,12 +40,48 @@ import java.net.URI
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @ActiveProfiles(value = ["test"])
-class StudyWithMeServerApplicationTests() {
+class StudyWithMeServerApplicationTests(
+	//private val groupRepository: GroupRepository,
+	//private val groupMemberRepository: GroupMemberRepository,
+
+	//private val institutionRepository: InstitutionRepository,
+	//private val majorRepository: MajorRepository,
+	//private val lectureRepository: LectureRepository,
+
+	//private val userReportRepository: UserReportRepository,
+	//private val groupReportRepository: GroupReportRepository,
+	//private val sessionReportRepository: SessionReportRepository,
+
+	//private val attendeeRepository: AttendeeRepository,
+	//private val sessionRepository: SessionRepository,
+	
+	//private val userRepository: UserRepository
+	) {
 
 	var testRestTemplate = TestRestTemplate()
 
 	@LocalServerPort
   	var serverPort: Int = 12808
+
+
+	  @BeforeEach
+	  fun wipeDB() {
+		  //groupRepository.deleteAll()
+		  //groupMemberRepository.deleteAll()
+
+		  //institutionRepository.deleteAll()
+		  //majorRepository.deleteAll()
+		  //lectureRepository.deleteAll()
+
+		  //userReportRepository.deleteAll()
+		  //groupReportRepository.deleteAll()
+		  //sessionReportRepository.deleteAll()
+
+		  //attendeeRepository.deleteAll()
+		  //sessionRepository.deleteAll()
+
+		  //userRepository.deleteAll()
+	  }
 
 	  @Test
 	  fun getNonexistentInstitution() {

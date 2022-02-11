@@ -27,8 +27,7 @@ data class Session (
     @get: NotBlank
     val place: String,
 
-    //@get: NotBlank //todo?
-    val startTime: Date,
+    val startTime: Long,
 
     val duration: Int
 )
