@@ -149,4 +149,13 @@ interface GroupControllerInterface {
      * @return A boolean which is true if the data was valid and the report was saved successfully and false otherwise.
      */
     fun reportGroupField(groupID:Long, reporterID:Long, field:StudyGroupField): Boolean
+
+    /**
+     * Hide group
+     *
+     * @param groupID
+     * @param hidden
+     * @return
+     */
+    fun hideGroup(groupID:Long, hidden:Boolean): Boolean
 }

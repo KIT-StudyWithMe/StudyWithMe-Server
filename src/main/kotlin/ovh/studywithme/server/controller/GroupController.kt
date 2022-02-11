@@ -168,6 +168,10 @@ class GroupController(private val groupRepository: GroupRepository,
         return false
     }
 
+    override fun hideGroup(groupID: Long, hidden: Boolean): Boolean {
+        TODO("Not yet implemented")
+    }
+
     /**
      * Convert Optional Datatype to a Nullable Datatype
      *
