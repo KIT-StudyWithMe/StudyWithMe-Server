@@ -187,6 +187,7 @@ class GroupController(private val groupRepository: GroupRepository,
         if (groupRepository.existsById(groupID)) {
             val group = groupRepository.findById(groupID).get()
             group.hidden = hidden
+            groupRepository.save(group)
             return true
         }
         return false

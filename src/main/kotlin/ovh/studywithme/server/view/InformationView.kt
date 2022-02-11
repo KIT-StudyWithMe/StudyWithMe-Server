@@ -12,8 +12,10 @@ import javax.validation.Valid
 /**
  * The information view is exposed to the client. It is the required way for the client to communicate with the server.
  * All rest-endpoints are defined here and only data access objects are expected and returned.
- * This class bundles all functionality related to where and what a user studies.
  * Spring auto-creates a thread for every request and calls the corresponding method.
+ *
+ * This class bundles all functionality related to where and what a user studies.
+ * For data exchange between server and client data access objects must be used.
  *
  * @property informationController The server's internal information management logic that the view uses to process the client's requests.
  * @constructor Create an information view, all variables are instanced by Spring's autowire.

@@ -15,8 +15,10 @@ import ovh.studywithme.server.dao.SessionReportDAO
 /**
  * The report view is exposed to the client. It is the required way for the client to communicate with the server.
  * All rest-endpoints are defined here and only data access objects are expected and returned.
- * This class bundles all functionality related to where and what a user studies.
  * Spring auto-creates a thread for every request and calls the corresponding method.
+ *
+ * This class bundles all functionality related to reports.
+ * For data exchange between server and client data access objects must be used.
  *
  * @property reportController The server's internal report management logic that the view uses to process the client's requests.
  * @constructor Create a report view, all variables are instanced by Spring's autowire.
@@ -32,7 +34,7 @@ class ReportView(private val reportController: ReportController) {
      * of such reports.
      * The list is returned here so the requesting moderator can look into these reports and then take appropriate actions.
      *
-     * @return A list containing all group reports.
+     * @return A list containing all group reports together with http status "200: OK".
      */
     @GetMapping("/group")
     fun getAllGroupReports(): ResponseEntity<List<StudyGroupReportDAO>> {
@@ -46,7 +48,7 @@ class ReportView(private val reportController: ReportController) {
      * of such reports.
      * The list is returned here so the requesting moderator can look into these reports and then take appropriate actions.
      *
-     * @return A list containing all user reports.
+     * @return A list containing all user reports together with http status "200: OK".
      */
     @GetMapping("/user")
     fun getAllUserReports(): ResponseEntity<List<UserReportDAO>> {
@@ -60,7 +62,7 @@ class ReportView(private val reportController: ReportController) {
      * of such reports.
      * The list is returned here so the requesting moderator can look into these reports and then take appropriate actions.
      *
-     * @return A list containing all session reports with http-status ok and a "not found" status
+     * @return A list containing all session reports together with http status "200: OK".
      */
     @GetMapping("/session")
     fun getAllSessionReports(): ResponseEntity<List<SessionReportDAO>> {
@@ -76,7 +78,7 @@ class ReportView(private val reportController: ReportController) {
      * @param reporterID The reporting user's unique identifier.
      * @param groupID The reported group's unique identifier.
      * @param field The name of the exact field that was reported in a group's details.
-     * @return S
+     * @return http status "200: OK" if the report was successfully deleted and http status "404: NOT FOUND" otherwise.
      */
     @DeleteMapping("/group/{rid}/{gid}/{fid}")
     fun deleteGroupReport(@PathVariable(value = "rid") reporterID: Long, @PathVariable(value = "gid") groupID: Long,
@@ -89,14 +91,17 @@ class ReportView(private val reportController: ReportController) {
     }
 
     /**
-     * Delete user report
+     * This method is executed when DELETE /reports/user/{reporterID}/{userID}/{fieldName} is called.
      *
-     * @param reporterID
-     * @param userID
-     * @param field
-     * @return
+     * When a moderator looked into a report and took the appropriate action, the report needs to be deleted.
+     * The client sends all data that is needed to identify the report, then it's deleted.
+     *
+     * @param reporterID The reporting user's unique identifier.
+     * @param userID The reported user's unique identifier.
+     * @param field The name of the exact field that was reported in a user's details.
+     * @return http status "200: OK" if the report was successfully deleted and http status "404: NOT FOUND" otherwise.
      */
-    @DeleteMapping("/group/{rid}/{uid}/{fid}")
+    @DeleteMapping("/user/{rid}/{uid}/{fid}")
     fun deleteUserReport(@PathVariable(value = "rid") reporterID: Long, @PathVariable(value = "uid") userID: Long,
                           @PathVariable(value = "fid") field: UserField): ResponseEntity<Void> {
 
@@ -107,14 +112,17 @@ class ReportView(private val reportController: ReportController) {
     }
 
     /**
-     * Delete session report
+     * This method is executed when DELETE /reports/session/{reporterID}/{sessionID}/{fieldName} is called.
      *
-     * @param reporterID
-     * @param sessionID
-     * @param field
-     * @return
+     * When a moderator looked into a report and took the appropriate action, the report needs to be deleted.
+     * The client sends all data that is needed to identify the report, then it's deleted.
+     *
+     * @param reporterID The reporting user's unique identifier.
+     * @param sessionID The reported session's unique identifier.
+     * @param field The name of the exact field that was reported in a session's details.
+     * @return http status "200: OK" if the report was successfully deleted and http status "404: NOT FOUND" otherwise.
      */
-    @DeleteMapping("/group/{rid}/{sid}/{fid}")
+    @DeleteMapping("/session/{rid}/{sid}/{fid}")
     fun deleteSessionReport(@PathVariable(value = "rid") reporterID: Long, @PathVariable(value = "sid") sessionID: Long,
                           @PathVariable(value = "fid") field: SessionField): ResponseEntity<Void> {
 
