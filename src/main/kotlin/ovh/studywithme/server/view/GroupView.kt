@@ -263,8 +263,8 @@ class GroupView(
      * @return
      */
     @PostMapping("/{gid}/sessions")
-    fun createNewSession(@Valid @RequestBody session: SessionDAO): SessionDAO =
-        sessionController.createSession(session)
+    fun createNewSession(@Valid @RequestBody session: SessionDAO): ResponseEntity<SessionDAO> =
+        ResponseEntity.ok(sessionController.createSession(session))
 
     @PostMapping("/{gid}/hide")
     fun hideGroup(@PathVariable(value = "gid") groupID: Long, @Valid @RequestBody hidden: Boolean): ResponseEntity<Void> {
