@@ -1,5 +1,6 @@
 package ovh.studywithme.server.controller
 
+import ovh.studywithme.server.dao.SessionAttendeeDAO
 import ovh.studywithme.server.dao.SessionDAO
 import ovh.studywithme.server.model.SessionAttendee
 import ovh.studywithme.server.model.SessionField

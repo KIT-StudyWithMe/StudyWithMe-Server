@@ -12,6 +12,7 @@ import ovh.studywithme.server.model.SessionReport
 import ovh.studywithme.server.repository.SessionReportRepository
 import ovh.studywithme.server.repository.UserRepository
 import ovh.studywithme.server.dao.SessionDAO
+import ovh.studywithme.server.dao.StudyGroupDAO
 
 /**
  * Implementation of the session controller interface.
@@ -80,11 +81,7 @@ import ovh.studywithme.server.dao.SessionDAO
     override fun getSessionAttendees(sessionID: Long): List<SessionAttendeeDAO>? {
         if (sessionRepository.existsById(sessionID)) {
             val listAttendees = attendeeRepository.findBySessionID(sessionID).filter { it.participates }
-            val listAttendeesDAO: MutableList<SessionAttendeeDAO> = ArrayList()
-            for (attendee in listAttendees) {
-                listAttendeesDAO.add(SessionAttendeeDAO(attendee))
-            }
-            return listAttendeesDAO
+            return listAttendees.toList().map{ SessionAttendeeDAO(it) }
         }
         return null
     }
