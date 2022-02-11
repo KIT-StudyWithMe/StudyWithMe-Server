@@ -52,4 +52,13 @@ interface AttendeeRepository : JpaRepository<SessionAttendee, Long> {
      * @return A boolean which is true if the user has made a decision regarding his participation in the group-session and false otherwise.
      */
     fun findBySessionIDAndUserID(sessionID:Long, userID:Long): SessionAttendee
+
+    /**
+     * Finds all group members that made a decision regarding participation in a group session.
+     * Returns users that will participate and those that will not participate.
+     *
+     * @param sessionID The study session's unique identifier.
+     * @return A list of all users that decided if they will or will not participate in the session.
+     */
+    fun findBySessionID(sessionID:Long): List<SessionAttendee>
 }

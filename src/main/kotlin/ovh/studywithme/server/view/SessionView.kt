@@ -4,8 +4,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ovh.studywithme.server.controller.SessionController
+import ovh.studywithme.server.dao.SessionAttendeeDAO
 import ovh.studywithme.server.model.SessionField
 import ovh.studywithme.server.dao.SessionDAO
+import ovh.studywithme.server.model.SessionAttendee
 import javax.validation.Valid
 
 /**
@@ -93,6 +95,25 @@ class SessionView(private val sessionController: SessionController) {
             return ResponseEntity<Void>(HttpStatus.OK)
         else
             return ResponseEntity.notFound().build()
+    }
+
+    /**
+     * Retrieves a list of all users that confirmed their participation in a study session.
+     * The list might be empty.
+     * If the session was found, a list of participating users will be returned together with http status "200: OK".
+     * If it was not found http status "404: NOT FOUND" will be returned.
+     *
+     * @param sessionID The session's unique identifier.
+     * @return A list of users that will participate in the study session.
+     */
+    @GetMapping("/{id}/attendee")
+    fun getSessionAttendees(@PathVariable(value = "id") sessionID: Long): ResponseEntity<List<SessionAttendeeDAO>> {
+        val attendeeList = sessionController.getSessionAttendees(sessionID)
+        if (attendeeList != null) {
+            return ResponseEntity.ok(sessionController.getSessionAttendees(sessionID))
+
+        }
+        return ResponseEntity.notFound().build()
     }
 
     /**

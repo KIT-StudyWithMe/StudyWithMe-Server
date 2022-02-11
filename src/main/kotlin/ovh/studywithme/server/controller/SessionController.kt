@@ -6,6 +6,7 @@ import ovh.studywithme.server.repository.AttendeeRepository
 import ovh.studywithme.server.repository.SessionRepository
 import java.util.Optional
 import org.springframework.stereotype.Service
+import ovh.studywithme.server.dao.SessionAttendeeDAO
 import ovh.studywithme.server.model.SessionField
 import ovh.studywithme.server.model.SessionReport
 import ovh.studywithme.server.repository.SessionReportRepository
@@ -74,6 +75,18 @@ import ovh.studywithme.server.dao.SessionDAO
             return true
         }
         return false
+    }
+
+    override fun getSessionAttendees(sessionID: Long): List<SessionAttendeeDAO>? {
+        if (sessionRepository.existsById(sessionID)) {
+            val listAttendees = attendeeRepository.findBySessionID(sessionID).filter { it.participates }
+            val listAttendeesDAO: MutableList<SessionAttendeeDAO> = ArrayList()
+            for (attendee in listAttendees) {
+                listAttendeesDAO.add(SessionAttendeeDAO(attendee))
+            }
+            return listAttendeesDAO
+        }
+        return null
     }
 
     override fun reportSessionField(sessionID:Long, reporterID:Long, field: SessionField): Boolean {

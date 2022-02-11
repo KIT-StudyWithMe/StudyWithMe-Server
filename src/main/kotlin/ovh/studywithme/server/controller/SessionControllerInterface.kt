@@ -1,6 +1,7 @@
 package ovh.studywithme.server.controller
 
 import ovh.studywithme.server.dao.SessionDAO
+import ovh.studywithme.server.model.SessionAttendee
 import ovh.studywithme.server.model.SessionField
 
 /**
@@ -61,6 +62,14 @@ interface SessionControllerInterface {
      * @return A boolean which is true if the decision was set successfully and false otherwise.
      */
     fun setParticipation(sessionID:Long, userID:Long, participates:Boolean): Boolean
+
+    /**
+     * Provides a list of all group members that confirmed their participation to a planned group session.
+     *
+     * @param sessionID The session's unique identifier
+     * @return A list containing all users that will participate in a session.
+     */
+    fun getSessionAttendees(sessionID:Long) : List<SessionAttendeeDAO>?
 
     /**
      * Report a certain field of a session's details which might contain inappropriate free text.
