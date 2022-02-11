@@ -23,9 +23,9 @@ data class SessionDAO(
     constructor(session : Session) : this(session.sessionID, session.groupID, session.place, session.startTime, session.duration)
 
     /**
-     * To session
+     * Convert a SessionDAO to a Session.
      *
-     * @return
+     * @return corresponding Session
      */
     fun toSession(): Session {
         return Session(this.sessionID, this.groupID, this.place, this.startTime, this.duration)

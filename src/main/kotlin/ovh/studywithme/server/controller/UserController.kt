@@ -53,7 +53,8 @@ import ovh.studywithme.server.model.*
         if (!userRepository.existsById(userID)) {
             return null
         }
-        val groupMemberEntries: List<StudyGroupMember> = groupMemberRepository.findAll().filter { it.userID == userID }
+        // Only return groups the user is a member in, not the ones he only applied to.
+        val groupMemberEntries: List<StudyGroupMember> = groupMemberRepository.findAll().filter { it.userID == userID && it.isMember }
         val studyGroups : List<StudyGroup> = groupMemberEntries.map{ studyGroupRepository.findById(it.groupID).get() }
         return studyGroups.map{StudyGroupDAO(it)}
      }

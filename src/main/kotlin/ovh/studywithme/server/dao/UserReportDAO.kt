@@ -23,7 +23,7 @@ data class UserReportDAO(
     /**
      * Convert a UserReportDAO to a UserReport
      *
-     * @return The corresponding UserReport Object
+     * @return The corresponding UserReport object
      */
     fun toUserReport(): UserReport {
         return UserReport(this.userReportID, this.reporterID, this.userID, this.userField)

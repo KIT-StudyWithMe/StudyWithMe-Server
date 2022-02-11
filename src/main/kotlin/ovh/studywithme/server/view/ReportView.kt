@@ -11,7 +11,6 @@ import ovh.studywithme.server.dao.StudyGroupReportDAO
 import ovh.studywithme.server.dao.UserReportDAO
 import ovh.studywithme.server.dao.SessionReportDAO
 
-
 /**
  * The report view is exposed to the client. It is the required way for the client to communicate with the server.
  * All rest-endpoints are defined here and only data access objects are expected and returned.

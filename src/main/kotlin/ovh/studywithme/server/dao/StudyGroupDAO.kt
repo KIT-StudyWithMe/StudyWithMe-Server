@@ -31,10 +31,10 @@ data class StudyGroupDAO(
     constructor(group : StudyGroup) : this(group.groupID, group.name, group.description, group.lectureID, group.sessionFrequency, group.sessionType, group.lectureChapter, group.exercise)
 
     /**
-     * To study group
+     * Convert a StudyGroupDAO to a StudyGroup
      *
-     * @param hidden
-     * @return
+     * @param hidden A boolean which is true if the group must not show up in search results in the application.
+     * @return corresponding StudyGroup
      */
     fun toStudyGroup(hidden: Boolean): StudyGroup {
         return StudyGroup(this.groupID, this.name, this.description, this.lectureID, this.sessionFrequency, this.sessionType, this.lectureChapter, this.exercise, hidden)

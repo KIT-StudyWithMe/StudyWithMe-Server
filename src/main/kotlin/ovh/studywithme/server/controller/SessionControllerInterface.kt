@@ -53,7 +53,7 @@ interface SessionControllerInterface {
 
     /**
      * Set the user's decision whether to participate in a group's planned session or not.
-     * Obviously, user must be member in the group that planned the session.
+     * User must be member in the group that planned the session.
      *
      * @param sessionID The session's unique identifier.
      * @param userID The user's unique identifier.

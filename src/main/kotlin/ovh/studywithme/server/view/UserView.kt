@@ -14,8 +14,10 @@ import javax.validation.Valid
 /**
  * The user view is exposed to the client. It is the required way for the client to communicate with the server.
  * All rest-endpoints are defined here and only data access objects are expected and returned.
- * This class bundles all functionality related to where and what a user studies.
  * Spring auto-creates a thread for every request and calls the corresponding method.
+ *
+ * This class bundles all functionality related to users.
+ * For data exchange between server and client data access objects must be used.
  *
  * @property userController The server's internal user management logic that the view uses to process the client's requests.
  * @constructor Create a user view, all variables are instanced by Spring's autowire.
@@ -25,10 +27,14 @@ import javax.validation.Valid
 class UserView(private val userController: UserController) {
 
     /**
-     * Get user d a o
+     * Gets a user as data access object from the server, which only contains restricted information about the user,
+     * which is for public use in the application.
+     * The user is identified by its unique id that the client sends with the request.
+     * If the user was found, it will be returned together with http status "200: OK".
+     * If it was not found, http status "404: NOT FOUND" will be returned.
      *
-     * @param userID
-     * @return
+     * @param userID The user's unique identifier.
+     * @return A data access object containing the user's restricted information.
      */
     @GetMapping("/{id}")
     fun getUserDAO(@PathVariable(value = "id") userID: Long): ResponseEntity<UserDAO> {
@@ -38,10 +44,14 @@ class UserView(private val userController: UserController) {
     }
 
     /**
-     * Get user detail d a o
+     * Gets a user as data access object from the server, which contains the users complete information.
+     * This information set should not be used in public in the application.
+     * The user is identified by its unique id that the client sends with the request.
+     * If the user was found, it will be returned together with http status "200: OK".
+     * If it was not found, http status "404: NOT FOUND" will be returned.
      *
-     * @param userID
-     * @return
+     * @param userID The user's unique identifier.
+     * @return A data access object containing the user's complete information.
      */
     @GetMapping("/{id}/detail")
     fun getUserDetailDAO(@PathVariable(value = "id") userID: Long): ResponseEntity<UserDetailDAO> {
@@ -51,11 +61,11 @@ class UserView(private val userController: UserController) {
     }
 
     /**
-     * Get all users
+     * Used to receive a list of users from the server. Via parameters adjustments on which users to receive can be made.
      *
-     * @param state
-     * @param fuid
-     * @return
+     * @param state Set to "blocked" to receive a list of all users that have been blocked by a moderator in the application.
+     * @param fuid If the value is not null, the user with the given firebase user id will be returned.
+     * @return A list which contains the requested users.
      */
     @GetMapping("")
     fun getAllUsers(@RequestParam("state") state: String?, @RequestParam("FUID") fuid: String?): ResponseEntity<List<UserDAO>> {
@@ -78,10 +88,12 @@ class UserView(private val userController: UserController) {
     }
 
     /**
-     * Get users groups
+     * To display a list of the groups a user joined in the application, this function is used.
+     * If the user has not joined any groups yet, an empty list will be returned.
+     * If the user was not found, null is returned.
      *
-     * @param userID
-     * @return
+     * @param userID The user's unique identifier.
+     * @return A list containing all the groups the user is member in.
      */
     @GetMapping("/{id}/groups")
     fun getUsersGroups(@PathVariable(value = "id") userID: Long): ResponseEntity<List<StudyGroupDAO>?> {

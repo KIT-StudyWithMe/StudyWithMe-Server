@@ -17,7 +17,7 @@ data class InstitutionDAO(
     constructor(institution : Institution) : this(institution.institutionID, institution.name)
 
     /**
-     * Convert a InstitutionDAO to a Institution
+     * Convert a InstitutionDAO to an Institution
      *
      * @return corresponding Institution
      */

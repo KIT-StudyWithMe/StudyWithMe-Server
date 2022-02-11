@@ -21,9 +21,9 @@ data class SessionReportDAO(
     constructor(sessionReport : SessionReport) : this(sessionReport.sessionReportID, sessionReport.sessionID, sessionReport.reporterID, sessionReport.sessionField)
 
     /**
-     * Convert a SessiorReportDAO to a SessionReport
+     * Convert a SessionReportDAO to a SessionReport
      *
-     * @return The corresponding SessionReport Object
+     * @return The corresponding SessionReport object
      */
     fun toSessionReport(): SessionReport {
         return SessionReport(this.sessionReportID, this.sessionID, this.reporterID, this.sessionField)

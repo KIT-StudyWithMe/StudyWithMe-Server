@@ -167,7 +167,7 @@ class GroupController(private val groupRepository: GroupRepository,
         if (user==null) return null
         val majorID : Long = user.majorID
         val lectures : List<Lecture> = lectureRepository.findByMajorID(majorID)
-        var results : MutableList<StudyGroup> = mutableListOf<StudyGroup>()
+        val results : MutableList<StudyGroup> = mutableListOf<StudyGroup>()
         //TODO do that much more efficiently with a join request
         for (lecture in lectures) {
             results.addAll(groupRepository.findByLectureID(lecture.lectureID))

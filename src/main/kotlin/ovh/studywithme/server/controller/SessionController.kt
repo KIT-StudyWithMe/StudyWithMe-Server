@@ -68,6 +68,7 @@ import ovh.studywithme.server.dao.SessionDAO
                 attendeeRepository.save(attendee)
             }
             else {
+                //todo check if the user is a group member
                 attendeeRepository.save(SessionAttendee(0, sessionID, userID, participates))
             }
             return true

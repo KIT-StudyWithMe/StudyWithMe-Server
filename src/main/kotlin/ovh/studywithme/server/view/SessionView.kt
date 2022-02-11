@@ -44,12 +44,12 @@ class SessionView(private val sessionController: SessionController) {
     /**
      * Updates an existing study session.
      * The session is identified by its unique id that the client sends with the request.
-     * If the session was found, the updated session will be returned together with http status "ok".
-     * If it was not found, http status "not found" will be returned.
+     * If the session that will be updated was found and updated, it will be returned together with http status "200: OK".
+     * If it was not found and therefore could not be updated, http status "404: NOT FOUND" will be returned.
      *
      * @param sessionID The unique identifier for the session that will be updated.
      * @param updatedSession The session with updated content.
-     * @return A data access object containing the updated session.
+     * @return The updated session including the updated content.
      */
     @PutMapping("/{id}")
     fun updateSessionById(@PathVariable(value = "id") sessionID: Long, @Valid @RequestBody updatedSession: SessionDAO): ResponseEntity<SessionDAO> {
@@ -61,10 +61,13 @@ class SessionView(private val sessionController: SessionController) {
     }
 
     /**
-     * Delete session by id
+     * Deletes an existing study session.
+     * The session is identified by its unique id that the client sends with the request.
+     * If the session was found and deleted, it will be returned together with http status "200: OK".
+     * If it was not found and therefore could not be deleted, http status "404: NOT FOUND" will be returned.
      *
-     * @param sessionID
-     * @return
+     * @param sessionID The unique identifier for the session that will be updated.
+     * @return A http status indicating whether the deletion was successful or not.
      */
     @DeleteMapping("/{id}")
     fun deleteSessionById(@PathVariable(value = "id") sessionID: Long): ResponseEntity<Void> {
@@ -75,12 +78,13 @@ class SessionView(private val sessionController: SessionController) {
     }
 
     /**
-     * Set participation
+     * Used when a User decides if he wants to participate in a study session a group he's member in planned
+     * and when he wants to change that decision.
      *
-     * @param sessionID
-     * @param userID
-     * @param participates
-     * @return
+     * @param sessionID The unique identifier for the session that will be updated.
+     * @param userID The user's unique identifier.
+     * @param participates A boolean which is true if the user plans to participate in the session and false if not.
+     * @return A http status indicating whether setting the new participation decision was successful or not.
      */
     @PutMapping("/{sid}/participate/{uid}")
     fun setParticipation(@PathVariable(value = "sid") sessionID: Long, @PathVariable(value = "uid") userID: Long,
@@ -92,12 +96,13 @@ class SessionView(private val sessionController: SessionController) {
     }
 
     /**
-     * Report session field
+     * Used when a user wants to report a certain field of a session's details which might contain inappropriate free text.
+     * Moderators can review the report later and take appropriate action.
      *
-     * @param sessionID
-     * @param reporterID
-     * @param field
-     * @return
+     * @param sessionID The unique identifier for the session that will be updated.
+     * @param reporterID The reporting user's unique identifier.
+     * @param field The descriptor of the field that's affected.
+     * @return A http status indicating whether saving the report was successful or not.
      */
     @PutMapping("/{sid}/report/{uid}")
     fun reportSessionField(@PathVariable(value = "sid") sessionID: Long, @PathVariable(value = "uid") reporterID: Long,

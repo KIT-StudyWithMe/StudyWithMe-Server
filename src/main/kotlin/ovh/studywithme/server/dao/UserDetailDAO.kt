@@ -30,9 +30,9 @@ data class UserDetailDAO(
     constructor(user : User, institutionName: String, majorName: String) : this(user.userID, user.name, user.institutionID, institutionName, user.majorID,majorName, user.contact, user.firebaseUID, user.isModerator)
 
     /**
-     * To user
+     * Convert a UserDetailDAO to a User
      *
-     * @return
+     * @return corresponding User object
      */
     fun toUser(): User {
         return User(this.userID, this.name, this.institutionID, this.majorID, this.contact, this.firebaseUID)

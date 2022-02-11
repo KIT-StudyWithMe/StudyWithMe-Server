@@ -23,7 +23,7 @@ data class StudyGroupReportDAO(
     /**
      * Convert a StudyGroupReportDAO to a StudyGroupReport
      *
-     * @return The corresponding StudyGroupReport Object
+     * @return The corresponding StudyGroupReport object
      */
     fun toStudyGroupReport(): StudyGroupReport {
         return StudyGroupReport(this.studyGroupReportID, this.reporterID, this.groupID, this.groupField)
