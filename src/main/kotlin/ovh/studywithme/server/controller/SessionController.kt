@@ -19,7 +19,6 @@ import ovh.studywithme.server.dao.SessionDAO
  * @property sessionReportRepository
  * @property userRepository
  * @property attendeeRepository
- * @constructor Create empty Session controller
  */
 @Service
     class SessionController(private val sessionRepository:SessionRepository,
@@ -84,7 +83,7 @@ import ovh.studywithme.server.dao.SessionDAO
     }
 
     /**
-     * Unwrap
+     * Convert Optional Datatype to a Nullable Datatype
      *
      * @param T
      * @return

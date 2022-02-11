@@ -17,7 +17,6 @@ import ovh.studywithme.server.repository.SessionReportRepository
  * @property groupReportRepository
  * @property userReportRepository
  * @property sessionReportRepository
- * @constructor Create empty Report controller
  */
 @Service
 class ReportController(private val groupReportRepository: GroupReportRepository,

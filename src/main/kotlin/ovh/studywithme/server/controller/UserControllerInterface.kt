@@ -7,9 +7,7 @@ import ovh.studywithme.server.model.UserField
 
 /**
  * User controller interface that contains all methods needed for user-management.
- *
- * @constructor Create empty User controller interface
- */
+ **/
 interface UserControllerInterface {
     /**
      * Get all users. Returns an empty List if there are no Users.

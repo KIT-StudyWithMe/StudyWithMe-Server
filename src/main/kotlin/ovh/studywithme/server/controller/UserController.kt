@@ -19,7 +19,6 @@ import ovh.studywithme.server.model.*
  * @property userRepository
  * @property userReportRepository
  * @property groupMemberRepository
- * @constructor Create empty User controller
  */
 @Service
     class UserController(private val userRepository: UserRepository,

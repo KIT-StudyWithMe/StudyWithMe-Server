@@ -21,7 +21,6 @@ import kotlin.collections.ArrayList
  * @property userRepository
  * @property groupReportRepository
  * @property informationController
- * @constructor Create empty Group controller
  */
 @Service
 class GroupController(private val groupRepository: GroupRepository,
@@ -167,7 +166,7 @@ class GroupController(private val groupRepository: GroupRepository,
     }
 
     /**
-     * Unwrap
+     * Convert Optional Datatype to a Nullable Datatype
      *
      * @param T
      * @return

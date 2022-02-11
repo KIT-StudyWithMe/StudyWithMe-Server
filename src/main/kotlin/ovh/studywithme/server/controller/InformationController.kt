@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service
  * @property institutionRepository
  * @property majorRepository
  * @property lectureRepository
- * @constructor Create empty Information controller
  */
 @Service
     class InformationController(private val institutionRepository: InstitutionRepository, private val majorRepository: MajorRepository, private val lectureRepository: LectureRepository) : InformationControllerInterface {
@@ -119,7 +118,7 @@ import org.springframework.stereotype.Service
     }
 
     /**
-     * Unwrap
+     * Convert Optional Datatype to a Nullable Datatype
      *
      * @param T
      * @return
