@@ -184,7 +184,12 @@ class GroupController(private val groupRepository: GroupRepository,
     }
 
     override fun hideGroup(groupID: Long, hidden: Boolean): Boolean {
-        TODO("Not yet implemented")
+        if (groupRepository.existsById(groupID)) {
+            val group = groupRepository.findById(groupID).get()
+            group.hidden = hidden
+            return true
+        }
+        return false
     }
 
     /**

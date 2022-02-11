@@ -43,7 +43,7 @@ data class StudyGroup (
 
     val exercise: Int,
 
-    val hidden: Boolean
+    var hidden: Boolean
 )
 
 /**

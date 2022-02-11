@@ -159,11 +159,13 @@ interface GroupControllerInterface {
     fun reportGroupField(groupID:Long, reporterID:Long, field:StudyGroupField): Boolean
 
     /**
-     * Hide group
+     * Hides or unhides a group. Hidden groups won't be shown in search results.
+     * Hidden-status can be used when the group's admin regards the group as full or complete but wants to keep it
+     * to plan study sessions for the group.
      *
-     * @param groupID
-     * @param hidden
-     * @return
+     * @param groupID The unique identifier of the group.
+     * @param hidden A boolean which is true if the group must not show up in search results and false otherwise.
+     * @return A boolean which is true if the group was found and the new hidden-status was set - and false otherwise.
      */
     fun hideGroup(groupID:Long, hidden:Boolean): Boolean
 }
