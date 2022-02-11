@@ -26,7 +26,7 @@ interface InstitutionRepository : JpaRepository<Institution, Long> {
      * @param name Name of the Institutions to search for.
      * @return A list of Institutions with that name.
      */
-    fun findByName(name : String) : List<Institution>
+    fun findByNameStartsWith(name : String) : List<Institution>
 }
 
 /**
@@ -43,7 +43,7 @@ interface MajorRepository : JpaRepository<Major, Long> {
      * @param name Name of the Major to search for.
      * @return A list of Majors with that name.
      */
-    fun findByName(name : String) : List<Major>
+    fun findByNameStartsWith(name : String) : List<Major>
 }
 
 /**
@@ -62,5 +62,5 @@ interface LectureRepository : JpaRepository<Lecture, Long> {
      * @param majorID Major ID of the Lectures to search for
      * @return A list of Lectures with that name.
      */
-    fun findByMajorIDAndName(majorID: Long, name : String) : List<Lecture>
+    fun findByMajorIDAndNameStartsWith(majorID: Long, name : String) : List<Lecture>
 }

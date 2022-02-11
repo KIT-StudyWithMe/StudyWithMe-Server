@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service
     }
 
     override fun getInstitutionsByName(searchName:String):List<InstitutionDAO> {
-        return institutionRepository.findByName(searchName).map{InstitutionDAO(it)}
+        return institutionRepository.findByNameStartsWith(searchName).map{InstitutionDAO(it)}
     }
 
     override fun createNewInstitution(institution:InstitutionDAO) : InstitutionDAO {
@@ -68,7 +68,7 @@ import org.springframework.stereotype.Service
     }
 
     override fun getMajorsByName(searchName:String):List<MajorDAO> {
-        return majorRepository.findByName(searchName).map{MajorDAO(it)}
+        return majorRepository.findByNameStartsWith(searchName).map{MajorDAO(it)}
         //TODO also include prefixed
     }
 
@@ -99,7 +99,7 @@ import org.springframework.stereotype.Service
     }
 
     override fun getLecturesByName(majorID: Long, searchName:String):List<LectureDAO> {
-        return lectureRepository.findByMajorIDAndName(majorID, searchName).map{LectureDAO(it)}
+        return lectureRepository.findByMajorIDAndNameStartsWith(majorID, searchName).map{LectureDAO(it)}
         //TODO also include prefixed
     }
 
