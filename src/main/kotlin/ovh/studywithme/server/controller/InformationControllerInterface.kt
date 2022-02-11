@@ -102,11 +102,10 @@ interface InformationControllerInterface {
      * Get a certain lecture.
      * If the lecture was found, it's returned. If not, null is returned.
      *
-     * @param majorID The unique identifier of the major the lecture was created for.
      * @param lectureID The lecture's unique identifier.
      * @return The lecture that was requested.
      */
-    fun getLectureByID(majorID: Long, lectureID:Long): LectureDAO?
+    fun getLectureByID(lectureID:Long): LectureDAO?
 
     /**
      * Get a lecture by its name.

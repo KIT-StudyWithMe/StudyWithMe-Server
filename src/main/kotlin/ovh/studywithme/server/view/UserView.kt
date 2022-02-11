@@ -12,10 +12,13 @@ import ovh.studywithme.server.model.UserField
 import javax.validation.Valid
 
 /**
- * User view
+ * The user view is exposed to the client. It is the required way for the client to communicate with the server.
+ * All rest-endpoints are defined here and only data access objects are expected and returned.
+ * This class bundles all functionality related to where and what a user studies.
+ * Spring auto-creates a thread for every request and calls the corresponding method.
  *
- * @property userController
- * @constructor Create empty User view
+ * @property userController The server's internal user management logic that the view uses to process the client's requests.
+ * @constructor Create a user view, all variables are instanced by Spring's autowire.
  */
 @RestController
 @RequestMapping("/users")

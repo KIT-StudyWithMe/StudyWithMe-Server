@@ -14,13 +14,14 @@ import java.util.Optional
 import kotlin.collections.ArrayList
 
 /**
- * Group controller
+ * Implementation of the group controller interface.
  *
  * @property groupRepository
  * @property groupMemberRepository
  * @property userRepository
  * @property groupReportRepository
  * @property informationController
+ * @constructor Create a group controller, all variables are instanced by Spring's autowire
  */
 @Service
 class GroupController(private val groupRepository: GroupRepository,
@@ -52,7 +53,7 @@ class GroupController(private val groupRepository: GroupRepository,
     }
 
     override fun searchGroupByName(name: String): List<StudyGroupDAO> {
-        return groupRepository.findByName(name).map{StudyGroupDAO(it)}
+        return groupRepository.findByName(name).filter { !it.hidden }.map{StudyGroupDAO(it)}
     }
 
     override fun searchGroupByLecture(lectureName: String): List<StudyGroupDAO> {
@@ -61,7 +62,7 @@ class GroupController(private val groupRepository: GroupRepository,
         for (currentLecture in allLectures) {
             allGroups.addAll(groupRepository.findByLectureID(currentLecture.lectureID))
         }
-        return allGroups.map{StudyGroupDAO(it)}
+        return allGroups.filter { !it.hidden }.map{StudyGroupDAO(it)}
     }
 
     override fun getGroupByID(groupID: Long): StudyGroupDAO? {
@@ -82,7 +83,9 @@ class GroupController(private val groupRepository: GroupRepository,
 
     override fun joinGroupRequest(groupID: Long, userID: Long): Boolean {
         if (groupRepository.existsById(groupID) && userRepository.existsById(userID)) {
-            val newMember = StudyGroupMember(0, groupID, userID, false, false)
+            //val newMember = StudyGroupMember(0, groupID, userID, false, false)
+            //todo change back to top line, currently auto-accepting group-join-requests
+            val newMember = StudyGroupMember(0, groupID, userID, false, true)
             groupMemberRepository.save(newMember)
             return true
         }

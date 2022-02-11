@@ -1,4 +1,4 @@
-package ovh.studywithme.server.view
+package ovh.studywithme.server.security
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter 

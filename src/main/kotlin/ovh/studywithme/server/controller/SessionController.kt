@@ -13,12 +13,13 @@ import ovh.studywithme.server.repository.UserRepository
 import ovh.studywithme.server.dao.SessionDAO
 
 /**
- * Session controller
+ * Implementation of the session controller interface.
  *
  * @property sessionRepository
  * @property sessionReportRepository
  * @property userRepository
  * @property attendeeRepository
+ * @constructor Create a session controller, all variables are instanced by Spring's autowire
  */
 @Service
     class SessionController(private val sessionRepository:SessionRepository,

@@ -14,11 +14,12 @@ import org.springframework.stereotype.Service
 import ovh.studywithme.server.model.*
 
 /**
- * User controller
+ * Implementation of the user controller interface.
  *
  * @property userRepository
  * @property userReportRepository
  * @property groupMemberRepository
+ * @constructor Create a user controller, all variables are instanced by Spring's autowire
  */
 @Service
     class UserController(private val userRepository: UserRepository,

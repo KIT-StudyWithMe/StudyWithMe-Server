@@ -12,11 +12,12 @@ import ovh.studywithme.server.repository.UserReportRepository
 import ovh.studywithme.server.repository.SessionReportRepository
 
 /**
- * Report controller
+ * Implementation of the report controller interface.
  *
  * @property groupReportRepository
  * @property userReportRepository
  * @property sessionReportRepository
+ * @constructor Create a report controller, all variables are instanced by Spring's autowire
  */
 @Service
 class ReportController(private val groupReportRepository: GroupReportRepository,

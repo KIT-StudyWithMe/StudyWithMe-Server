@@ -10,19 +10,22 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 /**
- * Information view
+ * The information view is exposed to the client. It is the required way for the client to communicate with the server.
+ * All rest-endpoints are defined here and only data access objects are expected and returned.
+ * This class bundles all functionality related to where and what a user studies.
+ * Spring auto-creates a thread for every request and calls the corresponding method.
  *
- * @property informationController
- * @constructor Create empty Information view
+ * @property informationController The server's internal information management logic that the view uses to process the client's requests.
+ * @constructor Create an information view, all variables are instanced by Spring's autowire.
  */
 @RestController
 @RequestMapping("")
 class InformationView(private val informationController: InformationController) {
 
     /**
-     * Get all institutions
+     * This method is executed when GET /institutions is called. It returns a list of all institutions.
      *
-     * @param institutionName
+     * @param institutionName The institution's name.
      * @return
      */
     @GetMapping("/institutions")
@@ -132,13 +135,12 @@ class InformationView(private val informationController: InformationController) 
     /**
      * Get lecture by id
      *
-     * @param majorID
      * @param lectureID
      * @return
      */
-    @GetMapping("/majors/{id}/lectures/{lid}")
-    fun getLectureById(@PathVariable(value = "id") majorID: Long, @PathVariable(value = "lid") lectureID: Long): ResponseEntity<LectureDAO> {
-        val lecture : LectureDAO? = informationController.getLectureByID(majorID, lectureID)
+    @GetMapping("/lectures/{lid}")
+    fun getLectureById(@PathVariable(value = "lid") lectureID: Long): ResponseEntity<LectureDAO> {
+        val lecture : LectureDAO? = informationController.getLectureByID(lectureID)
         if (lecture != null) return ResponseEntity.ok(lecture)
         return ResponseEntity.notFound().build()
     }

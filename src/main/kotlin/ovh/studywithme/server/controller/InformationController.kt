@@ -15,11 +15,12 @@ import java.util.*
 import org.springframework.stereotype.Service
 
 /**
- * Information controller
+ * Implementation of the interface controller interface.
  *
  * @property institutionRepository
  * @property majorRepository
  * @property lectureRepository
+ * @constructor Create an information controller, all variables are instanced by Spring's autowire
  */
 @Service
     class InformationController(private val institutionRepository: InstitutionRepository, private val majorRepository: MajorRepository, private val lectureRepository: LectureRepository) : InformationControllerInterface {
@@ -90,7 +91,7 @@ import org.springframework.stereotype.Service
         return lectureRepository.findAll().map{LectureDAO(it)}
     }
 
-    override fun getLectureByID(majorID: Long, lectureID:Long):LectureDAO? {
+    override fun getLectureByID(lectureID:Long):LectureDAO? {
         val lecture : Lecture? = lectureRepository.findById(lectureID).unwrap()
         if (lecture!=null) {
             return LectureDAO(lecture)
