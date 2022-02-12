@@ -171,7 +171,7 @@ class UserView(private val userController: UserController) {
      * @param userID The reported user's unique identifier.
      * @param reporterID The reporting user's unique identifier.
      * @param field The descriptor of the field in a user's details that is being reported.
-     * @return http status "200: OK" if the report was successfully deleted and http status "404: NOT FOUND" otherwise.
+     * @return http status "200: OK" if the report was successfully stored and http status "404: NOT FOUND" otherwise.
      */
     @PutMapping("/{uid}/report/{rid}")
     fun reportUserField(@PathVariable(value = "uid") userID: Long, @PathVariable(value = "rid") reporterID: Long,
