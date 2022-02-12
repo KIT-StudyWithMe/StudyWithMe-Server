@@ -1,6 +1,7 @@
 package ovh.studywithme.server.dao
 
 import ovh.studywithme.server.model.User
+import ovh.studywithme.server.model.StudyGroupMember
 
 /**
  * A data access object that contains relevant data about a study-group's member for the client.
@@ -18,4 +19,5 @@ data class StudyGroupMemberDAO(
     val isAdmin: Boolean
     ) {
     constructor(user : User, groupID: Long, isAdmin : Boolean) : this(user.userID, groupID, user.name, isAdmin)
+    constructor(member : StudyGroupMember, username: String) : this(member.userID, member.groupID, username, member.isAdmin)
 }

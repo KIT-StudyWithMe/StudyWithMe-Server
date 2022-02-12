@@ -195,9 +195,10 @@ class GroupView(
      */
     @PutMapping("/{gid}/users/{uid}/membership")
     fun toggleGroupRequest(@PathVariable(value = "gid") groupID: Long, @PathVariable(value = "uid") userID: Long,
-                           @Valid @RequestBody decision: Boolean): ResponseEntity<Void> {
-        if (groupController.toggleGroupMembership(groupID, userID, decision)) {
-            return ResponseEntity<Void>(HttpStatus.OK)
+                           @Valid @RequestBody decision: Boolean): ResponseEntity<StudyGroupMemberDAO> {
+        val groupMember: StudyGroupMemberDAO? = groupController.toggleGroupMembership(groupID, userID, decision)
+        if (groupMember!=null) {
+            return ResponseEntity.ok(groupMember)
         }
         return ResponseEntity.notFound().build()
     }

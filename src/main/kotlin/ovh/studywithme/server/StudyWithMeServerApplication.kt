@@ -17,6 +17,5 @@ class StudyWithMeServerApplication
  * @param args
  */
 fun main(args: Array<String>) {
-
 	runApplication<StudyWithMeServerApplication>(*args)
 }

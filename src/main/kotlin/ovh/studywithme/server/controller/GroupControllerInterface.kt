@@ -103,7 +103,7 @@ interface GroupControllerInterface {
      * @param isMember A boolean which is true if the user will be accepted and false otherwise.
      * @return A boolean which is true if the user's application was found and therefore can be processed and false otherwise.
      */
-    fun toggleGroupMembership(groupID:Long, userID:Long, isMember:Boolean): Boolean
+    fun toggleGroupMembership(groupID:Long, userID:Long, isMember:Boolean): StudyGroupMemberDAO?
 
     /**
      * Gets a complete list of all users in a certain study-group.

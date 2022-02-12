@@ -103,18 +103,18 @@ class GroupController(private val groupRepository: GroupRepository,
         return allRequestUserDAOs
     }
 
-    override fun toggleGroupMembership(groupID: Long, userID: Long, isMember: Boolean): Boolean {
-        if (!groupMemberRepository.existsByGroupIDAndUserID(groupID, userID)) return false
+    override fun toggleGroupMembership(groupID: Long, userID: Long, isMember: Boolean): StudyGroupMemberDAO? {
+        if (!groupMemberRepository.existsByGroupIDAndUserID(groupID, userID)) return null
         val groupMember : StudyGroupMember = groupMemberRepository.findByGroupIDAndUserID(groupID, userID)
         if (isMember) {
             groupMember.isMember = true
-            groupMemberRepository.save(groupMember)
+            return StudyGroupMemberDAO(groupMemberRepository.save(groupMember), userRepository.getById(userID).name)
         }
         else {
             // Means user-request to join the group was declined, delete the user's membership in the group
             groupMemberRepository.deleteByGroupIDAndUserID(groupID, userID)
         }
-        return true
+        return StudyGroupMemberDAO(0,0,"deleted",false)
     }
 
     override fun getUsersInGroup(groupID: Long): List<StudyGroupMemberDAO>? {
