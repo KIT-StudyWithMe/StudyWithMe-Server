@@ -113,8 +113,8 @@ class GroupController(private val groupRepository: GroupRepository,
         else {
             // Means user-request to join the group was declined, delete the user's membership in the group
             groupMemberRepository.deleteByGroupIDAndUserID(groupID, userID)
+            return StudyGroupMemberDAO(0,0,"deleted",false)
         }
-        return StudyGroupMemberDAO(0,0,"deleted",false)
     }
 
     override fun getUsersInGroup(groupID: Long): List<StudyGroupMemberDAO>? {
