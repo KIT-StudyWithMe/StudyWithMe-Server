@@ -57,8 +57,8 @@ class GroupView(
      * @return
      */
     @PostMapping("/{userID}")
-    fun createNewGroup(@Valid @RequestBody newGroup: StudyGroupDAO, @PathVariable(value = "userID") userID: Long): StudyGroupDAO =
-        groupController.createGroup(newGroup, userID)
+    fun createNewGroup(@Valid @RequestBody newGroup: StudyGroupDAO, @PathVariable(value = "userID") userID: Long): ResponseEntity<StudyGroupDAO> =
+        ResponseEntity.ok(groupController.createGroup(newGroup, userID))
 
     /**
      * Get group by i d

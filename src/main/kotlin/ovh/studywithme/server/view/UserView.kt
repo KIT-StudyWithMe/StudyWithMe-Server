@@ -90,7 +90,8 @@ class UserView(private val userController: UserController) {
     /**
      * To display a list of the groups a user joined in the application, this function is used.
      * If the user has not joined any groups yet, an empty list will be returned.
-     * If the user was not found, null is returned.
+     * If the user was not found, null is returned together with http status "404: NOT FOUND".
+     * If the user was found, http status "200: OK" will be returned in addition to the list.
      *
      * @param userID The user's unique identifier.
      * @return A list containing all the groups the user is member in.
@@ -105,21 +106,26 @@ class UserView(private val userController: UserController) {
     }
 
     /**
-     * Create new user
+     * Creates a new user. Used when a new user completed the application's registration.
+     * Use 0 as userID for new users here.
+     * The id he got from the server will be returned with the return object.
      *
-     * @param user
-     * @return
+     * @param user User information with which the new user should be created.
+     * @return The user that was created on the server, including his correct userID.
      */
     @PostMapping("")
-    fun createNewUser(@Valid @RequestBody user: UserDetailDAO): UserDetailDAO =
-        userController.createUser(user)
+    fun createNewUser(@Valid @RequestBody user: UserDetailDAO): ResponseEntity<UserDetailDAO> =
+        ResponseEntity.ok(userController.createUser(user))
 
     /**
-     * Update user by id
+     * Update user with the Information provided.
+     * Used when a user updates his profile information in the application.
+     * If there is no User with the userID then the http status "404: NOT FOUND" is returned.
+     * If the operation was successful then http status "200: OK" is returned.
      *
-     * @param userID
-     * @param newUser
-     * @return
+     * @param userID The unique identifier of the user that should be updated.
+     * @param newUser The updated user information.
+     * @return The updated user together with a http status.
      */
     @PutMapping("/{id}/detail")
     fun updateUserById(@PathVariable(value = "id") userID: Long, @Valid @RequestBody newUser: UserDetailDAO): ResponseEntity<UserDetailDAO> {
@@ -129,10 +135,11 @@ class UserView(private val userController: UserController) {
     }
 
     /**
-     * Delete user by id
+     * Deletes a user from the server. Used when a user wants to delete his account.
+     * A http status as return value indicates if the operation was successful.
      *
-     * @param userID
-     * @return
+     * @param userID The user's unique identifier.
+     * @return http status "200: OK" if the user was successfully deleted and http status "404: NOT FOUND" otherwise.
      */
     @DeleteMapping("/{id}")
     fun deleteUserById(@PathVariable(value = "id") userID: Long): ResponseEntity<Void> {
@@ -141,12 +148,14 @@ class UserView(private val userController: UserController) {
     }
 
     /**
-     * Report user field
+     * As a user's details contain freetext, the freetext fields might contain inappropriate text.
+     * Therefore, all users are able to report such inappropriate text to the moderation of the application.
+     * This method is used to report a text field of another user.
      *
-     * @param userID
-     * @param reporterID
-     * @param field
-     * @return
+     * @param userID The reported user's unique identifier.
+     * @param reporterID The reporting user's unique identifier.
+     * @param field The descriptor of the field in a user's details that is being reported.
+     * @return http status "200: OK" if the report was successfully deleted and http status "404: NOT FOUND" otherwise.
      */
     @PutMapping("/{uid}/report/{rid}")
     fun reportUserField(@PathVariable(value = "uid") userID: Long, @PathVariable(value = "rid") reporterID: Long,
@@ -158,11 +167,13 @@ class UserView(private val userController: UserController) {
     }
 
     /**
-     * Block user
+     * If a user keeps putting inappropriate texts in his profile page or is a continues negative impact on the
+     * experience for other users, a moderator might want to block that user.
+     * This method is used for such a block of a user that is a nuisance to others.
      *
-     * @param userID
-     * @param moderatorID
-     * @return
+     * @param userID The unique identifier of the user that will be blocked.
+     * @param moderatorID The moderator's unique identifier that will block the user.
+     * @return http status "200: OK" if the operation was successfully deleted and http status "404: NOT FOUND" otherwise.
      */
     @PutMapping("/{uid}/state/{mid}")
     fun blockUser(@PathVariable(value = "uid") userID: Long, @PathVariable(value = "mid") moderatorID: Long): ResponseEntity<Void> {
