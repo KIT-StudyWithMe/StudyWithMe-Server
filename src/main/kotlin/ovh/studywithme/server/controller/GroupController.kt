@@ -105,7 +105,7 @@ class GroupController(private val groupRepository: GroupRepository,
 
     override fun toggleGroupMembership(groupID: Long, userID: Long, isMember: Boolean): StudyGroupMemberDAO? {
         if (!groupMemberRepository.existsByGroupIDAndUserID(groupID, userID)) return null
-        if (!userRepository.existsById(userID) return null
+        if (!userRepository.existsById(userID)) return null
         val groupMember : StudyGroupMember = groupMemberRepository.findByGroupIDAndUserID(groupID, userID)
         if (isMember) {
             groupMember.isMember = true
