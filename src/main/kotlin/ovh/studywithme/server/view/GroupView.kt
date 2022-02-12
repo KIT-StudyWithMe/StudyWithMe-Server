@@ -32,13 +32,14 @@ class GroupView(
     ) {
 
     /**
-     * This method is executed when GET /groups is called.
+     * This method returns a set of groups. If no or invalid parameters are specified, all groups are returned.
+     * If lecture is specified it searches for groups with that lecture.
+     * If name is specified it searches for groups with that name.
+     * If text is specified it searches for groups for a lecture with that text or a group with that text as name.
      *
-     * Get a list of groups. 
-     *
-     * @param query
-     * @param lecture
-     * @param name
+     * @param query Search for either lecture-name or group-name
+     * @param lecture Search groups for this lecture-name
+     * @param name Search groups with this group-name
      * @return
      */
     @GetMapping("")
