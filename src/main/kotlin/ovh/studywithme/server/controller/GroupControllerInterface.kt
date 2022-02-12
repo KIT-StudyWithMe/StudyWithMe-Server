@@ -111,7 +111,7 @@ interface GroupControllerInterface {
      * @param groupID The group's unique identifier.
      * @return A list of all group members.
      */
-    fun getUsersInGroup(groupID:Long): List<StudyGroupMemberDAO>
+    fun getUsersInGroup(groupID:Long): List<StudyGroupMemberDAO>?
 
     /**
      * Remove a group-member from a study-group. Checks if the user is a group member first.

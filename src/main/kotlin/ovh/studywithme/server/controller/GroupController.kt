@@ -119,7 +119,8 @@ class GroupController(private val groupRepository: GroupRepository,
         return true
     }
 
-    override fun getUsersInGroup(groupID: Long): List<StudyGroupMemberDAO> {
+    override fun getUsersInGroup(groupID: Long): List<StudyGroupMemberDAO>? {
+        if(!groupRepository.existsById(groupID)) return null
         val allGroupMembers : List<StudyGroupMember> = groupMemberRepository.findByGroupID(groupID).filter { it.isMember }
         val allGroupUsers : MutableList<StudyGroupMemberDAO> = ArrayList()
         for (currentMember in allGroupMembers) {

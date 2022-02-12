@@ -19,9 +19,8 @@ import javax.validation.constraints.NotBlank
  */
 @Entity
 data class StudyGroupMember (
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val studyGroupMemberID: Long,
+    val memberID: Long,
 
     val groupID: Long,
 
