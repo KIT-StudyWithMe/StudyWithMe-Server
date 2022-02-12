@@ -39,7 +39,7 @@ class GroupController(private val groupRepository: GroupRepository,
     override fun createGroup(group: StudyGroupDAO, userID: Long): StudyGroupDAO {
         val createdGroup : StudyGroup = groupRepository.save(StudyGroup(0, group.name, group.description, group.lectureID, group.sessionFrequency, 
             group.sessionType, group.lectureChapter, group.exercise, false))
-        groupMemberRepository.save(StudyGroupMember(0, createdGroup.groupID, userID, true, false))
+        groupMemberRepository.save(StudyGroupMember(0, createdGroup.groupID, userID, true, true))
         return StudyGroupDAO(createdGroup)
     }
 
@@ -85,9 +85,7 @@ class GroupController(private val groupRepository: GroupRepository,
 
     override fun joinGroupRequest(groupID: Long, userID: Long): Boolean {
         if (groupRepository.existsById(groupID) && userRepository.existsById(userID)) {
-            //val newMember = StudyGroupMember(0, groupID, userID, false, false)
-            //todo change back to top line, currently auto-accepting group-join-requests
-            val newMember = StudyGroupMember(0, groupID, userID, false, true)
+            val newMember = StudyGroupMember(0, groupID, userID, false, false)
             groupMemberRepository.save(newMember)
             return true
         }
