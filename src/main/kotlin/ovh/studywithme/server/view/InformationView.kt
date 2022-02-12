@@ -25,10 +25,15 @@ import javax.validation.Valid
 class InformationView(private val informationController: InformationController) {
 
     /**
-     * This method is executed when GET /institutions is called. It returns a list of all institutions.
+     * This method is executed when GET /institutions is called.
+     *
+     * It returns a list of institutions.
+     * If the requested parameter institutionName is set, a list of institutions whose name starts with
+     * the parameter's value, which is a string, is returned.
+     * If the parameter institutionName is not set, a list of all institution on the server is returned.
      *
      * @param institutionName The institution's name.
-     * @return
+     * @return A list of institutions.
      */
     @GetMapping("/institutions")
     fun getAllInstitutions(@RequestParam("name") institutionName: String?): ResponseEntity<List<InstitutionDAO>> {
@@ -41,10 +46,14 @@ class InformationView(private val informationController: InformationController) 
     }
 
     /**
-     * Get institution by id
+     * This method is executed when GET /institutions/{id} is called.
      *
-     * @param institutionID
-     * @return
+     * Gets all information about an institution by its id.
+     * With the result http status "200: OK" is sent if an institution with the given id was found
+     * and http status "404: NOT FOUND" otherwise.
+     *
+     * @param institutionID The institutions unique id.
+     * @return The requested institution if it was found.
      */
     @GetMapping("/institutions/{id}")
     fun getInstitutionById(@PathVariable(value = "id") institutionID: Long): ResponseEntity<InstitutionDAO> {
@@ -54,20 +63,26 @@ class InformationView(private val informationController: InformationController) 
     }
 
     /**
-     * Create new institution
+     * This method is executed when POST /institutions is called.
      *
-     * @param institution
-     * @return
+     * It's used when a user signs up with an institution in his details that is not in the system yet.
+     *
+     * @param institution Institution information with which the new institution should be created.
+     * @return The institution that was created on the server, including its assigned institutionID, and http status "200: OK".
      */
     @PostMapping("/institutions")
-    fun createNewInstitution(@Valid @RequestBody institution: InstitutionDAO): InstitutionDAO =
-        informationController.createNewInstitution(institution)
+    fun createNewInstitution(@Valid @RequestBody institution: InstitutionDAO): ResponseEntity<InstitutionDAO> =
+        ResponseEntity.ok(informationController.createNewInstitution(institution))
 
     /**
-     * Delete institution by id
+     * This method is executed when DELETE /institutions/{id} is called.
+     *
+     * Deletes an institution from the server.
+     * It's identified by its id.
+     * A http status as return value indicates if the operation was successful.
      *
      * @param institutionID
-     * @return
+     * @return http status "200: OK" if the institution was successfully deleted and http status "404: NOT FOUND" otherwise.
      */
     @DeleteMapping("/institutions/{id}")
     fun deleteInstitutionById(@PathVariable(value = "id") institutionID: Long): ResponseEntity<Void> {
@@ -76,10 +91,14 @@ class InformationView(private val informationController: InformationController) 
     }
 
     /**
-     * Get major by id
+     * This method is executed when GET /majors/{id} is called.
      *
-     * @param majorID
-     * @return
+     * Gets all information about a major by its id.
+     * With the result http status "200: OK" is sent if a major with the given id was found
+     * and http status "404: NOT FOUND" otherwise.
+     *
+     * @param majorID The major's unique id.
+     * @return The requested major if it was found.
      */
     @GetMapping("/majors/{id}")
     fun getMajorById(@PathVariable(value = "id") majorID: Long): ResponseEntity<MajorDAO> {
@@ -89,10 +108,15 @@ class InformationView(private val informationController: InformationController) 
     }
 
     /**
-     * Get all majors
+     * This method is executed when GET /majors is called.
      *
-     * @param majorName
-     * @return
+     * It returns a list of majors.
+     * If the requested parameter majorName is set, a list of majors whose name starts with
+     * the parameter's value, which is a string, is returned.
+     * If the parameter majorName is not set, a list of all majors on the server is returned.
+     *
+     * @param majorName The major's name.
+     * @return A list of majors.
      */
     @GetMapping("/majors")
     fun getAllMajors(@RequestParam("name") majorName: String?): ResponseEntity<List<MajorDAO>> {
@@ -105,20 +129,26 @@ class InformationView(private val informationController: InformationController) 
     }
 
     /**
-     * Create new major
+     * This method is executed when POST /majors is called.
      *
-     * @param major
-     * @return
+     * It's used when a user signs up with a major in his details which is not in the system yet.
+     *
+     * @param major Major information with which the new major should be created.
+     * @return The major that was created on the server, including its assigned majorID, and http status "200: OK".
      */
     @PostMapping("/majors")
-    fun createNewMajor(@Valid @RequestBody major: MajorDAO): MajorDAO =
-        informationController.createNewMajor(major)
+    fun createNewMajor(@Valid @RequestBody major: MajorDAO): ResponseEntity<MajorDAO> =
+        ResponseEntity.ok(informationController.createNewMajor(major))
 
     /**
-     * Delete major by id
+     * This method is executed when DELETE /majors/{id} is called.
      *
-     * @param majorID
-     * @return
+     * Deletes a major from the server.
+     * It's identified by its id.
+     * A http status as return value indicates if the operation was successful.
+     *
+     * @param majorID The major's unique identifier.
+     * @return http status "200: OK" if the major was successfully deleted and http status "404: NOT FOUND" otherwise.
      */
     @DeleteMapping("/majors/{id}")
     fun deleteMajorById(@PathVariable(value = "id") majorID: Long): ResponseEntity<Void> {
@@ -127,10 +157,14 @@ class InformationView(private val informationController: InformationController) 
     }
 
     /**
-     * Get lecture by id
+     * This method is executed when GET /lectures/{id} is called.
      *
-     * @param lectureID
-     * @return
+     * Gets all information about a lecture by its id.
+     * With the result http status "200: OK" is sent if a lecture with the given id was found
+     * and http status "404: NOT FOUND" otherwise.
+     *
+     * @param lectureID The lecture's unique id.
+     * @return The requested lecture if it was found.
      */
     @GetMapping("/lectures/{lid}")
     fun getLectureById(@PathVariable(value = "lid") lectureID: Long): ResponseEntity<LectureDAO> {
@@ -140,11 +174,16 @@ class InformationView(private val informationController: InformationController) 
     }
 
     /**
-     * Get all lectures
+     * This method is executed when GET /majors/{id}/lectures is called.
      *
-     * @param majorID
-     * @param lectureName
-     * @return
+     * It returns a list of lectures.
+     * If the requested parameter lectureName is set, a list of lectures whose name starts with
+     * the parameter's value, which is a string, is returned.
+     * If the parameter lectureName is not set, a list of all lectures on the server is returned.
+     *
+     * @param majorID The major's unique identifier.
+     * @param lectureName The lecture's name.
+     * @return A list of lectures.
      */
     @GetMapping("/majors/{id}/lectures")
     fun getAllLectures(@PathVariable(value = "id") majorID: Long, @RequestParam("name") lectureName: String?): ResponseEntity<List<LectureDAO>> {
@@ -157,22 +196,29 @@ class InformationView(private val informationController: InformationController) 
     }
 
     /**
-     * Create new lecture
+     * This method is executed when POST /majors/{id}/lectures is called.
      *
-     * @param majorID
-     * @param lecture
-     * @return
+     * It's used when a user signs up with a lecture in his details which is not in the system for his major yet.
+     * The lecture is created for a certain major.
+     *
+     * @param majorID The major's unique identifier.
+     * @param lecture Lecture information with which the new major should be created.
+     * @return The lecture that was created on the server, including its assigned lectureID, and http status "200: OK".
      */
     @PostMapping("/majors/{id}/lectures")
-    fun createNewLecture(@PathVariable(value = "id") majorID: Long, @Valid @RequestBody lecture: LectureDAO): LectureDAO =
-        informationController.createNewLecture(majorID, lecture)
+    fun createNewLecture(@PathVariable(value = "id") majorID: Long, @Valid @RequestBody lecture: LectureDAO): ResponseEntity<LectureDAO> =
+        ResponseEntity.ok(informationController.createNewLecture(majorID, lecture))
 
     /**
-     * Delete lecture by id
+     * This method is executed when DELETE /majors/{id}/lectures/{id} is called.
      *
-     * @param majorID
-     * @param lectureID
-     * @return
+     * Deletes a lecture from the server.
+     * It's identified by its id and only deleted for a certain major, not all majors.
+     * A http status as return value indicates if the operation was successful.
+     *
+     * @param majorID The major's unique identifier.
+     * @param lectureID The lecture's unique identifier.
+     * @return http status "200: OK" if the major was successfully deleted and http status "404: NOT FOUND" otherwise.
      */
     @DeleteMapping("/majors/{id}/lectures/{lid}")
     fun deleteLectureById(@PathVariable(value = "id") majorID: Long, @PathVariable(value = "lid") lectureID: Long): ResponseEntity<Void> {

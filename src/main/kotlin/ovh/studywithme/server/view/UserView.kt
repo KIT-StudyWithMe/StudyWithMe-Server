@@ -27,6 +27,8 @@ import javax.validation.Valid
 class UserView(private val userController: UserController) {
 
     /**
+     * This method is executed when GET /users/{id} is called.
+     *
      * Gets a user as data access object from the server, which only contains restricted information about the user,
      * which is for public use in the application.
      * The user is identified by its unique id that the client sends with the request.
@@ -44,6 +46,8 @@ class UserView(private val userController: UserController) {
     }
 
     /**
+     * This method is executed when GET /users/{id}/detail is called.
+     *
      * Gets a user as data access object from the server, which contains the users complete information.
      * This information set should not be used in public in the application.
      * The user is identified by its unique id that the client sends with the request.
@@ -61,6 +65,8 @@ class UserView(private val userController: UserController) {
     }
 
     /**
+     * This method is executed when GET /users is called.
+     *
      * Used to receive a list of users from the server. Via parameters adjustments on which users to receive can be made.
      *
      * @param state Set to "blocked" to receive a list of all users that have been blocked by a moderator in the application.
@@ -88,6 +94,8 @@ class UserView(private val userController: UserController) {
     }
 
     /**
+     * This method is executed when GET /users/{id}/groups is called.
+     *
      * To display a list of the groups a user joined in the application, this function is used.
      * If the user has not joined any groups yet, an empty list will be returned.
      * If the user was not found, null is returned together with http status "404: NOT FOUND".
@@ -106,6 +114,8 @@ class UserView(private val userController: UserController) {
     }
 
     /**
+     * This method is executed when POST /users is called.
+     *
      * Creates a new user. Used when a new user completed the application's registration.
      * Use 0 as userID for new users here.
      * The id he got from the server will be returned with the return object.
@@ -118,6 +128,8 @@ class UserView(private val userController: UserController) {
         ResponseEntity.ok(userController.createUser(user))
 
     /**
+     * This method is executed when PUT /users/{id}/detail is called.
+     *
      * Update user with the Information provided.
      * Used when a user updates his profile information in the application.
      * If there is no User with the userID then the http status "404: NOT FOUND" is returned.
@@ -135,6 +147,8 @@ class UserView(private val userController: UserController) {
     }
 
     /**
+     * This method is executed when DELETE /users/{id} is called.
+     *
      * Deletes a user from the server. Used when a user wants to delete his account.
      * A http status as return value indicates if the operation was successful.
      *
@@ -148,6 +162,8 @@ class UserView(private val userController: UserController) {
     }
 
     /**
+     * This method is executed when PUT /users/{id}/report/{id} is called.
+     *
      * As a user's details contain freetext, the freetext fields might contain inappropriate text.
      * Therefore, all users are able to report such inappropriate text to the moderation of the application.
      * This method is used to report a text field of another user.
@@ -167,6 +183,8 @@ class UserView(private val userController: UserController) {
     }
 
     /**
+     * This method is executed when PUT /users/{id}/state/{id} is called.
+     *
      * If a user keeps putting inappropriate texts in his profile page or is a continues negative impact on the
      * experience for other users, a moderator might want to block that user.
      * This method is used for such a block of a user that is a nuisance to others.

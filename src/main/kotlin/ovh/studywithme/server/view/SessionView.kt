@@ -26,6 +26,8 @@ import javax.validation.Valid
 class SessionView(private val sessionController: SessionController) {
 
     /**
+     * This method is executed when GET /sessions/{id} is called.
+     *
      * Gets a session as data access object from the server.
      * The session is identified by its unique id that the client sends with the request.
      * If the session was found, it will be returned together with http status "200: OK".
@@ -44,6 +46,8 @@ class SessionView(private val sessionController: SessionController) {
     }
 
     /**
+     * This method is executed when PUT /sessions/{id} is called.
+     *
      * Updates an existing study session.
      * The session is identified by its unique id that the client sends with the request.
      * If the session that will be updated was found and updated, it will be returned together with http status "200: OK".
@@ -63,6 +67,8 @@ class SessionView(private val sessionController: SessionController) {
     }
 
     /**
+     * This method is executed when DELETE /sessions/{id} is called.
+     *
      * Deletes an existing study session.
      * The session is identified by its unique id that the client sends with the request.
      * If the session was found and deleted, it will be returned together with http status "200: OK".
@@ -80,6 +86,8 @@ class SessionView(private val sessionController: SessionController) {
     }
 
     /**
+     * This method is executed when PUT /sessions/{id}/participate/{id} is called.
+     *
      * Used when a User decides if he wants to participate in a study session a group he's member in planned
      * and when he wants to change that decision.
      *
@@ -98,6 +106,8 @@ class SessionView(private val sessionController: SessionController) {
     }
 
     /**
+     * This method is executed when GET /sessions/{id}/attendee is called.
+     *
      * Retrieves a list of all users that confirmed their participation in a study session.
      * The list might be empty.
      * If the session was found, a list of participating users will be returned together with http status "200: OK".
@@ -117,6 +127,8 @@ class SessionView(private val sessionController: SessionController) {
     }
 
     /**
+     * This method is executed when PUT /sessions/{id}/report/{id} is called.
+     *
      * Used when a user wants to report a certain field of a session's details which might contain inappropriate free text.
      * Moderators can review the report later and take appropriate action.
      *
