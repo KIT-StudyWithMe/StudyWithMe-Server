@@ -98,6 +98,10 @@ import org.springframework.stereotype.Service
     }
 
     override fun getLecturesByName(majorID: Long, searchName:String):List<LectureDAO> {
+        // If no valid majorID, return all Lectures that start with the searchName.
+        if (majorID == 0L) {
+            return lectureRepository.findByNameStartsWith(searchName).map {LectureDAO(it)}
+        }
         return lectureRepository.findByMajorIDAndNameStartsWith(majorID, searchName).map{LectureDAO(it)}
     }
 

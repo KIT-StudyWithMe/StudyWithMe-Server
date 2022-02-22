@@ -71,4 +71,12 @@ interface LectureRepository : JpaRepository<Lecture, Long> {
      * @return A list of Lectures of that Major.
      */
     fun findByMajorID(majorID: Long) : List<Lecture>
+
+    /**
+     * Find a list of all Lectures with a specific name.
+     *
+     * @param name Name of the Lecture to search for.
+     * @return A list of Lecture with that name.
+     */
+    fun findByNameStartsWith(name : String) : List<Lecture>
 }

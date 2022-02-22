@@ -59,7 +59,7 @@ class GroupController(private val groupRepository: GroupRepository,
     }
 
     override fun searchGroupByLecture(lectureName: String): List<StudyGroupDAO> {
-        val allLectures : List<LectureDAO> = informationController.getLecturesByName(0, lectureName)
+        val allLectures : List<LectureDAO> = informationController.getLecturesByName(0L, lectureName)
         val allGroups : MutableList<StudyGroup> = ArrayList()
         for (currentLecture in allLectures) {
             allGroups.addAll(groupRepository.findByLectureID(currentLecture.lectureID))
