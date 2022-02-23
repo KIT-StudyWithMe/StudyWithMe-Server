@@ -92,25 +92,6 @@ class GroupView(
     }
 
     /**
-     * This method is executed when GET /groups/{id}/detail is called.
-     *
-     * Gets a group's complete information by its id.
-     *
-     * @param groupID The group's unique identifier.
-     * @return http status "200: OK" if the group was found together with the group's information and http status "404: NOT FOUND" otherwise.
-     */
-    @GetMapping("/{gid}/detail")
-    fun getGroupDetailByID(@PathVariable(value = "gid") groupID: Long): ResponseEntity<StudyGroupDAO> {
-        val group: StudyGroupDAO? = groupController.getGroupByID(groupID)
-        if (group != null) {
-            return ResponseEntity.ok(group)
-        }
-        else {
-            return ResponseEntity.notFound().build()
-        }
-    }
-
-    /**
      * This method is executed when GET /groups/{id}/users is called.
      *
      * Gets a list of all users that are members in a given study group.
