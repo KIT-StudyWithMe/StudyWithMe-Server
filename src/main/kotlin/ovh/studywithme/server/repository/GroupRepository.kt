@@ -24,6 +24,14 @@ interface GroupRepository : JpaRepository<StudyGroup, Long> {
     fun findByName(name:String): List<StudyGroup>
 
     /**
+     * Find all groups in the database whose group name starts with the given name
+     *
+     * @param name The name of the Group which is being used as prefix
+     * @return A list of matching Groups
+     */
+    fun findByNameStartsWith(name:String): List<StudyGroup>
+
+    /**
      * Find a Group in the database by lecture-ID
      *
      * @param lectureId The unique ID of a Lecture to search for

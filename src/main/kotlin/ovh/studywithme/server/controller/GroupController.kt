@@ -55,7 +55,7 @@ class GroupController(private val groupRepository: GroupRepository,
     }
 
     override fun searchGroupByName(name: String): List<StudyGroupDAO> {
-        return groupRepository.findByName(name).filter { !it.hidden }.map{StudyGroupDAO(it)}
+        return groupRepository.findByNameStartsWith(name).filter { !it.hidden }.map{StudyGroupDAO(it)}
     }
 
     override fun searchGroupByLecture(lectureName: String): List<StudyGroupDAO> {
