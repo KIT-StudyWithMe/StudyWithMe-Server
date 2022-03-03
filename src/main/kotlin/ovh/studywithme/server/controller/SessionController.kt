@@ -7,12 +7,12 @@ import ovh.studywithme.server.repository.SessionRepository
 import java.util.Optional
 import org.springframework.stereotype.Service
 import ovh.studywithme.server.dao.SessionAttendeeDAO
+import ovh.studywithme.server.dao.SessionDAO
 import ovh.studywithme.server.model.SessionField
 import ovh.studywithme.server.model.SessionReport
 import ovh.studywithme.server.repository.SessionReportRepository
 import ovh.studywithme.server.repository.UserRepository
-import ovh.studywithme.server.dao.SessionDAO
-import ovh.studywithme.server.dao.StudyGroupDAO
+import java.util.Date
 
 /**
  * Implementation of the session controller interface.
@@ -43,7 +43,19 @@ import ovh.studywithme.server.dao.StudyGroupDAO
     }
 
     override fun getAllGroupSessions(groupID:Long): List<SessionDAO> {
-        return sessionRepository.findBygroupID(groupID).map{SessionDAO(it)}
+        //return sessionRepository.findBygroupID(groupID).map{SessionDAO(it)}
+        val allSessions = ArrayList(sessionRepository.findBygroupID(groupID).map{SessionDAO(it)})
+        // 8 hours in ms
+        val offset : Long = 8 * 60 * 60 * 1000
+        val now = Date().time
+        for (currentSession in allSessions) {
+            if ((currentSession.startTime + offset) < now) {
+                // the session ended more than offset ms ago, delete it
+                sessionRepository.deleteById(currentSession.sessionID)
+                allSessions.remove(currentSession)
+            }
+        }
+        return allSessions
     }
 
     override fun updateSession(updatedSession:SessionDAO): SessionDAO? {
