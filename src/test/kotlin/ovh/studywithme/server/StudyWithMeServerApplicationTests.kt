@@ -29,19 +29,25 @@ import ovh.studywithme.server.repository.AttendeeRepository
 import ovh.studywithme.server.repository.SessionRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.hibernate.annotations.NotFound
 import java.net.URI
+import io.mockk.mockk
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@ActiveProfiles(value = ["test"])
+@Tag("integration")
+@TestMethodOrder(OrderAnnotation::class)
 class StudyWithMeServerApplicationTests(
-	//private val groupRepository: GroupRepository,
+	//private val groupRepository =  mockk(GroupRepository)
 	//private val groupMemberRepository: GroupMemberRepository,
 
 	//private val institutionRepository: InstitutionRepository,
@@ -63,7 +69,6 @@ class StudyWithMeServerApplicationTests(
 	@LocalServerPort
   	var serverPort: Int = 12808
 
-
 	  @BeforeEach
 	  fun wipeDB() {
 		  //groupRepository.deleteAll()
@@ -83,6 +88,7 @@ class StudyWithMeServerApplicationTests(
 		  //userRepository.deleteAll()
 	  }
 
+	  @Order(1)
 	  @Test
 	  fun getNonexistentInstitution() {
 		val result = testRestTemplate.exchange(
@@ -94,6 +100,7 @@ class StudyWithMeServerApplicationTests(
 		Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
 	  }
 
+	  @Order(2)
 	  @Test
 	  fun getAllInstitutions() {
 		val result = testRestTemplate.exchange(
@@ -105,6 +112,7 @@ class StudyWithMeServerApplicationTests(
 		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
 	  }
 
+	  @Order(3)
 	  @Test
 	  fun createInstitution() {
 		val result = testRestTemplate.exchange(
@@ -116,6 +124,7 @@ class StudyWithMeServerApplicationTests(
 		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
 	  }
 
+	  @Order(4)
 	  @Test
 	  fun findInstitution() {
 		testRestTemplate.exchange(
@@ -133,6 +142,7 @@ class StudyWithMeServerApplicationTests(
 		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
 	  }
 
+	  @Order(5)
 	  @Test
 	  fun reportGroup() {
 		testRestTemplate.exchange(
@@ -149,20 +159,4 @@ class StudyWithMeServerApplicationTests(
 
 		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
 	  }
-
-
-
-	  
-
-	//@Test
-	//fun repositoryWhenSaved_thenFindsByID(userRepository: UserRepository) {
-	//	val user :User = userRepository.save(User(0, "Zaphod Beeblebrox", 0, 0, "thisismymail@test.com", "LALALALALA"))
-  	//	assertThat(userRepository.findById(user.userID)).isNotNull()
-	//}
-
-	//@Test
-	//fun controllerWhenSaved_thenFindsByID(userController: UserController) {
-	//	userController.createUser(User(0, "Zaphod Beeblebrox", 0, 0, "thisismymail@test.com", "LALALALALA"))
-  	//	assertThat(userController.getAllUsers()).isNotNull()
-	//}
 }
