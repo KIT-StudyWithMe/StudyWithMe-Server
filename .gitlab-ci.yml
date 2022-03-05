@@ -143,3 +143,12 @@ pages:
     expire_in: 1 week
   only:
     - main
+
+pipelinetrigger:
+  stage: publish
+  needs:
+    - pages
+  script:
+    - apk update && apk upgrade
+    - apk add curl
+    - "curl -X POST --fail -F token=${PIPELINE_TRIGGER_TOKEN} -F ref=main https://gitlab.com/api/v4/projects/34245076/trigger/pipeline"
