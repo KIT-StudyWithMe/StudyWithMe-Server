@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
+import org.springframework.http.ResponseEntity
 import ovh.studywithme.server.model.User
 import ovh.studywithme.server.model.Institution
 import ovh.studywithme.server.model.StudyGroupField
@@ -39,6 +40,8 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.hibernate.annotations.NotFound
 import java.net.URI
 import io.mockk.mockk
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(
@@ -46,47 +49,12 @@ import io.mockk.mockk
 )
 @Tag("integration")
 @TestMethodOrder(OrderAnnotation::class)
-class StudyWithMeServerApplicationTests(
-	//private val groupRepository =  mockk(GroupRepository)
-	//private val groupMemberRepository: GroupMemberRepository,
-
-	//private val institutionRepository: InstitutionRepository,
-	//private val majorRepository: MajorRepository,
-	//private val lectureRepository: LectureRepository,
-
-	//private val userReportRepository: UserReportRepository,
-	//private val groupReportRepository: GroupReportRepository,
-	//private val sessionReportRepository: SessionReportRepository,
-
-	//private val attendeeRepository: AttendeeRepository,
-	//private val sessionRepository: SessionRepository,
-	
-	//private val userRepository: UserRepository
-	) {
-
+class InstitutionTests() {
 	var testRestTemplate = TestRestTemplate()
+	val mapper = jacksonObjectMapper()
 
 	@LocalServerPort
-  	var serverPort: Int = 12808
-
-	  @BeforeEach
-	  fun wipeDB() {
-		  //groupRepository.deleteAll()
-		  //groupMemberRepository.deleteAll()
-
-		  //institutionRepository.deleteAll()
-		  //majorRepository.deleteAll()
-		  //lectureRepository.deleteAll()
-
-		  //userReportRepository.deleteAll()
-		  //groupReportRepository.deleteAll()
-		  //sessionReportRepository.deleteAll()
-
-		  //attendeeRepository.deleteAll()
-		  //sessionRepository.deleteAll()
-
-		  //userRepository.deleteAll()
-	  }
+  	var serverPort: Int = 0
 
 	  @Order(1)
 	  @Test
@@ -127,36 +95,73 @@ class StudyWithMeServerApplicationTests(
 	  @Order(4)
 	  @Test
 	  fun findInstitution() {
-		testRestTemplate.exchange(
-			URI("http://localhost:" + serverPort + "/institutions"),
-			HttpMethod.POST,
-			HttpEntity(Institution(0, "testInstitutionTEEESST")),
-			String::class.java)
-		
-		val result = testRestTemplate.exchange(
-			URI("http://localhost:" + serverPort + "/institutions?name=testInstitutionTEEESST"),
-			HttpMethod.GET,
-			HttpEntity(""),
-			String::class.java)
+		val institution = post("/institutions", Institution(0, "testInstitutionTEEESST"))
 
-		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
+		val answer = get("/institutions?name=testInstitutionTEEESST")
+
+		Assertions.assertEquals(institution.getBody(), answer.getBody())
 	  }
 
 	  @Order(5)
 	  @Test
 	  fun reportGroup() {
-		testRestTemplate.exchange(
-			URI("http://localhost:" + serverPort + "/groups/1/report/1"),
-			HttpMethod.PUT,
-			HttpEntity(StudyGroupField.NAME),
-			String::class.java)
+		val create = putBody("/groups/1/report/1",StudyGroupField.NAME)
 		
-		val result = testRestTemplate.exchange(
-			URI("http://localhost:" + serverPort + "/reports/group"),
+		val result = getBody("/reports/group")
+
+		var institute: Institution = mapper.readValue(create)
+		var instituteResult: Institution = mapper.readValue(result)
+
+		//todo assert not null
+		Assertions.assertEquals(institute, instituteResult)
+	  }
+
+	  //helper methods
+	  fun get(path:String):ResponseEntity<String!>!{
+		return testRestTemplate.exchange(
+			URI("http://localhost:" + serverPort + path),
 			HttpMethod.GET,
 			HttpEntity(""),
 			String::class.java)
-
-		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
 	  }
+
+	  fun getBody(path:String):String{
+		  val output: String? = get(path).getBody()
+		  if (output!=null){
+			  return output
+		  }
+		  return ""
+	  }
+
+	  fun <T> put(path:String, object:T):ResponseEntity<String!>!{
+		return testRestTemplate.exchange(
+			URI("http://localhost:" + serverPort + path),
+			HttpMethod.PUT,
+			HttpEntity(object),
+			String::class.java)
+	  }
+
+	fun <T> putBody(path:String, object:T):String{
+		val output: String? = put(path, object).getBody()
+		if (output!=null){
+			return output
+		}
+		return ""
+	}
+
+	fun <T> post(path:String, object:T):ResponseEntity<String!>!{
+		return testRestTemplate.exchange(
+			URI("http://localhost:" + serverPort + path),
+			HttpMethod.POST,
+			HttpEntity(object),
+			String::class.java)
+	}
+
+	fun <T> postBody(path:String, object:T):String{
+		val output: String? = post(path, object).getBody()
+		if (output!=null){
+			return output
+		}
+		return ""
+	}
 }
