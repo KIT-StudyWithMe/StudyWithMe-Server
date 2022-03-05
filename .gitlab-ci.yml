@@ -61,6 +61,7 @@ test:
       - build/jacocoHtml/*
     reports:
       junit: build/test-results/test/*.xml
+    expire_in: 1 week
 
 coverage:
   # Must be in a stage later than test-jdk11's stage.
@@ -75,6 +76,7 @@ coverage:
   artifacts:
     reports:
       cobertura: build/cobertura.xml
+    expire_in: 1 week
 
 documentation:
   stage: artifacts
