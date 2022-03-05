@@ -24,6 +24,7 @@ stages:
   - build
   - test
   - artifacts
+  - publish
 
 build:
   stage: build
@@ -54,6 +55,7 @@ test:
   artifacts:
     paths:
       - build/reports/jacoco/test/jacocoTestReport.xml
+      - build/jacocoHtml/*
 
 coverage:
   # Must be in a stage later than test-jdk11's stage.
@@ -112,5 +114,17 @@ docker:
     paths:
       - build
       - .gradle
+  only:
+    - main
+
+
+pages:
+  stage: publish
+  dependencies:
+    - test
+    - documentation
+  script:
+    - ls build/dokka/
+    - ls build/jacocoHtml/
   only:
     - main
