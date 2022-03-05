@@ -136,9 +136,7 @@ pages:
     - mv build/dokka/html/* public/doku
     - mv build/reports/tests/test/* public/tests
     - mv build/jacocoHtml/* public/coverage
-    - ls public/doku
-    - ls public/tests
-    - ls public/coverage
+    - mv website/index.html public/index.html
   artifacts:
     paths:
       - public
