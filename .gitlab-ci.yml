@@ -22,7 +22,7 @@ before_script:
 
 stages:
   - build
-    #- test
+  - test
   - docu
   - package
 
