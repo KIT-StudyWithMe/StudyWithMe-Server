@@ -55,7 +55,10 @@ test:
   artifacts:
     paths:
       - build/reports/jacoco/test/jacocoTestReport.xml
+      - build/reports/tests/test/*
       - build/jacocoHtml/*
+    reports:
+      junit: build/test-results/test/*.xml
 
 coverage:
   # Must be in a stage later than test-jdk11's stage.
@@ -124,7 +127,19 @@ pages:
     - test
     - documentation
   script:
-    - ls build/dokka/
-    - ls build/jacocoHtml/
+    - mkdir public
+    - mkdir public/doku
+    - mkdir public/tests
+    - mkdir public/coverage
+    - mv build/dokka/html/* public/doku
+    - mv build/reports/tests/test/* public/tests
+    - mv build/jacocoHtml/* public/coverage
+    - ls /public/doku
+    - ls /public/tests
+    - ls /public/coverage
+  artifacts:
+    paths:
+      - public
+    expire_in: 1 week
   only:
     - main
