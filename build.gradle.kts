@@ -11,6 +11,8 @@ plugins {
 	kotlin("jvm") version "1.6.10"
 	kotlin("plugin.spring") version "1.6.10"
 	kotlin("plugin.jpa") version "1.6.10"
+	jacoco
+	//id("io.github.chiragji.jacotura") version "1.0.2"
 }
 
 group = "ovh.studywithme"
@@ -69,7 +71,25 @@ tasks.test {
         includeTags("integration")
         excludeTags("repository")
     }
+	//finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+	reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
+}
+
+//jacotura {
+//	properties {
+//	  property("jacotura.jacoco.path", "$buildDir/reports/jacoco/test/jacocoTestReport.xml")
+//	  property("jacotura.cobertura.path", "$buildDir/reports/cobertura.xml")
+//	}
+	//sourceDirs = sourceSets.main.kotlin.srcDirs
+//}
 
 var testResults by extra(mutableListOf<TestOutcome>()) // Container for tests summaries
 
