@@ -7,6 +7,7 @@ plugins {
 	kotlin("jvm") version "1.6.10"
 	kotlin("plugin.spring") version "1.6.10"
 	kotlin("plugin.jpa") version "1.6.10"
+	jacoco
 }
 
 group = "ovh.studywithme"
@@ -27,6 +28,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	implementation("com.google.flogger:flogger:0.7.4")
+	runtimeOnly("com.google.flogger:flogger-system-backend:0.7.4")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.6.10")
@@ -39,8 +42,10 @@ dependencies {
         exclude(module = "mockito-core")
     }
 	testImplementation("org.springframework.security:spring-security-test")
-	testImplementation( "org.junit.jupiter:junit-jupiter-api:5.8.2")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
 	testImplementation("io.mockk:mockk:1.9.3")
+	testImplementation("com.ninja-squad:springmockk:3.1.0")
+	testImplementation("com.h2database:h2")
 }
 
 tasks.withType<KotlinCompile> {
@@ -52,4 +57,20 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
+
+
+//tasks.test {
+    
+//}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+	reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
+}
+
+

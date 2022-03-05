@@ -1,4 +1,4 @@
-package ovh.studywithme.server
+package ovh.studywithme.servertests
 
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
@@ -39,8 +39,8 @@ import java.net.URI
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@ActiveProfiles(value = ["test"])
-class StudyWithMeServerApplicationTests(
+//@ActiveProfiles(value = ["integrationtest"])
+class StudyWithMeServerIntegrationTests(
 	//private val groupRepository: GroupRepository,
 	//private val groupMemberRepository: GroupMemberRepository,
 
@@ -60,7 +60,7 @@ class StudyWithMeServerApplicationTests(
 
 	var testRestTemplate = TestRestTemplate()
 
-	@LocalServerPort
+	//@LocalServerPort
   	var serverPort: Int = 12808
 
 
