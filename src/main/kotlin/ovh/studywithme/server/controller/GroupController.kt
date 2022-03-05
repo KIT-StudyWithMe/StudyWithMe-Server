@@ -47,7 +47,7 @@ class GroupController(private val groupRepository: GroupRepository,
     override fun searchGroup(query: String): List<StudyGroupDAO> {
         val result : MutableList<StudyGroupDAO> = ArrayList(searchGroupByName(query))
         result.addAll(searchGroupByLecture(query))
-        return result
+        return result.distinctBy { it.groupID }
     }
 
     override fun searchGroupByName(name: String): List<StudyGroupDAO> {

@@ -134,7 +134,7 @@ class StudyWithMeServerApplicationTests(
 			String::class.java)
 		
 		val result = testRestTemplate.exchange(
-			URI("http://localhost:" + serverPort + "/institutions?name=testInstitutionTEEESST"),
+			URI("http://localhost:$serverPort/institutions?name=testInstitutionTEEESST"),
 			HttpMethod.GET,
 			HttpEntity(""),
 			String::class.java)
