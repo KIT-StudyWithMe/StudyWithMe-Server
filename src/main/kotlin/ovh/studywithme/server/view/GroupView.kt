@@ -320,10 +320,19 @@ class GroupView(
      * @return http status "200: OK" if the group was found and it's hidden-status set successfully and http status "404: NOT FOUND" otherwise.
      */
     @PostMapping("/{gid}/hide")
-    fun hideGroup(@PathVariable(value = "gid") groupID: Long, @Valid @RequestBody hidden: Boolean): ResponseEntity<Void> {
-        if (groupController.hideGroup(groupID, hidden)) {
+    fun toggleHiddenStatus(@PathVariable(value = "gid") groupID: Long): ResponseEntity<Void> {
+        if (groupController.toggleHiddenStatus(groupID)) {
             return ResponseEntity<Void>(HttpStatus.OK)
         }
         return ResponseEntity.notFound().build()
+    }
+
+    @GetMapping("/{gid}/hide")
+    fun getHiddenStatus(@PathVariable(value = "gid") groupID: Long): ResponseEntity<Boolean> {
+        return try {
+            ResponseEntity.ok(groupController.getHiddenStatus(groupID))
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.notFound().build()
+        }
     }
 }

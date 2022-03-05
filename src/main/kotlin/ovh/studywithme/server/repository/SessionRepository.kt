@@ -61,4 +61,11 @@ interface AttendeeRepository : JpaRepository<SessionAttendee, Long> {
      * @return A list of all users that decided if they will or will not participate in the session.
      */
     fun findBySessionID(sessionID:Long): List<SessionAttendee>
+
+    /**
+     * Deletes all group members that made a decision regarding participation in a given group session.
+     *
+     * @param sessionID The study session's unique identifier.
+     */
+    fun deleteBySessionID(sessionID:Long)
 }

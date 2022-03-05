@@ -76,6 +76,8 @@ import ovh.studywithme.server.model.*
 
     override fun deleteUser(userID:Long): Boolean {
         if (userRepository.existsById(userID)) {
+            //TODO what if the user was the only admin in a group?
+            groupMemberRepository.deleteByUserID(userID)
             userRepository.deleteById(userID)
             return true
         }

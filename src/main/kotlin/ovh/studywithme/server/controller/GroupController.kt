@@ -6,11 +6,7 @@ import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.dao.StudyGroupMemberDAO
 import ovh.studywithme.server.dao.LectureDAO
 import ovh.studywithme.server.model.*
-import ovh.studywithme.server.repository.GroupRepository
-import ovh.studywithme.server.repository.GroupMemberRepository
-import ovh.studywithme.server.repository.GroupReportRepository
-import ovh.studywithme.server.repository.UserRepository
-import ovh.studywithme.server.repository.LectureRepository
+import ovh.studywithme.server.repository.*
 import java.util.Optional
 import kotlin.collections.ArrayList
 
@@ -27,8 +23,8 @@ import kotlin.collections.ArrayList
 @Service
 class GroupController(private val groupRepository: GroupRepository,
                       private val groupMemberRepository: GroupMemberRepository,
-                      private val userRepository: UserRepository,
                       private val groupReportRepository: GroupReportRepository,
+                      private val userRepository: UserRepository,
                       private val lectureRepository: LectureRepository,
                       private val informationController: InformationController) : GroupControllerInterface {
 
@@ -183,14 +179,21 @@ class GroupController(private val groupRepository: GroupRepository,
         return false
     }
 
-    override fun hideGroup(groupID: Long, hidden: Boolean): Boolean {
+    override fun toggleHiddenStatus(groupID: Long): Boolean {
         if (groupRepository.existsById(groupID)) {
             val group = groupRepository.findById(groupID).get()
-            group.hidden = hidden
+            group.hidden = !group.hidden
             groupRepository.save(group)
             return true
         }
         return false
+    }
+
+    override fun getHiddenStatus(groupID: Long): Boolean {
+        if (groupRepository.existsById(groupID)) {
+            return groupRepository.findById(groupID).get().hidden
+        }
+        throw IllegalArgumentException()
     }
 
     /**

@@ -43,7 +43,6 @@ import java.util.Date
     }
 
     override fun getAllGroupSessions(groupID:Long): List<SessionDAO> {
-        //return sessionRepository.findBygroupID(groupID).map{SessionDAO(it)}
         val allSessions = ArrayList(sessionRepository.findBygroupID(groupID).map{SessionDAO(it)})
         // 8 hours in ms
         val offset : Long = 8 * 60 * 60 * 1000
@@ -51,8 +50,9 @@ import java.util.Date
         for (currentSession in allSessions) {
             if ((currentSession.startTime + offset) < now) {
                 // the session ended more than offset ms ago, delete it
-                sessionRepository.deleteById(currentSession.sessionID)
                 allSessions.remove(currentSession)
+                attendeeRepository.deleteBySessionID(currentSession.sessionID)
+                sessionRepository.deleteById(currentSession.sessionID)
             }
         }
         return allSessions
@@ -67,6 +67,7 @@ import java.util.Date
 
     override fun deleteSession(sessionID:Long): Boolean {
         if (sessionRepository.existsById(sessionID)) {
+            attendeeRepository.deleteBySessionID(sessionID)
             sessionRepository.deleteById(sessionID)
             return true
         }

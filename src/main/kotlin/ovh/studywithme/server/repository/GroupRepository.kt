@@ -67,6 +67,13 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
     fun deleteByGroupID(groupID:Long)
 
     /**
+     * Delete a user from any study groups he's in
+     *
+     * @param userID UserID which is deleted from all study groups
+     */
+    fun deleteByUserID(userID:Long)
+
+    /**
      * Find a unique GroupMember by its GroupID and its UserID
      *
      * @param groupID The GroupMembers GroupID

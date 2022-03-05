@@ -167,5 +167,7 @@ interface GroupControllerInterface {
      * @param hidden A boolean which is true if the group must not show up in search results and false otherwise.
      * @return A boolean which is true if the group was found and the new hidden-status was set - and false otherwise.
      */
-    fun hideGroup(groupID:Long, hidden:Boolean): Boolean
+    fun toggleHiddenStatus(groupID:Long): Boolean
+
+    fun getHiddenStatus(groupID: Long): Boolean
 }
