@@ -28,15 +28,19 @@ class GroupController(private val groupRepository: GroupRepository,
                       private val lectureRepository: LectureRepository,
                       private val informationController: InformationController) : GroupControllerInterface {
 
+    private fun getMemberCount(groupID: Long): Int {
+        return groupMemberRepository.findByGroupID(groupID).filter { it.isMember }.size
+    }
+
     override fun getAllGroups(): List<StudyGroupDAO> {
-        return groupRepository.findAll().map{StudyGroupDAO(it)}
+        return groupRepository.findAll().map{StudyGroupDAO(it, getMemberCount(it.groupID))}
     }
 
     override fun createGroup(group: StudyGroupDAO, userID: Long): StudyGroupDAO {
         val createdGroup : StudyGroup = groupRepository.save(StudyGroup(0, group.name, group.description, group.lectureID, group.sessionFrequency, 
             group.sessionType, group.lectureChapter, group.exercise, false))
         groupMemberRepository.save(StudyGroupMember(0, createdGroup.groupID, userID, true, true))
-        return StudyGroupDAO(createdGroup)
+        return StudyGroupDAO(createdGroup, getMemberCount(createdGroup.groupID))
     }
 
     override fun getGroupsIndex(start: Int, size: Int): List<StudyGroupDAO> {
@@ -51,7 +55,7 @@ class GroupController(private val groupRepository: GroupRepository,
     }
 
     override fun searchGroupByName(name: String): List<StudyGroupDAO> {
-        return groupRepository.findByNameStartsWith(name).filter { !it.hidden }.map{StudyGroupDAO(it)}
+        return groupRepository.findByNameStartsWith(name).filter { !it.hidden }.map{StudyGroupDAO(it, getMemberCount(it.groupID))}
     }
 
     override fun searchGroupByLecture(lectureName: String): List<StudyGroupDAO> {
@@ -60,13 +64,13 @@ class GroupController(private val groupRepository: GroupRepository,
         for (currentLecture in allLectures) {
             allGroups.addAll(groupRepository.findByLectureID(currentLecture.lectureID))
         }
-        return allGroups.filter { !it.hidden }.map{StudyGroupDAO(it)}
+        return allGroups.filter { !it.hidden }.map{StudyGroupDAO(it, getMemberCount(it.groupID))}
     }
 
     override fun getGroupByID(groupID: Long): StudyGroupDAO? {
         val studyGroup: StudyGroup? = groupRepository.findById(groupID).unwrap()
         if (studyGroup != null) {
-            return StudyGroupDAO(studyGroup)
+            return StudyGroupDAO(studyGroup, getMemberCount(studyGroup.groupID))
         }
         return null
     }
@@ -168,7 +172,7 @@ class GroupController(private val groupRepository: GroupRepository,
         for (lecture in lectures) {
             results.addAll(groupRepository.findByLectureID(lecture.lectureID))
         }
-        return results.toList().map{StudyGroupDAO(it)}
+        return results.toList().map{StudyGroupDAO(it, getMemberCount(it.groupID))}
     }
 
     override fun reportGroupField(groupID:Long, reporterID:Long, field: StudyGroupField): Boolean {

@@ -7,7 +7,6 @@ import ovh.studywithme.server.controller.UserController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import ovh.studywithme.server.model.StudyGroupMember
 import ovh.studywithme.server.model.UserField
 import javax.validation.Valid
 

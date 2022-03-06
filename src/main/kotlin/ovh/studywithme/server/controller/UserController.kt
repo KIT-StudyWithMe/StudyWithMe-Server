@@ -49,6 +49,10 @@ import ovh.studywithme.server.model.*
         return null
     }
 
+    private fun getMemberCount(groupID: Long): Int {
+        return groupMemberRepository.findByGroupID(groupID).filter { it.isMember }.size
+    }
+
     override fun getUsersGroups(userID:Long): List<StudyGroupDAO>? {
         if (!userRepository.existsById(userID)) {
             return null
@@ -56,7 +60,7 @@ import ovh.studywithme.server.model.*
         // Only return groups the user is a member in, not the ones he only applied to.
         val groupMemberEntries: List<StudyGroupMember> = groupMemberRepository.findAll().filter { it.userID == userID && it.isMember }
         val studyGroups : List<StudyGroup> = groupMemberEntries.map{ studyGroupRepository.findById(it.groupID).get() }
-        return studyGroups.map{StudyGroupDAO(it)}
+        return studyGroups.map{StudyGroupDAO(it, getMemberCount(it.groupID))}
      }
 
     override fun createUser(userDetailDAO:UserDetailDAO): UserDetailDAO {

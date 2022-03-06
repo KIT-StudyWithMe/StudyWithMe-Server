@@ -3,6 +3,7 @@ package ovh.studywithme.server.dao
 import ovh.studywithme.server.model.StudyGroup
 import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
+import ovh.studywithme.server.repository.GroupRepository
 
 
 /**
@@ -26,9 +27,11 @@ data class StudyGroupDAO(
     val sessionFrequency: SessionFrequency,
     val sessionType: SessionMode,
     val lectureChapter: Int,
-    val exercise: Int
+    val exercise: Int,
+    val memberCount: Int
     ) {
-    constructor(group : StudyGroup) : this(group.groupID, group.name, group.description, group.lectureID, group.sessionFrequency, group.sessionType, group.lectureChapter, group.exercise)
+
+    constructor(group : StudyGroup, memberCount: Int) : this(group.groupID, group.name, group.description, group.lectureID, group.sessionFrequency, group.sessionType, group.lectureChapter, group.exercise, memberCount)
 
     /**
      * Convert a StudyGroupDAO to a StudyGroup
