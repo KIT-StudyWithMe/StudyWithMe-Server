@@ -64,6 +64,7 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
      *
      * @param groupID GroupID for which all GroupMembers should be deleted
      */
+    @Transactional
     fun deleteByGroupID(groupID:Long)
 
     /**
@@ -71,6 +72,7 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
      *
      * @param userID UserID which is deleted from all study groups
      */
+    @Transactional
     fun deleteByUserID(userID:Long)
 
     /**
@@ -99,5 +101,6 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
      * @param groupID GroupID of the GroupMember
      * @param userID UserID of the GroupMember
      */
+    @Transactional
     fun deleteByGroupIDAndUserID(groupID:Long, userID:Long)
 }

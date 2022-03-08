@@ -4,6 +4,7 @@ import ovh.studywithme.server.model.SessionAttendee
 import ovh.studywithme.server.model.Session
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import ovh.studywithme.server.model.SessionField
 
 /**
@@ -67,5 +68,6 @@ interface AttendeeRepository : JpaRepository<SessionAttendee, Long> {
      *
      * @param sessionID The study session's unique identifier.
      */
+    @Transactional
     fun deleteBySessionID(sessionID:Long)
 }

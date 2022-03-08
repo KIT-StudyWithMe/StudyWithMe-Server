@@ -2,6 +2,7 @@ package ovh.studywithme.server.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import ovh.studywithme.server.model.*
 /**
  * The following repositories are grouped under the name "report repositories", as they all contain information
@@ -35,6 +36,7 @@ interface GroupReportRepository : JpaRepository<StudyGroupReport, Long> {
      * @param groupID The unique identifier for the group that a field was reported for.
      * @param groupField The reported freetext field's descriptor.
      */
+    @Transactional
     fun deleteByReporterIDAndGroupIDAndGroupField(reporterID:Long, groupID:Long, groupField: StudyGroupField)
 }
 
@@ -64,6 +66,7 @@ interface UserReportRepository : JpaRepository<UserReport, Long> {
      * @param userID The unique identifier for the reported user.
      * @param userField The reported freetext field's descriptor.
      */
+    @Transactional
     fun deleteByReporterIDAndUserIDAndUserField(reporterID:Long, userID:Long, userField: UserField)
 }
 
@@ -93,5 +96,6 @@ interface SessionReportRepository : JpaRepository<SessionReport, Long> {
      * @param sessionID The unique identifier for the session that a field was reported for.
      * @param sessionField The reported freetext field's descriptor.
      */
+    @Transactional
     fun deleteByReporterIDAndSessionIDAndSessionField(reporterID:Long, sessionID:Long, sessionField: SessionField)
 }
