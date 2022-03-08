@@ -19,12 +19,20 @@ import javax.validation.constraints.NotBlank
 data class UserReport (
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val userReportID: Long,
+    val userReportID: UserReportID,
 
-    val reporterID: Long = 0,
+    val reporterID: UserID,
 
-    val userID: Long = 0,
+    val userID: UserID,
 
-    //@get: NotBlank //todo? working?
     val userField: UserField
 )
+
+/**
+ * UserReportID
+ *
+ * @property userReportID
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class UserReportID(private val userReportID: Long)

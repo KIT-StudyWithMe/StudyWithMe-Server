@@ -23,27 +23,25 @@ import javax.validation.constraints.NotBlank
 @Entity
 data class StudyGroup (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val groupID: Long,
+    val groupID: GroupID,
 
     @get: NotBlank
-    val name: String,
+    val name: GroupName,
 
     @get: NotBlank
-    val description: String,
+    val description: GroupDescription,
 
-    val lectureID: Long,
+    val lectureID: LectureID,
 
-    //@get: NotBlank todo, working?
     val sessionFrequency: SessionFrequency,
 
-    //@get: NotBlank todo
     val sessionType: SessionMode,
 
-    val lectureChapter: Int,
+    val lectureChapter: LectureChapter,
 
-    val exercise: Int,
+    val exercise: Exercise,
 
-    var hidden: Boolean
+    var hidden: Hidden
 )
 
 /**
@@ -74,22 +72,13 @@ value class GroupName(private val name: String)
 value class GroupDescription(private val description: String)
 
 /**
- * Lecture i d
- *
- * @property lectureID
- * @constructor Create empty Lecture i d
- */
-@JvmInline
-value class LectureID(private val lectureID: Long)
-
-/**
  * Lecture chapter
  *
  * @property lectureChapter
  * @constructor Create empty Lecture chapter
  */
 @JvmInline
-value class lectureChapter(private val lectureChapter: Int)
+value class LectureChapter(private val lectureChapter: Int)
 
 /**
  * Exercise
@@ -98,7 +87,7 @@ value class lectureChapter(private val lectureChapter: Int)
  * @constructor Create empty Exercise
  */
 @JvmInline
-value class exercise(private val exercise: Int)
+value class Exercise(private val exercise: Int)
 
 /**
  * Hidden
@@ -107,4 +96,6 @@ value class exercise(private val exercise: Int)
  * @constructor Create empty Hidden
  */
 @JvmInline
-value class hidden(private val hidden: Boolean)
+value class Hidden(private val hidden: Boolean) {
+    fun toBoolean():Boolean=this.hidden
+}

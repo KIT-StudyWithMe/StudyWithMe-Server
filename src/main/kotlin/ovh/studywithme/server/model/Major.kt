@@ -16,8 +16,26 @@ import javax.validation.constraints.NotBlank
 @Entity
 data class Major (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val majorID: Long,
+    val majorID: MajorID,
 
     @get: NotBlank
-    val name: String
+    val name: MajorName
 )
+
+/**
+ * Major i d
+ *
+ * @property majorID
+ * @constructor Create empty Lecture i d
+ */
+@JvmInline
+value class MajorID(private val majorID: Long)
+
+/**
+ * Major name
+ *
+ * @property majorName
+ * @constructor Create empty Lecture i d
+ */
+@JvmInline
+value class MajorName(private val majorName: String)

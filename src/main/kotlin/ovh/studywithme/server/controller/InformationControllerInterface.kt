@@ -3,6 +3,12 @@ package ovh.studywithme.server.controller
 import ovh.studywithme.server.dao.InstitutionDAO
 import ovh.studywithme.server.dao.LectureDAO
 import ovh.studywithme.server.dao.MajorDAO
+import ovh.studywithme.server.model.InstitutionID
+import ovh.studywithme.server.model.InstitutionName
+import ovh.studywithme.server.model.MajorID
+import ovh.studywithme.server.model.MajorName
+import ovh.studywithme.server.model.LectureID
+import ovh.studywithme.server.model.LectureName
 
 /**
  * Information controller interface
@@ -23,7 +29,7 @@ interface InformationControllerInterface {
      * @param institutionID The institution's unique identifier.
      * @return The institution that was requested.
      */
-    fun getInstitutionByID(institutionID:Long): InstitutionDAO?
+    fun getInstitutionByID(institutionID:InstitutionID): InstitutionDAO?
 
     /**
      * Get an institution by its name.
@@ -31,7 +37,7 @@ interface InformationControllerInterface {
      * @param searchName The institution's name the user is looking for.
      * @return A list of institutions whose names match the name the user is looking for.
      */
-    fun getInstitutionsByName(searchName:String):List<InstitutionDAO>
+    fun getInstitutionsByName(searchName:InstitutionName):List<InstitutionDAO>
 
     /**
      * Create a new institution.
@@ -48,7 +54,7 @@ interface InformationControllerInterface {
      * @param institutionID The institution's unique identifier.
      * @return A boolean which is true if the institution was found and then deleted and false otherwise.
      */
-    fun deleteInstitution(institutionID:Long) : Boolean
+    fun deleteInstitution(institutionID:InstitutionID) : Boolean
 
     /**
      * Get all majors.
@@ -64,7 +70,7 @@ interface InformationControllerInterface {
      * @param majorID The major's unique identifier.
      * @return The major that was requested.
      */
-    fun getMajorByID(majorID:Long): MajorDAO?
+    fun getMajorByID(majorID:MajorID): MajorDAO?
 
     /**
      * Get a major by its name.
@@ -72,7 +78,7 @@ interface InformationControllerInterface {
      * @param searchName The major's name the user is looking for.
      * @return A list of majors whose names match the name the user is looking for.
      */
-    fun getMajorsByName(searchName:String):List<MajorDAO>
+    fun getMajorsByName(searchName:MajorName):List<MajorDAO>
 
     /**
      * Create a new major.
@@ -89,14 +95,14 @@ interface InformationControllerInterface {
      * @param majorID The major's unique identifier.
      * @return A boolean which is true if the major was found and then deleted and false otherwise.
      */
-    fun deleteMajor(majorID:Long) : Boolean
+    fun deleteMajor(majorID:MajorID) : Boolean
 
     /**
      * Get all lectures.
      *
      * @return A list containing all lectures.
      */
-    fun getAllLectures(majorID: Long):List<LectureDAO>
+    fun getAllLectures(majorID: MajorID):List<LectureDAO>
 
     /**
      * Get a certain lecture.
@@ -105,7 +111,7 @@ interface InformationControllerInterface {
      * @param lectureID The lecture's unique identifier.
      * @return The lecture that was requested.
      */
-    fun getLectureByID(lectureID:Long): LectureDAO?
+    fun getLectureByID(lectureID:MajorID): LectureDAO?
 
     /**
      * Get a lecture by its name.
@@ -114,7 +120,7 @@ interface InformationControllerInterface {
      * @param searchName The lecture's name the user is looking for.
      * @return A list of lectures whose names match the name the user is looking for.
      */
-    fun getLecturesByName(majorID: Long, searchName:String):List<LectureDAO>
+    fun getLecturesByName(majorID: MajorID, searchName:LectureName):List<LectureDAO>
 
     /**
      * Create a new lecture.
@@ -124,7 +130,7 @@ interface InformationControllerInterface {
      * @param lecture The lecture information with which the lecture should be created.
      * @return The newly created lecture.
      */
-    fun createNewLecture(majorID: Long, lecture: LectureDAO) : LectureDAO
+    fun createNewLecture(majorID: MajorID, lecture: LectureDAO) : LectureDAO
 
     /**
      * Delete a lecture that is identified by its id.
@@ -133,5 +139,5 @@ interface InformationControllerInterface {
      * @param lectureID The lecture's unique identifier.
      * @return A boolean which is true if the lecture was found and then deleted and false otherwise.
      */
-    fun deleteLecture(majorID: Long, lectureID:Long) : Boolean
+    fun deleteLecture(majorID: MajorID, lectureID:LectureID) : Boolean
 }

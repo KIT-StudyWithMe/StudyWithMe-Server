@@ -16,8 +16,26 @@ import javax.validation.constraints.NotBlank
 @Entity
 data class Institution (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val institutionID: Long,
+    val institutionID: InstitutionID,
 
     @get: NotBlank
-    val name: String
+    val name: InstitutionName
 )
+
+/**
+ * Institution i d
+ *
+ * @property institutionID
+ * @constructor Create empty Lecture i d
+ */
+@JvmInline
+value class InstitutionID(private val institutionID: Long)
+
+/**
+ * Institution name
+ *
+ * @property institutionName
+ * @constructor Create empty Lecture i d
+ */
+@JvmInline
+value class InstitutionName(private val institutionName: String)

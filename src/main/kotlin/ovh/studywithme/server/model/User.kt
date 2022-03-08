@@ -22,22 +22,77 @@ import javax.validation.constraints.NotBlank
 @Entity
 data class User (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val userID: Long,
+    val userID: UserID,
 
-    @get: NotBlank
-    val name: String,
+    val name: UserName,
 
-    val institutionID: Long,
+    val institutionID: InstitutionID,
 
-    val majorID: Long,
+    val majorID: MajorID,
 
-    @get: NotBlank
-    val contact: String,
+    val contact: UserContact,
 
-    @get: NotBlank
-    val firebaseUID: String,
+    val firebaseUID: FirebaseUID,
 
-    val isBlocked: Boolean = false,
+    val isBlocked: IsBlocked,
 
-    var isModerator: Boolean = false
+    var isModerator: IsModerator
 )
+
+/**
+ * User i d
+ *
+ * @property userID
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class UserID(private val userID: Long)
+
+/**
+ * User name
+ *
+ * @property userName
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class UserName(private val userName: String)
+
+/**
+ * UserContact
+ *
+ * @property userContact
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class UserContact(private val UserContact: String)
+
+/**
+ * FirebaseUID
+ *
+ * @property firebaseUID
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class FirebaseUID(private val firebaseUID: String)
+
+/**
+ * Is Blocked
+ *
+ * @property isBlocked
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class IsBlocked(private val isBlocked: Boolean = false) {
+    fun toBoolean():Boolean=this.isBlocked
+}
+
+/**
+ * IsModerator
+ *
+ * @property isModerator
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class IsModerator(private val isModerator: Boolean = false) {
+    fun toBoolean():Boolean=this.isModerator
+}

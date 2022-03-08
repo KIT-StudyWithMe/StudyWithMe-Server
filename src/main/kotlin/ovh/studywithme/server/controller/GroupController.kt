@@ -5,8 +5,21 @@ import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.dao.StudyGroupMemberDAO
 import ovh.studywithme.server.dao.LectureDAO
-import ovh.studywithme.server.model.*
-import ovh.studywithme.server.repository.*
+import ovh.studywithme.server.model.Hidden
+import ovh.studywithme.server.model.GroupID
+import ovh.studywithme.server.model.StudyGroup
+import ovh.studywithme.server.model.StudyGroupMember
+import ovh.studywithme.server.model.GroupMemberID
+import ovh.studywithme.server.model.IsAdmin
+import ovh.studywithme.server.model.IsMember
+import ovh.studywithme.server.model.UserID
+import ovh.studywithme.server.model.MajorID
+import ovh.studywithme.server.model.GroupName
+import ovh.studywithme.server.repository.GroupRepository
+import ovh.studywithme.server.repository.GroupMemberRepository
+import ovh.studywithme.server.repository.GroupReportRepository
+import ovh.studywithme.server.repository.UserRepository
+import ovh.studywithme.server.repository.LectureRepository
 import java.util.Optional
 import kotlin.collections.ArrayList
 
@@ -28,18 +41,18 @@ class GroupController(private val groupRepository: GroupRepository,
                       private val lectureRepository: LectureRepository,
                       private val informationController: InformationController) : GroupControllerInterface {
 
-    private fun getMemberCount(groupID: Long): Int {
-        return groupMemberRepository.findByGroupID(groupID).filter { it.isMember }.size
+    private fun getMemberCount(groupID: GroupID): Int {
+        return groupMemberRepository.findByGroupID(groupID).filter { it.isMember.toBoolean() }.size
     }
 
     override fun getAllGroups(): List<StudyGroupDAO> {
         return groupRepository.findAll().map{StudyGroupDAO(it, getMemberCount(it.groupID))}
     }
 
-    override fun createGroup(group: StudyGroupDAO, userID: Long): StudyGroupDAO {
-        val createdGroup : StudyGroup = groupRepository.save(StudyGroup(0, group.name, group.description, group.lectureID, group.sessionFrequency, 
-            group.sessionType, group.lectureChapter, group.exercise, false))
-        groupMemberRepository.save(StudyGroupMember(0, createdGroup.groupID, userID, true, true))
+    override fun createGroup(group: StudyGroupDAO, userID: UserID): StudyGroupDAO {
+        val createdGroup : StudyGroup = groupRepository.save(StudyGroup(GroupID(0), group.name, group.description, group.lectureID, group.sessionFrequency, 
+            group.sessionType, group.lectureChapter, group.exercise, Hidden(false)))
+        groupMemberRepository.save(StudyGroupMember(GroupMemberID(0), createdGroup.groupID, userID, IsAdmin(true), IsMember(true)))
         return StudyGroupDAO(createdGroup, getMemberCount(createdGroup.groupID))
     }
 
@@ -49,25 +62,25 @@ class GroupController(private val groupRepository: GroupRepository,
     }
 
     override fun searchGroup(query: String): List<StudyGroupDAO> {
-        val result : MutableList<StudyGroupDAO> = ArrayList(searchGroupByName(query))
+        val result : MutableList<StudyGroupDAO> = ArrayList(searchGroupByName(GroupName(query)))
         result.addAll(searchGroupByLecture(query))
         return result.distinctBy { it.groupID }
     }
 
-    override fun searchGroupByName(name: String): List<StudyGroupDAO> {
-        return groupRepository.findByNameStartsWith(name).filter { !it.hidden }.map{StudyGroupDAO(it, getMemberCount(it.groupID))}
+    override fun searchGroupByName(name: GroupName): List<StudyGroupDAO> {
+        return groupRepository.findByNameStartsWith(name).filter { !it.hidden.toBoolean() }.map{StudyGroupDAO(it, getMemberCount(it.groupID))}
     }
 
-    override fun searchGroupByLecture(lectureName: String): List<StudyGroupDAO> {
+    override fun searchGroupByLecture(lectureName: LectureID): List<StudyGroupDAO> {
         val allLectures : List<LectureDAO> = informationController.getLecturesByName(0L, lectureName)
         val allGroups : MutableList<StudyGroup> = ArrayList()
         for (currentLecture in allLectures) {
             allGroups.addAll(groupRepository.findByLectureID(currentLecture.lectureID))
         }
-        return allGroups.filter { !it.hidden }.map{StudyGroupDAO(it, getMemberCount(it.groupID))}
+        return allGroups.filter { !it.hidden.toBoolean() }.map{StudyGroupDAO(it, getMemberCount(it.groupID))}
     }
 
-    override fun getGroupByID(groupID: Long): StudyGroupDAO? {
+    override fun getGroupByID(groupID: GroupID): StudyGroupDAO? {
         val studyGroup: StudyGroup? = groupRepository.findById(groupID).unwrap()
         if (studyGroup != null) {
             return StudyGroupDAO(studyGroup, getMemberCount(studyGroup.groupID))
@@ -77,22 +90,22 @@ class GroupController(private val groupRepository: GroupRepository,
 
     override fun updateGroup(updatedGroup: StudyGroupDAO): StudyGroupDAO? {
         if (groupRepository.existsById(updatedGroup.groupID)) {
-            groupRepository.save(updatedGroup.toStudyGroup(groupRepository.getById(updatedGroup.groupID).hidden))
+            groupRepository.save(updatedGroup.toStudyGroup(groupRepository.getById(updatedGroup.groupID).hidden.toBoolean()))
             return updatedGroup
         }
         return null
     }
 
-    override fun joinGroupRequest(groupID: Long, userID: Long): Boolean {
+    override fun joinGroupRequest(groupID: GroupID, userID: UserID): Boolean {
         if (groupRepository.existsById(groupID) && userRepository.existsById(userID)) {
-            val newMember = StudyGroupMember(0, groupID, userID, false, false)
+            val newMember = StudyGroupMember(GroupMemberID(0), groupID, userID, IsAdmin(false), IsMember(false))
             groupMemberRepository.save(newMember)
             return true
         }
         return false
      }
 
-    override fun getGroupRequests(groupID: Long): List<UserDAO> {
+    override fun getGroupRequests(groupID: GroupID): List<UserDAO> {
         val allRequestMembers : List<StudyGroupMember> = groupMemberRepository.findByGroupID(groupID).filter { !it.isMember }
         val allRequestUserDAOs : MutableList<UserDAO> = ArrayList()
         for (currentMember in allRequestMembers) {
@@ -103,12 +116,12 @@ class GroupController(private val groupRepository: GroupRepository,
         return allRequestUserDAOs
     }
 
-    override fun toggleGroupMembership(groupID: Long, userID: Long, isMember: Boolean): StudyGroupMemberDAO? {
+    override fun toggleGroupMembership(groupID: GroupID, userID: UserID, isMember: IsMember): StudyGroupMemberDAO? {
         if (!groupMemberRepository.existsByGroupIDAndUserID(groupID, userID)) return null
         if (!userRepository.existsById(userID)) return null
         val groupMember : StudyGroupMember = groupMemberRepository.findByGroupIDAndUserID(groupID, userID)
-        if (isMember) {
-            groupMember.isMember = true
+        if (isMember.toBoolean()) {
+            groupMember.isMember = IsMember(true)
             return StudyGroupMemberDAO(groupMemberRepository.save(groupMember), userRepository.getById(userID).name)
         }
         else {
@@ -118,7 +131,7 @@ class GroupController(private val groupRepository: GroupRepository,
         }
     }
 
-    override fun getUsersInGroup(groupID: Long): List<StudyGroupMemberDAO>? {
+    override fun getUsersInGroup(groupID: GroupID): List<StudyGroupMemberDAO>? {
         if(!groupRepository.existsById(groupID)) return null
         val allGroupMembers : List<StudyGroupMember> = groupMemberRepository.findByGroupID(groupID).filter { it.isMember }
         val allGroupUsers : MutableList<StudyGroupMemberDAO> = ArrayList()
@@ -130,7 +143,7 @@ class GroupController(private val groupRepository: GroupRepository,
         return allGroupUsers
     }
 
-    override fun deleteUserFromGroup(groupID: Long, userID: Long): Boolean {
+    override fun deleteUserFromGroup(groupID: GroupID, userID: UserID): Boolean {
         if (groupMemberRepository.existsByGroupIDAndUserID(groupID, userID)) {
             groupMemberRepository.deleteByGroupIDAndUserID(groupID, userID)
             return true
@@ -138,7 +151,7 @@ class GroupController(private val groupRepository: GroupRepository,
         return false
     }
 
-    override fun deleteGroup(groupID: Long): Boolean {
+    override fun deleteGroup(groupID: GroupID): Boolean {
         if (groupRepository.existsById(groupID)) {
             groupMemberRepository.deleteByGroupID(groupID)
             groupRepository.deleteById(groupID)
@@ -148,24 +161,24 @@ class GroupController(private val groupRepository: GroupRepository,
         return false
     }
 
-    override fun makeUserAdminInGroup(groupID: Long, userID: Long): Boolean {
+    override fun makeUserAdminInGroup(groupID: GroupID, userID: UserID): Boolean {
         if (groupMemberRepository.existsByGroupIDAndUserID(groupID, userID)) {
             val groupMember: StudyGroupMember = groupMemberRepository.findByGroupIDAndUserID(groupID, userID)
-            if (groupMember.isAdmin || !groupMember.isMember) {
+            if (groupMember.isAdmin.toBoolean() || !groupMember.isMember.toBoolean()) {
                 // user is admin already or not an accepted group member
                 return false
             }
-            groupMember.isAdmin = true
+            groupMember.isAdmin = IsAdmin(true)
             groupMemberRepository.save(groupMember)
             return true
         }
         return false
     }
 
-    override fun getGroupSuggestions(userID:Long): List<StudyGroupDAO>? {
+    override fun getGroupSuggestions(userID:UserID): List<StudyGroupDAO>? {
         val user : User? = userRepository.findById(userID).unwrap()
         if (user==null) return null
-        val majorID : Long = user.majorID
+        val majorID : MajorID = user.majorID
         val lectures : List<Lecture> = lectureRepository.findByMajorID(majorID)
         val results : MutableList<StudyGroup> = mutableListOf<StudyGroup>()
         //TODO do that much more efficiently with a join request
@@ -183,7 +196,7 @@ class GroupController(private val groupRepository: GroupRepository,
         return false
     }
 
-    override fun toggleHiddenStatus(groupID: Long): Boolean {
+    override fun toggleHiddenStatus(groupID: GRoupID): Boolean {
         if (groupRepository.existsById(groupID)) {
             val group = groupRepository.findById(groupID).get()
             group.hidden = !group.hidden
@@ -193,7 +206,7 @@ class GroupController(private val groupRepository: GroupRepository,
         return false
     }
 
-    override fun getHiddenStatus(groupID: Long): Boolean {
+    override fun getHiddenStatus(groupID: GroupID): Boolean {
         if (groupRepository.existsById(groupID)) {
             return groupRepository.findById(groupID).get().hidden
         }

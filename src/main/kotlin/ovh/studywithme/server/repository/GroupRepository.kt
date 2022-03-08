@@ -2,6 +2,10 @@ package ovh.studywithme.server.repository
 
 import ovh.studywithme.server.model.StudyGroup
 import ovh.studywithme.server.model.StudyGroupMember
+import ovh.studywithme.server.model.GroupID
+import ovh.studywithme.server.model.GroupName
+import ovh.studywithme.server.model.LectureID
+import ovh.studywithme.server.model.UserID
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -21,7 +25,7 @@ interface GroupRepository : JpaRepository<StudyGroup, Long> {
      * @param name The name of the Group
      * @return A list of matching Groups
      */
-    fun findByName(name:String): List<StudyGroup>
+    fun findByName(name:GroupName): List<StudyGroup>
 
     /**
      * Find all groups in the database whose group name starts with the given name
@@ -29,7 +33,7 @@ interface GroupRepository : JpaRepository<StudyGroup, Long> {
      * @param name The name of the Group which is being used as prefix
      * @return A list of matching Groups
      */
-    fun findByNameStartsWith(name:String): List<StudyGroup>
+    fun findByNameStartsWith(name:GroupName): List<StudyGroup>
 
     /**
      * Find a Group in the database by lecture-ID
@@ -37,7 +41,7 @@ interface GroupRepository : JpaRepository<StudyGroup, Long> {
      * @param lectureId The unique ID of a Lecture to search for
      * @return A list of Groups that belong to that lecture
      */
-    fun findByLectureID(lectureId:Long): List<StudyGroup>
+    fun findByLectureID(lectureId:LectureID): List<StudyGroup>
 }
 
 /**
@@ -57,7 +61,7 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
      * @param groupID Unique GroupID for which all GroupMembers should be returned
      * @return All GroupMembers that are related to the specified GroupID
      */
-    fun findByGroupID(groupID:Long): List<StudyGroupMember>
+    fun findByGroupID(groupID:GroupID): List<StudyGroupMember>
 
     /**
      * Delete all GroupMembers in a Group
@@ -65,7 +69,7 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
      * @param groupID GroupID for which all GroupMembers should be deleted
      */
     @Transactional
-    fun deleteByGroupID(groupID:Long)
+    fun deleteByGroupID(groupID:GroupID)
 
     /**
      * Delete a user from any study groups he's in
@@ -73,7 +77,7 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
      * @param userID UserID which is deleted from all study groups
      */
     @Transactional
-    fun deleteByUserID(userID:Long)
+    fun deleteByUserID(userID:UserID)
 
     /**
      * Find a unique GroupMember by its GroupID and its UserID
@@ -82,7 +86,7 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
      * @param userID The GroupMembers UserID
      * @return The specified GroupMember in the Database
      */
-    fun findByGroupIDAndUserID(groupID:Long, userID:Long): StudyGroupMember
+    fun findByGroupIDAndUserID(groupID:GroupID, userID:UserID): StudyGroupMember
 
     /**
      * Check if there is a GroupMember for the specified GroupID and UserID
@@ -91,7 +95,7 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
      * @param userID UserID of the GroupMember
      * @return True if the specified GroupMember exists
      */
-    fun existsByGroupIDAndUserID(groupID:Long, userID:Long): Boolean
+    fun existsByGroupIDAndUserID(groupID:GroupID, userID:UserID): Boolean
 
     /**
      * Delete a GroupMember. 
@@ -102,5 +106,5 @@ interface GroupMemberRepository : JpaRepository<StudyGroupMember, Long> {
      * @param userID UserID of the GroupMember
      */
     @Transactional
-    fun deleteByGroupIDAndUserID(groupID:Long, userID:Long)
+    fun deleteByGroupIDAndUserID(groupID:GroupID, userID:UserID)
 }

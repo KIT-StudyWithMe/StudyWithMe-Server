@@ -20,13 +20,44 @@ import javax.validation.constraints.NotBlank
 @Entity
 data class StudyGroupMember (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val memberID: Long,
+    val memberID: GroupMemberID,
 
-    val groupID: Long,
+    val groupID: GroupID,
 
-    val userID: Long,
+    val userID: UserID,
 
-    var isAdmin: Boolean,
+    var isAdmin: IsAdmin,
 
-    var isMember: Boolean
+    var isMember: IsMember
 )
+
+/**
+ * GroupMember i d
+ *
+ * @property groupMemberID
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class GroupMemberID(private val groupMemberID: Long)
+
+/**
+ * Is admin
+ *
+ * @property isAdmin
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class IsAdmin(private val isAdmin: Boolean) {
+    fun toBoolean():Boolean=this.isAdmin
+}
+
+/**
+ * isMember
+ *
+ * @property isMember
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class IsMember(private val isMember: Boolean) {
+    fun toBoolean():Boolean=this.isMember
+}

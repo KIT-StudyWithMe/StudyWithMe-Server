@@ -23,16 +23,20 @@ import org.hibernate.mapping.ManyToOne
 data class StudyGroupReport (
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val studyGroupReportID: Long,
+    val studyGroupReportID: GroupReportID,
 
-    val reporterID: Long = 0,
+    val reporterID: UserID,
 
-    val groupID: Long = 0,
+    val groupID: GroupID,
 
     val groupField: StudyGroupField
 )
 
-//class GroupReportKey constructor () : Serializable (
-//    val reporterID: Long,
-//    val groupID: Long
-//)
+/**
+ * GroupReportID
+ *
+ * @property groupReportID
+ * @constructor Create empty Group i d
+ */
+@JvmInline
+value class GroupReportID(private val groupReportID: Long)

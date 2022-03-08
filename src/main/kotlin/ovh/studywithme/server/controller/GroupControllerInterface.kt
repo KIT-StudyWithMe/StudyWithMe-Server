@@ -4,6 +4,10 @@ import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.dao.StudyGroupMemberDAO
 import ovh.studywithme.server.model.StudyGroupField
+import ovh.studywithme.server.model.GroupID
+import ovh.studywithme.server.model.UserID
+import ovh.studywithme.server.model.LectureName
+import ovh.studywithme.server.model.GroupName
 
 /**
  * Group controller interface that contains all methods needed for group-management.
@@ -24,7 +28,7 @@ interface GroupControllerInterface {
      * @param group A data access object containing the required information to create a group.
      * @return The newly created group including its generated unique groupID.
      */
-    fun createGroup(group:StudyGroupDAO, userID: Long): StudyGroupDAO
+    fun createGroup(group:StudyGroupDAO, userID: UserID): StudyGroupDAO
 
     /**
      * Get a certain amount of study-groups starting from an index. Useful to reduce traffic and increase performance
@@ -50,7 +54,7 @@ interface GroupControllerInterface {
      * @param name The group's name the user is looking for.
      * @return A list of groups whose names match the name the user is looking for.
      */
-    fun searchGroupByName(name:String): List<StudyGroupDAO>
+    fun searchGroupByName(name:GroupName): List<StudyGroupDAO>
 
     /**
      * Get a group by the lecture's name it was created for.
@@ -58,7 +62,7 @@ interface GroupControllerInterface {
      * @param lectureName The lecture's name.
      * @return A list of all groups that were created for the lecture the user is looking for.
      */
-    fun searchGroupByLecture(lectureName:String): List<StudyGroupDAO>
+    fun searchGroupByLecture(lectureName:LectureName): List<StudyGroupDAO>
 
     /**
      * Get a group by its id. If no group for the given id was found, null will be returned.
@@ -66,7 +70,7 @@ interface GroupControllerInterface {
      * @param groupID The id for the group that is being requested.
      * @return The group if found, null otherwise.
      */
-    fun getGroupByID(groupID:Long): StudyGroupDAO?
+    fun getGroupByID(groupID:GroupID): StudyGroupDAO?
 
     /**
      * Update group with information provided.
@@ -85,7 +89,7 @@ interface GroupControllerInterface {
      * @param userID the user's id number.
      * @return A boolean which is true if the application to the group was successfully stored and false otherwise.
      */
-    fun joinGroupRequest(groupID:Long, userID:Long): Boolean
+    fun joinGroupRequest(groupID:GroupID, userID:UserID): Boolean
 
     /**
      * Retrieves a list of all users that applied to the group and have their group-membership pending.
@@ -93,7 +97,7 @@ interface GroupControllerInterface {
      * @param groupID The group's unique identifier.
      * @return A list users with pending group-membership.
      */
-    fun getGroupRequests(groupID: Long): List<UserDAO>
+    fun getGroupRequests(groupID: GroupID): List<UserDAO>
 
     /**
      * Toggles a user's group-membership to decide about a user's application to a study-group.
@@ -103,7 +107,7 @@ interface GroupControllerInterface {
      * @param isMember A boolean which is true if the user will be accepted and false otherwise.
      * @return A boolean which is true if the user's application was found and therefore can be processed and false otherwise.
      */
-    fun toggleGroupMembership(groupID:Long, userID:Long, isMember:Boolean): StudyGroupMemberDAO?
+    fun toggleGroupMembership(groupID:GroupID, userID:UserID, isMember:Boolean): StudyGroupMemberDAO?
 
     /**
      * Gets a complete list of all users in a certain study-group.
@@ -111,7 +115,7 @@ interface GroupControllerInterface {
      * @param groupID The group's unique identifier.
      * @return A list of all group members.
      */
-    fun getUsersInGroup(groupID:Long): List<StudyGroupMemberDAO>?
+    fun getUsersInGroup(groupID:GroupID): List<StudyGroupMemberDAO>?
 
     /**
      * Remove a group-member from a study-group. Checks if the user is a group member first.
@@ -120,7 +124,7 @@ interface GroupControllerInterface {
      * @param userID The group-member's unique identifier.
      * @return A boolean which is true if the user was a group-member and then was removed and false otherwise.
      */
-    fun deleteUserFromGroup(groupID:Long, userID:Long): Boolean
+    fun deleteUserFromGroup(groupID:GroupID, userID:UserID): Boolean
 
     /**
      * Deletes a study-group. Only existing groups can be deleted.
@@ -128,7 +132,7 @@ interface GroupControllerInterface {
      * @param groupID The group's unique identifier.
      * @return A boolean which is true if the group was found and then was deleted and false otherwise.
      */
-    fun deleteGroup(groupID: Long): Boolean
+    fun deleteGroup(groupID: GroupID): Boolean
 
     /**
      * Grant admin-status to a group-member. Only admins or moderators should be able to promote group-members.
@@ -138,7 +142,7 @@ interface GroupControllerInterface {
      * @param userID The user's id who shall be promoted.
      * @return A boolean which is true if the promotion was successful and false otherwise.
      */
-    fun makeUserAdminInGroup(groupID:Long, userID:Long): Boolean
+    fun makeUserAdminInGroup(groupID:GroupID, userID:UserID): Boolean
 
     /**
      * Get Group Suggestions for a User based on his major
@@ -146,7 +150,7 @@ interface GroupControllerInterface {
      * @param userID The id of the user which groups should be suggested
      * @return A list of Groups for the Major of the User, Null if the User doesnt exist
      */
-    fun getGroupSuggestions(userID:Long): List<StudyGroupDAO>?
+    fun getGroupSuggestions(userID:GroupID): List<StudyGroupDAO>?
 
     /**
      * Report a certain field of a group's details which might contain inappropriate free text.
@@ -156,7 +160,7 @@ interface GroupControllerInterface {
      * @param field The descriptor of the field that's affected.
      * @return A boolean which is true if the data was valid and the report was saved successfully and false otherwise.
      */
-    fun reportGroupField(groupID:Long, reporterID:Long, field:StudyGroupField): Boolean
+    fun reportGroupField(groupID:GroupID, reporterID:UserID, field:StudyGroupField): Boolean
 
     /**
      * Hides or unhides a group. Hidden groups won't be shown in search results.
@@ -167,7 +171,7 @@ interface GroupControllerInterface {
      * @param hidden A boolean which is true if the group must not show up in search results and false otherwise.
      * @return A boolean which is true if the group was found and the new hidden-status was set - and false otherwise.
      */
-    fun toggleHiddenStatus(groupID:Long): Boolean
+    fun toggleHiddenStatus(groupID:GroupID): Boolean
 
-    fun getHiddenStatus(groupID: Long): Boolean
+    fun getHiddenStatus(groupID: GroupID): Boolean
 }

@@ -19,10 +19,28 @@ import javax.validation.constraints.NotBlank
 @Entity
 data class Lecture (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val lectureID: Long,
+    val lectureID: LectureID,
 
     @get: NotBlank
-    val name: String,
+    val name: LectureName,
 
-    val majorID: Long
+    val majorID: MajorID
 )
+
+/**
+ * Lecture i d
+ *
+ * @property lectureID
+ * @constructor Create empty Lecture i d
+ */
+@JvmInline
+value class LectureID(private val lectureID: Long)
+
+/**
+ * Lecture name
+ *
+ * @property lectureName
+ * @constructor Create empty Lecture i d
+ */
+@JvmInline
+value class LectureName(private val lectureName: String)

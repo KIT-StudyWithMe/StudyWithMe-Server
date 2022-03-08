@@ -3,6 +3,12 @@ package ovh.studywithme.server.dao
 import ovh.studywithme.server.model.StudyGroup
 import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
+import ovh.studywithme.server.model.GroupID
+import ovh.studywithme.server.model.GroupName
+import ovh.studywithme.server.model.GroupDescription
+import ovh.studywithme.server.model.LectureID
+import ovh.studywithme.server.model.LectureChapter
+import ovh.studywithme.server.model.Exercise
 import ovh.studywithme.server.repository.GroupRepository
 
 
@@ -20,15 +26,15 @@ import ovh.studywithme.server.repository.GroupRepository
  * @constructor Create a new StudyGroup
  */
 data class StudyGroupDAO(
-    val groupID: Long,
-    val name: String,
-    val description: String,
-    val lectureID: Long,
+    val groupID: GroupID,
+    val name: GroupName,
+    val description: GroupDescription,
+    val lectureID: LectureID,
     val sessionFrequency: SessionFrequency,
     val sessionType: SessionMode,
-    val lectureChapter: Int,
-    val exercise: Int,
-    val memberCount: Int
+    val lectureChapter: LectureChapter,
+    val exercise: Exercise,
+    val memberCount: MemberCount
     ) {
 
     constructor(group : StudyGroup, memberCount: Int) : this(group.groupID, group.name, group.description, group.lectureID, group.sessionFrequency, group.sessionType, group.lectureChapter, group.exercise, memberCount)
@@ -43,3 +49,12 @@ data class StudyGroupDAO(
         return StudyGroup(this.groupID, this.name, this.description, this.lectureID, this.sessionFrequency, this.sessionType, this.lectureChapter, this.exercise, hidden)
     }
 }
+
+/**
+ * Member Count
+ *
+ * @property hidden
+ * @constructor Create empty Hidden
+ */
+@JvmInline
+value class MemberCount(private val memberCount: Int)
