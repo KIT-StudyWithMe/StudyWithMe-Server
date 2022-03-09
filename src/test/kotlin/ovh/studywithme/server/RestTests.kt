@@ -5,6 +5,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.http.HttpEntity
 import org.junit.jupiter.api.Tag
+import org.springframework.http.HttpMethod
+import org.springframework.http.ResponseEntity
 import java.net.URI
 
 @ExtendWith(SpringExtension::class)
@@ -31,20 +33,20 @@ open class RestTests(){
 			T::class.java)
 	}
 
-    inline fun <S> delete(path:String, trt:TestRestTemplate, port:Int) {
+    fun delete(path:String, trt:TestRestTemplate, port:Int) {
 		return trt.delete(
 			URI("http://localhost:" + port + path))
 	}
-    /* 
-    fun getBody(path:String):String{
-        val output: String? = get(path).getBody()
+
+    fun getBody(response: ResponseEntity<String>):String{
+        val output: String? = response.body
         if (output!=null){
             return output
         }
         return ""
     }
 
-	fun getEx(path:String,trt:TestRestTemplate, port:Int):ResponseEntity<String!>!{
+	fun getEx(path:String,trt:TestRestTemplate, port:Int): ResponseEntity<String> {
 		return trt.exchange(
 			URI("http://localhost:" + port + path),
 			HttpMethod.GET,
@@ -52,7 +54,7 @@ open class RestTests(){
 			String::class.java)
 	}
 
-	fun <T> putEx(path:String, payload:T,trt:TestRestTemplate, port:Int):ResponseEntity<String!>!{
+	fun <T> putEx(path:String, payload:T,trt:TestRestTemplate, port:Int):ResponseEntity<String>{
 		return trt.exchange(
 			URI("http://localhost:" + port + path),
 			HttpMethod.PUT,
@@ -60,11 +62,19 @@ open class RestTests(){
 			String::class.java)
 	}
 
-	fun <T> postEx(path:String, payload:T,trt:TestRestTemplate, port:Int):ResponseEntity<String!>!{
+	fun <T> postEx(path:String, payload:T,trt:TestRestTemplate, port:Int):ResponseEntity<String>{
 		return trt.exchange(
 			URI("http://localhost:" + port + path),
 			HttpMethod.POST,
 			HttpEntity(payload),
 			String::class.java)
-	}*/
+	}
+
+	fun deleteEx(path:String,trt:TestRestTemplate, port:Int): ResponseEntity<String> {
+		return trt.exchange(
+			URI("http://localhost:" + port + path),
+			HttpMethod.DELETE,
+			HttpEntity(""),
+			String::class.java)
+	}
 }
