@@ -30,7 +30,7 @@ import ovh.studywithme.server.model.*
                          private val majorRepository: MajorRepository) : UserControllerInterface {
 
     override fun getAllUsers():List<UserDAO> {
-         return userRepository.findAll().map{UserDAO(it)}
+        return userRepository.findAll().map{UserDAO(it)}
     }
 
     override fun getUserDetailByID(userID:Long):UserDetailDAO? {
