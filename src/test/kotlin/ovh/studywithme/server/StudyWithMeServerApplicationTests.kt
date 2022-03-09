@@ -34,10 +34,6 @@ class StudyWithMeServerApplicationTests : RestTests(
 	@LocalServerPort
   	var port: Int = 0
 
-	  @BeforeEach
-	  fun wipeDB() {
-	  }
-
 	  @Order(1)
 	  @Test
 	  fun getNonexistentInstitution() {
@@ -109,7 +105,6 @@ class StudyWithMeServerApplicationTests : RestTests(
 
 		val test:List<UserDetailDAO> = get("/users", trt, port)
 		val test2:UserDetailDAO = post("/users", UserDetailDAO(0,"test",0,"KIT",0,"Informatik","email","adsf", false), trt, port)
-		//logger.info(test[0].name)
 
 		Assertions.assertEquals(HttpStatus.OK, result.statusCode)
 	  }
