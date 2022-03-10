@@ -51,11 +51,40 @@ class UserTests : RestTests(
     fun tearDown() {
         delete("/majors/${firstMajor.majorID}", trt, port)
         delete("/institutions/${firstInstitution.institutionID}", trt, port)
+        delete("/majors/${firstMajor.majorID}/lectures/${firstLecture.lectureID}", trt, port)
     }
 
-    //##############
-    //# user tests #
-    //##############
+
+    @Test
+    fun `Get complete user list`() {
+        val userData1 = UserDetailDAO(
+            0, "Anne Koziolek", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "anne.koziolek@ket.edu", "pr06r4mm13r3nw4rk4353", false
+        )
+        val newUser1 = post<UserDetailDAO, UserDetailDAO>("/users", userData1, trt, port)
+
+        val userData2 = UserDetailDAO(
+            0, "Ralf Reussner", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "ralf.reussner@ket.edu", "mp1w4r1n73r3554n7", true
+        )
+        val newUser2 = post<UserDetailDAO, UserDetailDAO>("/users", userData2, trt, port)
+
+        val userData3 = UserDetailDAO(
+            0, "Sabine Beyer", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "sabine.beyer@ket.edu", "1chk3nn3d1364rn1ch7", false
+        )
+        val newUser3 = post<UserDetailDAO, UserDetailDAO>("/users", userData2, trt, port)
+        deleteEx("/users/${newUser3.userID}", trt, port)
+
+        val fetchedUsers = getEx("/users", trt, port)
+        val body : String? = fetchedUsers.body
+        assertNotNull(body)
+        val parsedList:List<UserDAO>? = body?.let { Klaxon().parseArray(it) }
+
+        assertEquals(true, parsedList!!.contains(UserDAO(newUser1.toUser())))
+        assertEquals(true, parsedList.contains(UserDAO(newUser2.toUser())))
+        assertEquals(false, parsedList.contains(UserDAO(newUser3.toUser())))
+    }
 
     @Test
     fun `Get user with ID 0 and expect nothing`() {
@@ -67,7 +96,7 @@ class UserTests : RestTests(
     }
 
     @Test
-    fun `Get user details with ID 0 and expect nothing`() {
+    fun `Get detailed user with ID 0 and expect nothing`() {
         val result = getEx("/users/0/detail", trt, port)
         val body = getBody(result)
 
@@ -179,10 +208,13 @@ class UserTests : RestTests(
             firstMajor.majorID, firstMajor.name, "gregor.snelting@fernuni-hagen.edu", "5ch03n3n6u73n746", true)
         val newUser = post<UserDetailDAO, UserDetailDAO>("/users", userData, trt, port)
 
+        var anotherLecture = LectureDAO(0, "Mechanik II", firstMajor.majorID)
+        anotherLecture = post("/majors/${firstMajor.majorID}/lectures", anotherLecture, trt, port)
+
         val group1Data = StudyGroupDAO(0, "Team Elite", "KIT - Das E steht für Elite", firstLecture.lectureID,
             SessionFrequency.WEEKLY, SessionMode.PRESENCE, 6, 3, 1)
         val group2Data = StudyGroupDAO(0, "Team NotSoElite", "Wer sein Studium liebt, der schiebt",
-            firstLecture.lectureID, SessionFrequency.WEEKLY, SessionMode.ONLINE, 11, 5, 1)
+            anotherLecture.lectureID, SessionFrequency.WEEKLY, SessionMode.ONLINE, 11, 5, 1)
 
         val newGroup1 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${newUser.userID}", group1Data, trt, port)
         val newGroup2 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${newUser.userID}", group2Data, trt, port)
