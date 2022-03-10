@@ -20,6 +20,7 @@ import ovh.studywithme.server.dao.*
 import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
 import ovh.studywithme.server.model.User
+import ovh.studywithme.server.model.UserField
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(
@@ -120,6 +121,27 @@ class UserTests : RestTests(
         assertEquals(userData.contact, fetchedUser.contact)
         assertEquals(userData.isModerator, fetchedUser.isModerator)
         assertNotEquals(userData.userID, fetchedUser.userID)
+    }
+
+    @Test
+    fun `Update an existing user`() {
+        val userData = UserDetailDAO(0, "Yvone Gebhart", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "yvonne.gebhardt@ket.edu", "1r63nd31n3f1r3u1d", false)
+        val newUser = post<UserDetailDAO, UserDetailDAO>("/users", userData, trt, port)
+
+        val updatedData = UserDetailDAO(newUser.userID, "Yvonne Gebhardt", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "yvonne.gebhardt@student.kit.edu", "1r63nd31n3f1r3u1d", false)
+        val updatedUser = put("/users${newUser.userID}/detail", updatedData, trt, port)
+
+        assertEquals(newUser.userID, updatedUser.userID)
+        assertEquals(updatedData.name, updatedUser.name)
+        assertEquals(updatedData.institutionID, updatedUser.institutionID)
+        assertEquals(updatedData.institutionName, updatedUser.institutionName)
+        assertEquals(updatedData.majorID, updatedUser.majorID)
+        assertEquals(updatedData.majorName, updatedUser.majorName)
+        assertEquals(updatedData.contact, updatedUser.contact)
+        assertEquals(updatedData.isModerator, updatedUser.isModerator)
+        assertNotEquals(updatedData.userID, updatedUser.userID)
     }
 
     @Test
@@ -228,5 +250,19 @@ class UserTests : RestTests(
         assertEquals(2, parsedList!!.size)
         assertEquals(true, parsedList.contains(newGroup1))
         assertEquals(true, parsedList.contains(newGroup2))
+    }
+
+    @Test
+    fun `Report a user's freetext field`() {
+        val reportedData = UserDetailDAO(0, "Daniela Becker", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "Wer dies liest ist dumm.", "6ru554n54ndr0", false)
+        val reportedUser = post<UserDetailDAO, UserDetailDAO>("/users", reportedData, trt, port)
+
+        val reporterData = UserDetailDAO(0, "Tom Huck", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "Whatsapp: +491701234567", "m1rf4ll3nk31n31d5m3hr31n", false)
+        val reportingUser = post<UserDetailDAO, UserDetailDAO>("/users", reportedData, trt, port)
+
+        putEx("users${reportedUser.userID}/report/${reportingUser.userID}", UserField.CONTACT, trt, port)
+        
     }
 }
