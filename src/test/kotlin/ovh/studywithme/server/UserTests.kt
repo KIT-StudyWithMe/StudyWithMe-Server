@@ -15,11 +15,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.TestInstance
-import org.springframework.core.ParameterizedTypeReference
 import ovh.studywithme.server.dao.*
 import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
-import ovh.studywithme.server.model.User
 import ovh.studywithme.server.model.UserField
 
 @ExtendWith(SpringExtension::class)
@@ -74,7 +72,7 @@ class UserTests : RestTests(
             0, "Sabine Beyer", firstInstitution.institutionID, firstInstitution.name,
             firstMajor.majorID, firstMajor.name, "sabine.beyer@ket.edu", "1chk3nn3d1364rn1ch7", false
         )
-        val newUser3 = post<UserDetailDAO, UserDetailDAO>("/users", userData2, trt, port)
+        val newUser3 = post<UserDetailDAO, UserDetailDAO>("/users", userData3, trt, port)
         deleteEx("/users/${newUser3.userID}", trt, port)
 
         val fetchedUsers = getEx("/users", trt, port)
@@ -131,17 +129,28 @@ class UserTests : RestTests(
 
         val updatedData = UserDetailDAO(newUser.userID, "Yvonne Gebhardt", firstInstitution.institutionID, firstInstitution.name,
             firstMajor.majorID, firstMajor.name, "yvonne.gebhardt@student.kit.edu", "1r63nd31n3f1r3u1d", false)
-        val updatedUser = put("/users${newUser.userID}/detail", updatedData, trt, port)
+        val updatedUser = put<UserDetailDAO, UserDetailDAO>("/users/${newUser.userID}/detail", updatedData, trt, port)
 
-        assertEquals(newUser.userID, updatedUser.userID)
-        assertEquals(updatedData.name, updatedUser.name)
+        assertNotNull(updatedUser)
+        assertEquals(updatedData.name, updatedUser!!.name)
         assertEquals(updatedData.institutionID, updatedUser.institutionID)
         assertEquals(updatedData.institutionName, updatedUser.institutionName)
         assertEquals(updatedData.majorID, updatedUser.majorID)
         assertEquals(updatedData.majorName, updatedUser.majorName)
         assertEquals(updatedData.contact, updatedUser.contact)
         assertEquals(updatedData.isModerator, updatedUser.isModerator)
-        assertNotEquals(updatedData.userID, updatedUser.userID)
+
+        assertNotEquals(userData.userID, updatedUser.userID)
+        assertNotEquals(newUser.name, updatedUser.name)
+        assertNotEquals(newUser.contact, updatedUser.contact)
+
+        assertEquals(newUser.userID, updatedUser.userID)
+        assertEquals(newUser.institutionID, updatedUser.institutionID)
+        assertEquals(newUser.institutionName, updatedUser.institutionName)
+        assertEquals(newUser.majorID, updatedUser.majorID)
+        assertEquals(newUser.majorName, updatedUser.majorName)
+        assertEquals(newUser.firebaseUID, updatedUser.firebaseUID)
+        assertEquals(newUser.isModerator, updatedUser.isModerator)
     }
 
     @Test
@@ -245,7 +254,7 @@ class UserTests : RestTests(
 
         val body : String? = fetchedGroups.body
         assertNotNull(body)
-        val parsedList:List<StudyGroupDAO>? = body?.let { Klaxon().parseArray<StudyGroupDAO>(it) }
+        val parsedList:List<StudyGroupDAO>? = body?.let { Klaxon().parseArray(it) }
 
         assertEquals(2, parsedList!!.size)
         assertEquals(true, parsedList.contains(newGroup1))
@@ -260,9 +269,12 @@ class UserTests : RestTests(
 
         val reporterData = UserDetailDAO(0, "Tom Huck", firstInstitution.institutionID, firstInstitution.name,
             firstMajor.majorID, firstMajor.name, "Whatsapp: +491701234567", "m1rf4ll3nk31n31d5m3hr31n", false)
-        val reportingUser = post<UserDetailDAO, UserDetailDAO>("/users", reportedData, trt, port)
+        val reportingUser = post<UserDetailDAO, UserDetailDAO>("/users", reporterData, trt, port)
 
-        putEx("users${reportedUser.userID}/report/${reportingUser.userID}", UserField.CONTACT, trt, port)
-        
+        val result = putEx("/users/${reportedUser.userID}/report/${reportingUser.userID}", UserField.CONTACT, trt, port)
+        val body = getBody(result)
+
+        assertEquals(HttpStatus.OK, result.statusCode)
+        assertEquals("", body)
     }
 }
