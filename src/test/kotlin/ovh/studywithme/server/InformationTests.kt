@@ -1,5 +1,7 @@
 package ovh.studywithme.server
 
+import org.aspectj.lang.annotation.After
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.TestInstance
 import org.springframework.core.ParameterizedTypeReference
 import ovh.studywithme.server.dao.InstitutionDAO
 import ovh.studywithme.server.dao.LectureDAO
@@ -22,6 +25,7 @@ import ovh.studywithme.server.dao.MajorDAO
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @Tag("integration")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.Random::class)
 class InformationTests : RestTests(
 ) {
@@ -35,7 +39,12 @@ class InformationTests : RestTests(
 
     @BeforeAll
     fun init() {
-        firstMajor = post<MajorDAO, MajorDAO>("/majors", firstMajor, trt, port)
+        firstMajor = post("/majors", firstMajor, trt, port)
+    }
+
+    @AfterAll
+    fun tearDown() {
+        delete("/majors/${firstMajor.majorID}", trt, port)
     }
 
     //#####################
