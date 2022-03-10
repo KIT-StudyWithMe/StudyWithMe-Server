@@ -13,6 +13,7 @@ import ovh.studywithme.server.dao.*
 import ovh.studywithme.server.model.Session
 import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
+import ovh.studywithme.server.model.StudyGroupField
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,7 +31,7 @@ class GroupTests : RestTests(){
                 val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
                 val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
                 val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
-                val createdUser = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
+                //val createdUser = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
 
                 val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,SessionFrequency.ONCE,SessionMode.PRESENCE,3,100000,15)
                 val createdGroup = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
@@ -51,7 +52,7 @@ class GroupTests : RestTests(){
                 val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
                 val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
                 val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
-                val createdUser = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
+                //val createdUser = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
 
                 val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,SessionFrequency.ONCE,SessionMode.PRESENCE,3,100000,15)
                 return post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
@@ -78,7 +79,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Get a nonexistent Group`() {
-                val group = createAGroup()
+                //val group = createAGroup()
 
                 val fetchedGroup = getEx("/groups/0",trt,port)
                 Assertions.assertEquals(HttpStatus.NOT_FOUND,fetchedGroup.statusCode)
@@ -100,9 +101,33 @@ class GroupTests : RestTests(){
 
                 put<Boolean,Void>("/groups/${group.groupID}/users/${user.userID}/membership", true,trt,port) //accept
                 val userListAfterJoin = get<List<StudyGroupMemberDAO>>("/groups/${group.groupID}/users", trt, port)
-                //Assertions.assertNotEquals(userList, userListAfterJoin) //TODO
+                Assertions.assertNotEquals(userList, userListAfterJoin)
 
                 val requestListAfterJoin = getEx("/groups/${group.groupID}/requests", trt, port) //list requests after join
+                Assertions.assertEquals("[]", requestListAfterJoin.body)
+        }
+
+        @Test
+        fun `User that does not exist joins a Group`() {
+                val group = createAGroup()
+                val userList = get<List<StudyGroupMemberDAO>>("/groups/${group.groupID}/users", trt, port)
+
+                val requestListBeforeJoin = getEx("/groups/${group.groupID}/requests", trt, port) //list requests before join
+                Assertions.assertEquals("[]", requestListBeforeJoin.body)
+
+                var response = putEx("/groups/${group.groupID}/join/10645065", "",trt,port) //request
+                Assertions.assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+
+                val requestList = getEx("/groups/${group.groupID}/requests", trt, port) //list requests while join
+                Assertions.assertEquals("[]", requestList.body)
+
+                response = putEx("/groups/${group.groupID}/users/10645066/membership", true,trt,port) //accept
+                Assertions.assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+
+                val userListAfterJoin = get<List<StudyGroupMemberDAO>>("/groups/${group.groupID}/users", trt, port)
+                Assertions.assertEquals(userList, userListAfterJoin)
+
+                val requestListAfterJoin = getEx("/groups/${group.groupID}/requests", trt, port) //list requests after failed join
                 Assertions.assertEquals("[]", requestListAfterJoin.body)
         }
 
@@ -162,7 +187,7 @@ class GroupTests : RestTests(){
                 assertEquals(updatedGroup.sessionType,          gotGroup.sessionType)
                 assertEquals(updatedGroup.lectureChapter,       gotGroup.lectureChapter)
                 assertEquals(updatedGroup.exercise,             gotGroup.exercise)
-                //assertNotEquals(updatedGroup.memberCount,       gotGroup.memberCount) //TODO
+                assertNotEquals(gotGroup.memberCount,              updatedGroup.memberCount)
 
                 assertEquals(newGroup.groupID,                  gotGroup!!.groupID)
                 assertNotEquals(newGroup.name,                  gotGroup.name)
@@ -172,14 +197,48 @@ class GroupTests : RestTests(){
                 assertNotEquals(newGroup.sessionType,           gotGroup.sessionType)
                 assertNotEquals(newGroup.lectureChapter,        gotGroup.lectureChapter)
                 assertNotEquals(newGroup.exercise,              gotGroup.exercise)
-                assertNotEquals(newGroup.memberCount,           gotGroup.memberCount)
-
-                assertNotEquals(newGroup.memberCount,           updatedGroup.memberCount)
+                assertEquals(newGroup.memberCount,              gotGroup.memberCount)
         }
 
         @Test
         fun `Update a nonexistent Group`() {
+                val newGroup = createAGroup()
+                val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "New Majsisnrtaor"), trt, port)
+                val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"New Lecturieasnrte",major.majorID), trt, port)
+                var updatedGroup = StudyGroupDAO(400546,"changed Name", "changed Description", lecture.lectureID, SessionFrequency.MONTHLY, SessionMode.HYBRID, 1001, 1002, 855464)
 
+                var gotGroup = putEx("/groups/${newGroup.groupID}", updatedGroup, trt, port) //wrong groupid in group
+                assertEquals(HttpStatus.NOT_FOUND,gotGroup.statusCode)
+
+                updatedGroup = StudyGroupDAO(newGroup.groupID,"changed Name", "changed Description", lecture.lectureID, SessionFrequency.MONTHLY, SessionMode.HYBRID, 1001, 1002, 855464)
+                gotGroup = putEx("/groups/400546", updatedGroup, trt, port) //wrong groupid in url
+                assertEquals(HttpStatus.NOT_FOUND,gotGroup.statusCode)
+
+                updatedGroup = StudyGroupDAO(newGroup.groupID,"changed Name", "changed Description", 105486465, SessionFrequency.MONTHLY, SessionMode.HYBRID, 1001, 1002, 855464)
+                gotGroup = putEx("/groups/${newGroup.groupID}", updatedGroup, trt, port) //wrong lectureid in group
+                assertEquals(HttpStatus.NOT_FOUND,gotGroup.statusCode)
+        }
+
+        @Test
+        fun `Report a group`() {
+                val group = createAGroup()
+                val user = createAUser()
+                val response = putEx("/groups/${group.groupID}/report/${user.userID}", StudyGroupField.DESCRIPTION, trt, port)
+                assertEquals(HttpStatus.OK ,response.statusCode)
+        }
+
+        @Test
+        fun `Report a group that does not exist`() {
+                val user = createAUser()
+                val response = putEx("/groups/1064040/report/${user.userID}", StudyGroupField.DESCRIPTION, trt, port)
+                assertEquals(HttpStatus.NOT_FOUND ,response.statusCode)
+        }
+
+        @Test
+        fun `Report a group with a user that does not exist`() {
+                val group = createAGroup()
+                val response = putEx("/groups/${group.groupID}/report/1065460", StudyGroupField.DESCRIPTION, trt, port)
+                assertEquals(HttpStatus.NOT_FOUND ,response.statusCode)
         }
 
         @Test

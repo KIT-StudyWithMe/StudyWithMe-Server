@@ -124,7 +124,7 @@ class GroupView(
      */
     @PutMapping("/{gid}")
     fun updateGroupById(@PathVariable(value = "gid") groupID: Long, @Valid @RequestBody updatedGroup: StudyGroupDAO): ResponseEntity<StudyGroupDAO> {
-        val group : StudyGroupDAO? = groupController.updateGroup(updatedGroup)
+        val group : StudyGroupDAO? = groupController.updateGroup(updatedGroup, groupID)
         if (group == null) {
             return ResponseEntity.notFound().build()
         }

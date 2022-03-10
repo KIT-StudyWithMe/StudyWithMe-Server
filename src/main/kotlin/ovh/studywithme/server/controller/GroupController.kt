@@ -43,11 +43,6 @@ class GroupController(private val groupRepository: GroupRepository,
         return StudyGroupDAO(createdGroup, getMemberCount(createdGroup.groupID))
     }
 
-    override fun getGroupsIndex(start: Int, size: Int): List<StudyGroupDAO> {
-        //TODO
-        return ArrayList()
-    }
-
     override fun searchGroup(query: String): List<StudyGroupDAO> {
         val result : MutableList<StudyGroupDAO> = ArrayList(searchGroupByName(query))
         result.addAll(searchGroupByLecture(query))
@@ -75,10 +70,12 @@ class GroupController(private val groupRepository: GroupRepository,
         return null
     }
 
-    override fun updateGroup(updatedGroup: StudyGroupDAO): StudyGroupDAO? {
-        if (groupRepository.existsById(updatedGroup.groupID)) {
-            groupRepository.save(updatedGroup.toStudyGroup(groupRepository.getById(updatedGroup.groupID).hidden))
-            return updatedGroup
+    override fun updateGroup(updatedGroup: StudyGroupDAO, groupID: Long): StudyGroupDAO? {
+        if (groupRepository.existsById(updatedGroup.groupID) && updatedGroup.groupID==groupID) {
+            if (lectureRepository.existsById(updatedGroup.lectureID)){
+                groupRepository.save(updatedGroup.toStudyGroup(groupRepository.getById(updatedGroup.groupID).hidden))
+                return StudyGroupDAO(groupRepository.getById(updatedGroup.groupID),getMemberCount(updatedGroup.groupID))
+            }
         }
         return null
     }

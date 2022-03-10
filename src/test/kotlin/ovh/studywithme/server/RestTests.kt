@@ -24,6 +24,7 @@ open class RestTests(){
 			T::class.java)
 	}
 
+	//todo maybe change that to the same code as put() to support lists. that makes this method nullable so we have to change much code
     inline fun <S,reified T : Any> post(path:String, payload:S, trt:TestRestTemplate, port:Int): T {
 		return trt.postForObject<T>(
 			URI("http://localhost:" + port + path),

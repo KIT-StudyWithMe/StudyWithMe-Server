@@ -3,6 +3,7 @@ package ovh.studywithme.server.controller
 import ovh.studywithme.server.dao.UserDAO
 import ovh.studywithme.server.dao.StudyGroupDAO
 import ovh.studywithme.server.dao.StudyGroupMemberDAO
+import ovh.studywithme.server.model.GroupID
 import ovh.studywithme.server.model.StudyGroupField
 
 /**
@@ -25,16 +26,6 @@ interface GroupControllerInterface {
      * @return The newly created group including its generated unique groupID.
      */
     fun createGroup(group:StudyGroupDAO, userID: Long): StudyGroupDAO
-
-    /**
-     * Get a certain amount of study-groups starting from an index. Useful to reduce traffic and increase performance
-     * when delivering results for searches as not every group in the database is needed.
-     *
-     * @param start The start index from which to pick the groups.
-     * @param size The number of groups that is required from the start index on.
-     * @return A list of groups.
-     */
-    fun getGroupsIndex(start:Int, size:Int): List<StudyGroupDAO>
 
     /**
      * Search for a group. The query can either be a group's name or a lecture's name a group was created for.
@@ -76,7 +67,7 @@ interface GroupControllerInterface {
      * @param updatedGroup The group with the updated information.
      * @return The updated group including the updated information.
      */
-    fun updateGroup(updatedGroup:StudyGroupDAO): StudyGroupDAO?
+    fun updateGroup(updatedGroup:StudyGroupDAO, groupID: Long): StudyGroupDAO?
 
     /**
      * A user requests membership in a study-group. Verifies if both group and user already exist.
