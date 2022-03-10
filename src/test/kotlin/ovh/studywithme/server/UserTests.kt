@@ -154,6 +154,17 @@ class UserTests : RestTests(
     }
 
     @Test
+    fun `Update a non-existing user`() {
+        val updatedData = UserDetailDAO(0, "Christoph Ledermann", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "christoph.ledermann@student.kit.edu", "w3rr31737505p437durchn4ch7", false)
+        val result = putEx("/users/0/detail", updatedData, trt, port)
+        val body = getBody(result)
+
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals("", body)
+    }
+
+    @Test
     fun `Delete a created user`() {
         val userData = UserDetailDAO(0, "Erik Burger", firstInstitution.institutionID, firstInstitution.name,
             firstMajor.majorID, firstMajor.name, "erik.koch@student.tum.edu", "f1r3b453u1d70k3n", false)
@@ -271,10 +282,15 @@ class UserTests : RestTests(
             firstMajor.majorID, firstMajor.name, "Whatsapp: +491701234567", "m1rf4ll3nk31n31d5m3hr31n", false)
         val reportingUser = post<UserDetailDAO, UserDetailDAO>("/users", reporterData, trt, port)
 
-        val result = putEx("/users/${reportedUser.userID}/report/${reportingUser.userID}", UserField.CONTACT, trt, port)
-        val body = getBody(result)
+        val result1 = putEx("/users/${reportedUser.userID}/report/${reportingUser.userID}", UserField.CONTACT, trt, port)
+        val body1 = getBody(result1)
 
-        assertEquals(HttpStatus.OK, result.statusCode)
-        assertEquals("", body)
+        val result2 = putEx("/users/0/report/${reportingUser.userID}", UserField.CONTACT, trt, port)
+        val body2 = getBody(result2)
+
+        assertEquals(HttpStatus.OK, result1.statusCode)
+        assertEquals("", body1)
+        assertEquals(HttpStatus.NOT_FOUND, result2.statusCode)
+        assertEquals("", body2)
     }
 }
