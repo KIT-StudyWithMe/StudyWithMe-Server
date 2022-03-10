@@ -1,19 +1,18 @@
 package ovh.studywithme.server
 
-import org.aspectj.lang.annotation.After
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.http.HttpStatus
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestMethodOrder
-import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.TestInstance
 import org.springframework.core.ParameterizedTypeReference
 import ovh.studywithme.server.dao.InstitutionDAO
@@ -56,8 +55,8 @@ class InformationTests : RestTests(
         val result = getEx("/institutions/0", trt, port)
         val body = getBody(result)
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
-        Assertions.assertEquals("", body)
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals("", body)
     }
 
     //@Test
@@ -85,9 +84,9 @@ class InformationTests : RestTests(
         val newInstitution = post<InstitutionDAO, InstitutionDAO>("/institutions", institutionData, trt, port)
         val fetchedInstitution = get<InstitutionDAO>("/institutions/" + newInstitution.institutionID, trt, port)
 
-        Assertions.assertEquals(newInstitution, fetchedInstitution)
-        Assertions.assertEquals(institutionData.name, fetchedInstitution.name)
-        Assertions.assertNotEquals(institutionData.institutionID, fetchedInstitution.institutionID)
+        assertEquals(newInstitution, fetchedInstitution)
+        assertEquals(institutionData.name, fetchedInstitution.name)
+        assertNotEquals(institutionData.institutionID, fetchedInstitution.institutionID)
     }
 
     @Test
@@ -99,15 +98,15 @@ class InformationTests : RestTests(
         val result = getEx("/institutions/${newInstitution.institutionID}", trt, port)
         val body = getBody(result)
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
-        Assertions.assertEquals("", body)
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals("", body)
     }
 
     @Test
     fun `Delete a non-existing institution`() {
         val result = deleteEx("/institutions/0", trt, port)
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
     }
 
     //###############
@@ -119,8 +118,8 @@ class InformationTests : RestTests(
         val result = getEx("/majors/0", trt, port)
         val body = getBody(result)
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
-        Assertions.assertEquals("", body)
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals("", body)
     }
 
     //@Test
@@ -134,9 +133,9 @@ class InformationTests : RestTests(
         val newMajor = post<MajorDAO, MajorDAO>("/majors", majorData, trt, port)
         val fetchedMajor = get<MajorDAO>("/majors/" + newMajor.majorID, trt, port)
 
-        Assertions.assertEquals(newMajor, fetchedMajor)
-        Assertions.assertEquals(majorData.name, fetchedMajor.name)
-        Assertions.assertNotEquals(majorData.majorID, fetchedMajor.majorID)
+        assertEquals(newMajor, fetchedMajor)
+        assertEquals(majorData.name, fetchedMajor.name)
+        assertNotEquals(majorData.majorID, fetchedMajor.majorID)
     }
 
     @Test
@@ -148,15 +147,15 @@ class InformationTests : RestTests(
         val result = getEx("/majors/${newMajor.majorID}", trt, port)
         val body = getBody(result)
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
-        Assertions.assertEquals("", body)
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals("", body)
     }
 
     @Test
     fun `Delete a non-existing major`() {
         val result = deleteEx("/majors/0", trt, port)
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
     }
 
     //#################
@@ -168,8 +167,8 @@ class InformationTests : RestTests(
         val result = getEx("/lectures/0", trt, port)
         val body = getBody(result)
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
-        Assertions.assertEquals("", body)
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals("", body)
     }
 
     //@Test
@@ -183,9 +182,9 @@ class InformationTests : RestTests(
         val newLecture = post<LectureDAO, LectureDAO>("/majors/${firstMajor.majorID}/lectures", lectureData, trt, port)
         val fetchedLecture = get<LectureDAO>("/lectures/" + newLecture.lectureID, trt, port)
 
-        Assertions.assertEquals(newLecture, fetchedLecture)
-        Assertions.assertEquals(lectureData.name, fetchedLecture.name)
-        Assertions.assertNotEquals(lectureData.lectureID, fetchedLecture.lectureID)
+        assertEquals(newLecture, fetchedLecture)
+        assertEquals(lectureData.name, fetchedLecture.name)
+        assertNotEquals(lectureData.lectureID, fetchedLecture.lectureID)
     }
 
     @Test
@@ -197,14 +196,14 @@ class InformationTests : RestTests(
         val result = getEx("/lectures/${newLecture.lectureID}", trt, port)
         val body = getBody(result)
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
-        Assertions.assertEquals("", body)
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals("", body)
     }
 
     @Test
     fun `Delete a non-existing lecture`() {
         val result = deleteEx("/majors/${firstMajor.majorID}/lectures/0", trt, port)
 
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
     }
 }
