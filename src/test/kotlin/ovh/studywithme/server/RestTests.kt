@@ -1,5 +1,6 @@
 package ovh.studywithme.server
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -13,8 +14,10 @@ import java.net.URI
 @Tag("integration")
 open class RestTests(){
 
-    inline fun <reified T : Any> get(path:String, trt:TestRestTemplate, port:Int): T {
-		return trt.getForObject(
+	val mapper = jacksonObjectMapper()
+
+	inline fun <reified T : Any> get(path:String, trt:TestRestTemplate, port:Int): T {
+		return trt.getForObject<T>(
 			URI("http://localhost:" + port + path),
 			T::class.java)
 	}
@@ -26,11 +29,10 @@ open class RestTests(){
 			T::class.java)
 	}
 
-    inline fun <S,reified T : Any> put(path:String, payload:S, trt:TestRestTemplate, port:Int): T {
-		return trt.patchForObject<T>(
+	fun <S> put(path:String, payload:S, trt:TestRestTemplate, port:Int) {
+		return trt.put(
 			URI("http://localhost:" + port + path),
-            HttpEntity(payload),
-			T::class.java)
+            HttpEntity(payload))
 	}
 
     fun delete(path:String, trt:TestRestTemplate, port:Int) {
@@ -45,6 +47,14 @@ open class RestTests(){
         }
         return ""
     }
+
+	inline fun <reified T> getBodyObj(response: ResponseEntity<String>):T?{
+		val output: String? = response.body
+		if (output!=null){
+			return mapper.readValue(output, T::class.java)
+		}
+		return null
+	}
 
 	fun getEx(path:String,trt:TestRestTemplate, port:Int): ResponseEntity<String> {
 		return trt.exchange(

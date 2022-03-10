@@ -24,7 +24,7 @@ import java.net.URI
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@Tag("integration")
+@Tag("oldintegration")
 @TestMethodOrder(OrderAnnotation::class)
 class StudyWithMeServerApplicationTests : RestTests(
 	) {

@@ -1,5 +1,6 @@
 package ovh.studywithme.server
 
+import com.beust.klaxon.Klaxon
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -8,6 +9,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.http.HttpStatus
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
@@ -19,6 +21,8 @@ import ovh.studywithme.server.dao.InstitutionDAO
 import ovh.studywithme.server.dao.LectureDAO
 import ovh.studywithme.server.dao.MajorDAO
 
+
+
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -26,8 +30,7 @@ import ovh.studywithme.server.dao.MajorDAO
 @Tag("integration")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.Random::class)
-class InformationTests : RestTests(
-) {
+class InformationTests : RestTests() {
 
     val trt = TestRestTemplate()
 
@@ -65,17 +68,13 @@ class InformationTests : RestTests(
         val newInstitution1 = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FH Karlsruhe"), trt, port)
         val newInstitution2 = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "Fernuni Bremen"), trt, port)
 
-        val testType : ParameterizedTypeReference<List<InstitutionDAO>>
-        val fetchedInstitutions = get<List<InstitutionDAO>>("/institutions", trt, port)
-        println("XXXXXXXXXXXXXXX\n${fetchedInstitutions.first()}\n")
-        println("XXXXXXXXXXXXXXX\n${fetchedInstitutions[1]}\n")
+        val fetchedInstitutions = getEx("/institutions", trt, port)
+        val body : String? = fetchedInstitutions.body
+        Assertions.assertNotNull(body)
+        val parsedList:List<InstitutionDAO>? = body?.let { Klaxon().parseArray<InstitutionDAO>(it) }
+        val contains = parsedList!!.contains(newInstitution1)
 
-        val test = fetchedInstitutions.first()
-
-        //val institutionIDs : List<Long> = fetchedInstitutions.map{ it.institutionID }
-
-        //Assertions.assertEquals(true, fetchedInstitutions.map { it.institutionID}.toMutableList().contains(newInstitution1.institutionID))
-        //Assertions.assertEquals(true, fetchedInstitutions.map { it.institutionID }.contains(newInstitution2.institutionID))
+        Assertions.assertEquals(true, parsedList!!.contains(newInstitution2))
     }
 
     @Test
@@ -122,9 +121,15 @@ class InformationTests : RestTests(
         assertEquals("", body)
     }
 
-    //@Test
+    @Test
     fun `Create some majors and verify the list of all majors contains them`() {
-        //TODO
+        val newMajor1 = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Chemie"), trt, port)
+        val newMajor2 = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Biologie"), trt, port)
+
+        //val fetchedMajors = get<List<MajorDAO>>("/majors", trt, port)
+
+        //Assertions.assertEquals(true, fetchedMajors.map { it.majorID }.contains(newMajor1.majorID))
+        //Assertions.assertEquals(true, fetchedMajors.map { it.majorID }.contains(newMajor2.majorID))
     }
 
     @Test

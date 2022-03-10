@@ -12,6 +12,7 @@ plugins {
 	kotlin("plugin.spring") version "1.6.10"
 	kotlin("plugin.jpa") version "1.6.10"
 	jacoco
+    //kotlin("plugin.serialization") version "1.6.10"
 	//id("io.github.chiragji.jacotura") version "1.0.2"
 }
 
@@ -52,6 +53,8 @@ dependencies {
 	//testImplementation("io.mockk:mockk:1.12.3")
 	testImplementation("com.ninja-squad:springmockk:3.1.1")
 	testImplementation("com.h2database:h2")
+    //testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation( "com.beust:klaxon:5.5")
 	//testImplementation( "org.junit.jupiter:junit-jupiter-api:5.8.2")
 	//testImplementation( "org.junit.jupiter:junit-jupiter-engine:5.8.2")
 }
