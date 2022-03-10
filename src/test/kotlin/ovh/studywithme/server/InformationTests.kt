@@ -60,18 +60,17 @@ class InformationTests : RestTests() {
         assertEquals("", body)
     }
 
-    //@Test
+    @Test
     fun `Create some institutions and verify the list of all institutions contains them`() {
-        //TODO fix this mess
         val newInstitution1 = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FH Karlsruhe"), trt, port)
         val newInstitution2 = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "Fernuni Bremen"), trt, port)
 
         val fetchedInstitutions = getEx("/institutions", trt, port)
         val body : String? = fetchedInstitutions.body
         assertNotNull(body)
-        val parsedList:List<InstitutionDAO>? = body?.let { Klaxon().parseArray<InstitutionDAO>(it) }
-        val contains = parsedList!!.contains(newInstitution1)
+        val parsedList:List<InstitutionDAO>? = body?.let { Klaxon().parseArray(it) }
 
+        assertEquals(true, parsedList!!.contains(newInstitution1))
         assertEquals(true, parsedList!!.contains(newInstitution2))
     }
 

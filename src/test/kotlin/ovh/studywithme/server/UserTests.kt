@@ -106,17 +106,17 @@ class UserTests : RestTests(
 
     @Test
     fun `Create a new user and request him`() {
-        val userData = UserDetailDAO(0, "Michael Meier", firstInstitution.institutionID, firstInstitution.name,
-            firstMajor.majorID, firstMajor.name, "michael.meier@student.tum.edu", "f1r3B4s31D", false)
+        val userData = UserDetailDAO(0, "Michael Meier", firstInstitution.institutionID, "wrong institution name",
+            firstMajor.majorID, "wrong major name", "michael.meier@student.tum.edu", "f1r3B4s31D", false)
         val newUser = post<UserDetailDAO, UserDetailDAO>("/users", userData, trt, port)
         val fetchedUser = get<UserDetailDAO>("/users/${newUser.userID}/detail", trt, port)
 
         assertEquals(newUser, fetchedUser)
         assertEquals(userData.name, fetchedUser.name)
         assertEquals(userData.institutionID, fetchedUser.institutionID)
-        assertEquals(userData.institutionName, fetchedUser.institutionName)
+        assertEquals(firstInstitution.name, fetchedUser.institutionName)
         assertEquals(userData.majorID, fetchedUser.majorID)
-        assertEquals(userData.majorName, fetchedUser.majorName)
+        assertEquals(firstMajor.name, fetchedUser.majorName)
         assertEquals(userData.contact, fetchedUser.contact)
         assertEquals(userData.isModerator, fetchedUser.isModerator)
         assertNotEquals(userData.userID, fetchedUser.userID)

@@ -1,5 +1,6 @@
 package ovh.studywithme.server
 
+import com.beust.klaxon.Klaxon
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -8,6 +9,7 @@ import org.springframework.http.HttpEntity
 import org.junit.jupiter.api.Tag
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
+import ovh.studywithme.server.dao.InstitutionDAO
 import java.net.URI
 
 @ExtendWith(SpringExtension::class)
@@ -29,10 +31,13 @@ open class RestTests(){
 			T::class.java)
 	}
 
-	fun <S> put(path:String, payload:S, trt:TestRestTemplate, port:Int) {
-		return trt.put(
+	inline fun <S,reified T> put(path:String, payload:S, trt:TestRestTemplate, port:Int):T? {
+		val response = trt.exchange(
 			URI("http://localhost:" + port + path),
-            HttpEntity(payload))
+			HttpMethod.PUT,
+			HttpEntity(payload),
+			String::class.java)
+		return response.body?.let { Klaxon().parse(it) }
 	}
 
     fun delete(path:String, trt:TestRestTemplate, port:Int) {
