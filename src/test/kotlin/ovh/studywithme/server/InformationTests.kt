@@ -9,14 +9,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.http.HttpStatus
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.TestInstance
-import org.springframework.core.ParameterizedTypeReference
 import ovh.studywithme.server.dao.InstitutionDAO
 import ovh.studywithme.server.dao.LectureDAO
 import ovh.studywithme.server.dao.MajorDAO
@@ -70,11 +68,11 @@ class InformationTests : RestTests() {
 
         val fetchedInstitutions = getEx("/institutions", trt, port)
         val body : String? = fetchedInstitutions.body
-        Assertions.assertNotNull(body)
+        assertNotNull(body)
         val parsedList:List<InstitutionDAO>? = body?.let { Klaxon().parseArray<InstitutionDAO>(it) }
         val contains = parsedList!!.contains(newInstitution1)
 
-        Assertions.assertEquals(true, parsedList!!.contains(newInstitution2))
+        assertEquals(true, parsedList!!.contains(newInstitution2))
     }
 
     @Test

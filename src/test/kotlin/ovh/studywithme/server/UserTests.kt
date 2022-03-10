@@ -1,5 +1,6 @@
 package ovh.studywithme.server
 
+import com.beust.klaxon.Klaxon
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -15,10 +16,9 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.TestInstance
 import org.springframework.core.ParameterizedTypeReference
-import ovh.studywithme.server.dao.InstitutionDAO
-import ovh.studywithme.server.dao.LectureDAO
-import ovh.studywithme.server.dao.MajorDAO
-import ovh.studywithme.server.dao.UserDetailDAO
+import ovh.studywithme.server.dao.*
+import ovh.studywithme.server.model.SessionFrequency
+import ovh.studywithme.server.model.SessionMode
 import ovh.studywithme.server.model.User
 
 @ExtendWith(SpringExtension::class)
@@ -38,11 +38,13 @@ class UserTests : RestTests(
 
     private var firstMajor = MajorDAO(0, "Maschinenbau")
     private var firstInstitution = InstitutionDAO(0, "TU München")
+    private var firstLecture = LectureDAO(0, "Werkstoffkunde I", firstMajor.majorID)
 
     @BeforeAll
     fun init() {
         firstMajor = post("/majors", firstMajor, trt, port)
         firstInstitution = post("/institutions", firstInstitution, trt, port)
+        firstLecture = post("/majors/${firstMajor.majorID}/lectures", firstLecture, trt, port)
     }
 
     @AfterAll
@@ -166,34 +168,33 @@ class UserTests : RestTests(
             firstMajor.majorID, firstMajor.name, "yves.kirschner@student.tum.edu", "y374n07h3r0f7h353", false)
         val newUser = post<UserDetailDAO, UserDetailDAO>("/users", userData, trt, port)
 
-        val fetchedGroups = get<InstitutionDAO>("/institutions/" + newInstitution.institutionID, trt, port)
-        val result = getEx("/users/${newUser.userID}", trt, port)
-        val body = getBody(result)
-        val resultDetail = getEx("/users/${newUser.userID}/detail", trt, port)
-        val bodyDetail = getBody(resultDetail)
+        val fetchedGroups = get<List<StudyGroupDAO>>("/users/${newUser.userID}/groups", trt, port)
 
-        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
-        assertEquals("", body)
-        assertEquals(HttpStatus.NOT_FOUND, resultDetail.statusCode)
-        assertEquals("", bodyDetail)
+        assertEquals(0, fetchedGroups.size)
     }
 
-    /*@Test
+    @Test
     fun `Get a user's groups`() {
-        val userData = UserDetailDAO(0, "Yves Kirschner", firstInstitution.institutionID, firstInstitution.name,
-            firstMajor.majorID, firstMajor.name, "yves.kirschner@student.tum.edu", "y374n07h3r0f7h353", false)
+        val userData = UserDetailDAO(0, "Gregor Snelting", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "gregor.snelting@fernuni-hagen.edu", "5ch03n3n6u73n746", true)
         val newUser = post<UserDetailDAO, UserDetailDAO>("/users", userData, trt, port)
 
-        //post("/groups/${newUser.userID}", "", trt, port)
+        val group1Data = StudyGroupDAO(0, "Team Elite", "KIT - Das E steht für Elite", firstLecture.lectureID,
+            SessionFrequency.WEEKLY, SessionMode.PRESENCE, 6, 3, 1)
+        val group2Data = StudyGroupDAO(0, "Team NotSoElite", "Wer sein Studium liebt, der schiebt",
+            firstLecture.lectureID, SessionFrequency.WEEKLY, SessionMode.ONLINE, 11, 5, 1)
 
-        val result = getEx("/users/${newUser.userID}", trt, port)
-        val body = getBody(result)
-        val resultDetail = getEx("/users/${newUser.userID}/detail", trt, port)
-        val bodyDetail = getBody(resultDetail)
+        val newGroup1 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${newUser.userID}", group1Data, trt, port)
+        val newGroup2 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${newUser.userID}", group2Data, trt, port)
 
-        assertEquals(HttpStatus.OK, result.statusCode)
-        assertEquals("", body)
-        assertEquals(HttpStatus.OK, resultDetail.statusCode)
-        assertEquals("", bodyDetail)
-    }*/
+        val fetchedGroups = getEx("/users/${newUser.userID}/groups", trt, port)
+
+        val body : String? = fetchedGroups.body
+        assertNotNull(body)
+        val parsedList:List<StudyGroupDAO>? = body?.let { Klaxon().parseArray<StudyGroupDAO>(it) }
+
+        assertEquals(2, parsedList!!.size)
+        assertEquals(true, parsedList.contains(newGroup1))
+        assertEquals(true, parsedList.contains(newGroup2))
+    }
 }
