@@ -14,7 +14,7 @@ import java.net.URI
 open class RestTests(){
 
     inline fun <reified T : Any> get(path:String, trt:TestRestTemplate, port:Int): T {
-		return trt.getForObject<T>(
+		return trt.getForObject(
 			URI("http://localhost:" + port + path),
 			T::class.java)
 	}
