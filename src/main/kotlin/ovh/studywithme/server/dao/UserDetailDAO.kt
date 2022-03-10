@@ -35,6 +35,6 @@ data class UserDetailDAO(
      * @return corresponding User object
      */
     fun toUser(): User {
-        return User(this.userID, this.name, this.institutionID, this.majorID, this.contact, this.firebaseUID)
+        return User(this.userID, this.name, this.institutionID, this.majorID, this.contact, this.firebaseUID, false, this.isModerator)
     }
 }

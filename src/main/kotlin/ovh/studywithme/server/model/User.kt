@@ -37,7 +37,7 @@ data class User (
     @get: NotBlank
     val firebaseUID: String,
 
-    val isBlocked: Boolean = false,
+    var isBlocked: Boolean = false,
 
     var isModerator: Boolean = false
 )

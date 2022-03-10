@@ -109,7 +109,7 @@ import ovh.studywithme.server.model.*
                 return false
             }
 
-            user.isModerator = true
+            user.isBlocked = true
             userRepository.save(user)
             return true
         }
