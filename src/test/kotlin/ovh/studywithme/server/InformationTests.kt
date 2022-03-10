@@ -71,7 +71,7 @@ class InformationTests : RestTests() {
         val parsedList:List<InstitutionDAO>? = body?.let { Klaxon().parseArray(it) }
 
         assertEquals(true, parsedList!!.contains(newInstitution1))
-        assertEquals(true, parsedList!!.contains(newInstitution2))
+        assertEquals(true, parsedList.contains(newInstitution2))
     }
 
     @Test
@@ -121,12 +121,15 @@ class InformationTests : RestTests() {
     @Test
     fun `Create some majors and verify the list of all majors contains them`() {
         val newMajor1 = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Chemie"), trt, port)
-        val newMajor2 = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Biologie"), trt, port)
+        val newMajor2 = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Gender Studies"), trt, port)
 
-        //val fetchedMajors = get<List<MajorDAO>>("/majors", trt, port)
+        val fetchedInstitutions = getEx("/majors", trt, port)
+        val body : String? = fetchedInstitutions.body
+        assertNotNull(body)
+        val parsedList:List<MajorDAO>? = body?.let { Klaxon().parseArray(it) }
 
-        //Assertions.assertEquals(true, fetchedMajors.map { it.majorID }.contains(newMajor1.majorID))
-        //Assertions.assertEquals(true, fetchedMajors.map { it.majorID }.contains(newMajor2.majorID))
+        assertEquals(true, parsedList!!.contains(newMajor1))
+        assertEquals(true, parsedList.contains(newMajor2))
     }
 
     @Test
@@ -173,9 +176,20 @@ class InformationTests : RestTests() {
         assertEquals("", body)
     }
 
-    //@Test
+    @Test
     fun `Create some lectures and verify the list of all majors contains them`() {
-        //TODO
+        val newMajor = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Physik"), trt, port)
+
+        val newLecture1 = post<LectureDAO, MajorDAO>("/majors/${newMajor.majorID}/lectures", LectureDAO(0, "Ex Physik III", newMajor.majorID), trt, port)
+        val newLecture2 = post<LectureDAO, MajorDAO>("/majors/${newMajor.majorID}/lectures", LectureDAO(0, "Theo Physik IV", newMajor.majorID), trt, port)
+
+        val fetchedInstitutions = getEx("/majors/${newMajor.majorID}/lectures", trt, port)
+        val body : String? = fetchedInstitutions.body
+        assertNotNull(body)
+        val parsedList:List<MajorDAO>? = body?.let { Klaxon().parseArray(it) }
+
+        assertEquals(true, parsedList!!.contains(newLecture1))
+        assertEquals(true, parsedList!!.contains(newLecture2))
     }
 
     @Test
