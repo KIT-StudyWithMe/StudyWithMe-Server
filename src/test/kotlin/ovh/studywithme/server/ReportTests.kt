@@ -150,4 +150,67 @@ class ReportTests : RestTests() {
         assertEquals(true, parsedList.map { it.reporterID }.contains(user2.userID))
         assertEquals(2, parsedList.map { it.reporterID }.filter { it == user3.userID }.size)
     }
+
+    @Test
+    fun `Create and then delete a group report`() {
+        val user1 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+        val user2 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+        val group = post<StudyGroupDAO, StudyGroupDAO>("/groups/${user2.userID}", createAGroup(), trt, port)
+
+        put<StudyGroupField, Void>("/groups/${group.groupID}/report/${user1.userID}", StudyGroupField.DESCRIPTION, trt, port)
+        put<StudyGroupField, Void>("/groups/${group.groupID}/report/${user2.userID}", StudyGroupField.DESCRIPTION, trt, port)
+        delete("/reports/group/${user1.userID}/${group.groupID}/${StudyGroupField.DESCRIPTION}", trt, port)
+
+        val fetchedGroupReports = getEx("/reports/group", trt, port)
+        val body : String? = fetchedGroupReports.body
+        assertNotNull(body)
+        val parsedList:List<StudyGroupReportDAO>? = body?.let { Klaxon().parseArray(it) }
+
+        assertEquals(false, parsedList!!.map { it.reporterID }.contains(user1.userID))
+        assertEquals(true, parsedList.map { it.reporterID }.contains(user2.userID))
+    }
+
+    @Test
+    fun `Create and then delete a user report`() {
+        val user1 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+        val user2 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+        val user3 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+
+
+        put<UserField, Void>("/users/${user3.userID}/report/${user1.userID}", UserField.CONTACT, trt, port)
+        put<UserField, Void>("/users/${user3.userID}/report/${user2.userID}", UserField.NAME, trt, port)
+        delete("/reports/user/${user1.userID}/${user3.userID}/${UserField.CONTACT}", trt, port)
+
+        val fetchedGroupReports = getEx("/reports/user", trt, port)
+        val body : String? = fetchedGroupReports.body
+        assertNotNull(body)
+        val parsedList:List<UserReportDAO>? = body?.let { Klaxon().parseArray(it) }
+
+        assertEquals(false, parsedList!!.map { it.reporterID }.contains(user1.userID))
+        assertEquals(true, parsedList.map { it.reporterID }.contains(user2.userID))
+    }
+
+    @Test
+    fun `Create and then delete a session report`() {
+        val user1 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+        val user2 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+
+        val group1 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${user1.userID}", createAGroup(), trt, port)
+        val group2 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${user2.userID}", createAGroup(), trt, port)
+
+        val session1 = post<SessionDAO, SessionDAO>("/groups/${group1.groupID}/sessions/", createASession(group1), trt, port)
+        val session2 = post<SessionDAO, SessionDAO>("/groups/${group2.groupID}/sessions/", createASession(group2), trt, port)
+
+        put<SessionField, Void>("/sessions/${session1.sessionID}/report/${user2.userID}", SessionField.PLACE, trt, port)
+        put<SessionField, Void>("/sessions/${session2.sessionID}/report/${user1.userID}", SessionField.PLACE, trt, port)
+        delete("/reports/session/${user2.userID}/${session1.sessionID}/${SessionField.PLACE}", trt, port)
+
+        val fetchedGroupReports = getEx("/reports/session", trt, port)
+        val body : String? = fetchedGroupReports.body
+        assertNotNull(body)
+        val parsedList:List<SessionReportDAO>? = body?.let { Klaxon().parseArray(it) }
+
+        assertEquals(true, parsedList!!.map { it.reporterID }.contains(user1.userID))
+        assertEquals(false, parsedList.map { it.reporterID }.contains(user2.userID))
+    }
 }
