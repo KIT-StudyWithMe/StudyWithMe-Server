@@ -34,20 +34,6 @@ class ReportTests : RestTests() {
     @LocalServerPort
     var port: Int = 0
 
-
-    private fun createAGroup() : StudyGroupDAO {
-        val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
-        val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Informatik"), trt, port)
-        val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
-        val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
-        //val createdUser = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
-
-        val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,
-            SessionFrequency.ONCE,
-            SessionMode.PRESENCE,4,9,7)
-        return post<StudyGroupDAO, StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
-    }
-
     private fun createAUser() : UserDetailDAO {
         val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
         val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
@@ -65,6 +51,24 @@ class ReportTests : RestTests() {
         return post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
     }
 
+    private fun createAGroup() : StudyGroupDAO {
+        val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
+        val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Informatik"), trt, port)
+        val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
+        val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
+        //val createdUser = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
+
+        val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,
+            SessionFrequency.ONCE,
+            SessionMode.PRESENCE,4,9,7)
+        return post<StudyGroupDAO, StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
+    }
+
+    fun createASession(group:StudyGroupDAO) : SessionDAO {
+        val newSession = SessionDAO(0,group.groupID,"Infobau",546161,1054645)
+        return post("/groups/${group.groupID}/sessions",newSession, trt, port)
+    }
+
     @Test
     fun `Create group reports and verify the list of all group reports contains them`() {
         // creating new users ensures their ID is brand new and not used by someone else
@@ -72,9 +76,9 @@ class ReportTests : RestTests() {
         val user2 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
         val user3 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
 
-        val group1 = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user1.userID}", createAGroup(), trt, port)
-        val group2 = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user3.userID}", createAGroup(), trt, port)
-        val group3 = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user2.userID}", createAGroup(), trt, port)
+        val group1 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${user1.userID}", createAGroup(), trt, port)
+        val group2 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${user3.userID}", createAGroup(), trt, port)
+        val group3 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${user2.userID}", createAGroup(), trt, port)
 
         // those don't return anything, hence the workaround with the reporterID later on when using contains
         put<StudyGroupField, Void>("/groups/${group1.groupID}/report/${user2.userID}", StudyGroupField.DESCRIPTION, trt, port)
@@ -113,5 +117,37 @@ class ReportTests : RestTests() {
         assertEquals(true, parsedList!!.map { it.reporterID }.contains(user1.userID))
         assertEquals(true, parsedList.map { it.reporterID }.contains(user2.userID))
         assertEquals(2, parsedList.map { it.reporterID }.filter { it == user2.userID }.size)
+    }
+
+    @Test
+    fun `Create session reports and verify the list of all session reports contains them`() {
+        // creating new users ensures their ID is brand new and not used by someone else
+        val user1 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+        val user2 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+        val user3 = post<UserDetailDAO, UserDetailDAO>("/users", createAUser(), trt, port)
+
+        val group1 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${user1.userID}", createAGroup(), trt, port)
+        val group2 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${user2.userID}", createAGroup(), trt, port)
+        val group3 = post<StudyGroupDAO, StudyGroupDAO>("/groups/${user3.userID}", createAGroup(), trt, port)
+
+        val session1 = post<SessionDAO, SessionDAO>("/groups/${group1.groupID}/sessions/", createASession(group1), trt, port)
+        val session2 = post<SessionDAO, SessionDAO>("/groups/${group2.groupID}/sessions/", createASession(group2), trt, port)
+        val session3 = post<SessionDAO, SessionDAO>("/groups/${group2.groupID}/sessions/", createASession(group2), trt, port)
+        val session4 = post<SessionDAO, SessionDAO>("/groups/${group3.groupID}/sessions/", createASession(group3), trt, port)
+
+        // those don't return anything, hence the workaround with the reporterID later on when using contains
+        put<SessionField, Void>("/sessions/${session1.sessionID}/report/${user2.userID}", SessionField.PLACE, trt, port)
+        put<SessionField, Void>("/sessions/${session2.sessionID}/report/${user1.userID}", SessionField.PLACE, trt, port)
+        put<SessionField, Void>("/sessions/${session3.sessionID}/report/${user3.userID}", SessionField.PLACE, trt, port)
+        put<SessionField, Void>("/sessions/${session4.sessionID}/report/${user3.userID}", SessionField.PLACE, trt, port)
+
+        val fetchedGroupReports = getEx("/reports/session", trt, port)
+        val body : String? = fetchedGroupReports.body
+        assertNotNull(body)
+        val parsedList:List<SessionReportDAO>? = body?.let { Klaxon().parseArray(it) }
+
+        assertEquals(true, parsedList!!.map { it.reporterID }.contains(user1.userID))
+        assertEquals(true, parsedList.map { it.reporterID }.contains(user2.userID))
+        assertEquals(2, parsedList.map { it.reporterID }.filter { it == user3.userID }.size)
     }
 }
