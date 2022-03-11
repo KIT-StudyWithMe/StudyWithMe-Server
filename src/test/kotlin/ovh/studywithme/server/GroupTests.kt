@@ -10,7 +10,6 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import ovh.studywithme.server.dao.*
-import ovh.studywithme.server.model.Session
 import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
 import ovh.studywithme.server.model.StudyGroupField
@@ -52,7 +51,6 @@ class GroupTests : RestTests(){
                 val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
                 val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
                 val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
-                //val createdUser = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
 
                 val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,SessionFrequency.ONCE,SessionMode.PRESENCE,3,100000,15)
                 return post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
@@ -171,6 +169,52 @@ class GroupTests : RestTests(){
         }
 
         @Test
+        fun `Create groups and check if they appear in getall groups by name`(){
+                val newGroup1 = createAGroup()
+                var fetchedGroups = getEx("/groups/?text="+java.net.URLEncoder.encode(newGroup1.name, "utf-8"), trt, port)
+                assertNotNull(fetchedGroups.body)
+                assertNotEquals("[]",fetchedGroups.body)
+                var groupList: List<StudyGroupDAO>? = fetchedGroups.body?.let { Klaxon().parseArray(it) }
+                Assertions.assertEquals(true, groupList!!.contains(newGroup1))
+
+                fetchedGroups = getEx("/groups/?name="+java.net.URLEncoder.encode(newGroup1.name, "utf-8"), trt, port)
+                assertNotNull(fetchedGroups.body)
+                assertNotEquals("[]",fetchedGroups.body)
+                groupList = fetchedGroups.body?.let { Klaxon().parseArray(it) }
+                Assertions.assertEquals(true, groupList!!.contains(newGroup1))
+
+                val lecture = get<LectureDAO>("/lectures/${newGroup1.lectureID}", trt, port)
+                fetchedGroups = getEx("/groups/?lecture="+java.net.URLEncoder.encode(lecture.name.toString(), "utf-8"), trt, port)
+                assertNotNull(fetchedGroups.body)
+                assertNotEquals("[]",fetchedGroups.body)
+                groupList = fetchedGroups.body?.let { Klaxon().parseArray(it) }
+                Assertions.assertEquals(true, groupList!!.contains(newGroup1))
+        }
+
+        @Test
+        fun `Create group and check if it appears in the suggestions`(){
+                val newGroup1 = createAGroup()
+                val lecture = get<LectureDAO>("/lectures/${newGroup1.lectureID}", trt, port)
+                val major = get<MajorDAO>("/majors/${lecture.majorID}", trt, port)
+                val institution = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0,"Insti"), trt, port)
+                val user = UserDetailDAO(0,"Hans", institution.institutionID, institution.name, major.majorID, major.name, "cont", "firebase", false)
+                val userResponse = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
+                var fetchedGroups = getEx("/groups/suggestion/"+userResponse.userID, trt, port)
+                assertNotNull(fetchedGroups.body)
+                assertNotEquals("[]",fetchedGroups.body)
+                var groupList: List<StudyGroupDAO>? = fetchedGroups.body?.let { Klaxon().parseArray(it) }
+                assertEquals(true, groupList!!.contains(newGroup1))
+                assertEquals(groupList.map { it.lectureID == lecture.lectureID }.contains(false),false)
+        }
+
+        @Test
+        fun `Get suggestions for nonexistent user`(){
+                var fetchedGroups = getEx("/groups/suggestion/10654605", trt, port)
+                assertNull(fetchedGroups.body)
+                assertEquals(HttpStatus.NOT_FOUND, fetchedGroups.statusCode)
+        }
+
+        @Test
         fun `Update Group`() {
                 val newGroup = createAGroup()
                 val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "New Major"), trt, port)
@@ -242,9 +286,8 @@ class GroupTests : RestTests(){
         }
 
         @Test
-        fun `Create a session and get it`() {
-
+        fun `Get user in a group that does not exist`() {
+                val result = getEx("/groups/105464506/users", trt, port)
+                assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
         }
-
-
 }

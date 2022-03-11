@@ -30,8 +30,7 @@ import java.util.Date
                             private val attendeeRepository:AttendeeRepository) : SessionControllerInterface {
 
     override fun createSession(session:SessionDAO): SessionDAO {
-        sessionRepository.save(session.toSession())
-        return session
+        return SessionDAO(sessionRepository.save(session.toSession()))
     }
 
     override fun getSessionByID(sessionID:Long): SessionDAO? {
@@ -47,10 +46,16 @@ import java.util.Date
         // 8 hours in ms
         val offset : Long = 8 * 60 * 60 * 1000
         val now = Date().time
+        if (allSessions.isEmpty()) {
+            return emptyList()
+        }
         for (currentSession in allSessions) {
             if ((currentSession.startTime + offset) < now) {
                 // the session ended more than offset ms ago, delete it
                 allSessions.remove(currentSession)
+                if (allSessions.isEmpty()) {
+                    return emptyList()
+                }
                 attendeeRepository.deleteBySessionID(currentSession.sessionID)
                 sessionRepository.deleteById(currentSession.sessionID)
             }

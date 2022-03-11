@@ -73,8 +73,8 @@ class GroupController(private val groupRepository: GroupRepository,
     override fun updateGroup(updatedGroup: StudyGroupDAO, groupID: Long): StudyGroupDAO? {
         if (groupRepository.existsById(updatedGroup.groupID) && updatedGroup.groupID==groupID) {
             if (lectureRepository.existsById(updatedGroup.lectureID)){
-                groupRepository.save(updatedGroup.toStudyGroup(groupRepository.getById(updatedGroup.groupID).hidden))
-                return StudyGroupDAO(groupRepository.getById(updatedGroup.groupID),getMemberCount(updatedGroup.groupID))
+                val createdGroup = groupRepository.save(updatedGroup.toStudyGroup(groupRepository.getById(updatedGroup.groupID).hidden))
+                return StudyGroupDAO(createdGroup,getMemberCount(updatedGroup.groupID))
             }
         }
         return null
