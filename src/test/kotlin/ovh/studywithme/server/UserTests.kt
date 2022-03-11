@@ -20,6 +20,11 @@ import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
 import ovh.studywithme.server.model.UserField
 
+/**
+ * User tests
+ *
+ * @constructor Create empty User tests
+ */
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -86,6 +91,82 @@ class UserTests : RestTests(
     }
 
     @Test
+    fun `Get a list of blocked users`() {
+        val userData1 = UserDetailDAO(
+            0, "Marko Bode", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "marko.bode@fh-ka.edu", "w3rd3r4l1f3", false
+        )
+        val newUser1 = post<UserDetailDAO, UserDetailDAO>("/users", userData1, trt, port)
+
+        val userData2 = UserDetailDAO(
+            0, "Tobias Weber", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "tobias.weber@rwth.edu", "6ru55n4ch44ch3n", true
+        )
+        val newUser2 = post<UserDetailDAO, UserDetailDAO>("/users", userData2, trt, port)
+
+        val userData3 = UserDetailDAO(
+            0, "Kim Schmidt", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "kim.schmidt@fh-ka.edu", "6u7d45535rum157", false
+        )
+        val newUser3 = post<UserDetailDAO, UserDetailDAO>("/users", userData3, trt, port)
+        deleteEx("/users/${newUser3.userID}", trt, port)
+
+        //user2 blocks user1
+        putEx("/users/${newUser1.userID}/state/${newUser2.userID}", "", trt, port)
+
+        val fetchedUsers = getEx("/users?state=blocked", trt, port)
+        val body : String? = fetchedUsers.body
+        assertNotNull(body)
+        val parsedList:List<UserDAO>? = body?.let { Klaxon().parseArray(it) }
+
+        assertEquals(true, parsedList!!.contains(UserDAO(newUser1.toUser())))
+        assertEquals(false, parsedList.contains(UserDAO(newUser2.toUser())))
+        assertEquals(false, parsedList.contains(UserDAO(newUser3.toUser())))
+    }
+
+    @Test
+    fun `Get an existing user`() {
+        val userData = UserDetailDAO(
+            0, "Mathias Pacher", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "mathias.pacher@goetheuni.edu", "6ru5z3n4chfr4nkfur7", false
+        )
+        val newUser = post<UserDetailDAO, UserDetailDAO>("/users", userData, trt, port)
+
+        val fetchedUser = get<UserDAO>("/users/${newUser.userID}", trt, port)
+
+        assertEquals(userData.name, fetchedUser.name)
+        assertNotEquals(userData.userID, fetchedUser.userID)
+        assertEquals(newUser.userID, fetchedUser.userID)
+    }
+
+    @Test
+    fun `Get an existing user by his firebaseUID`() {
+        val userData = UserDetailDAO(
+            0, "Christian Solmecke", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "Whatsapp +49170987654321", "7h3u53r5f1r3b4531d", false
+        )
+        val newUser = post<UserDetailDAO, UserDetailDAO>("/users", userData, trt, port)
+
+        val fetchedUsers = getEx("/users?FUID=${newUser.firebaseUID}", trt, port)
+        val body : String? = fetchedUsers.body
+        assertNotNull(body)
+        val parsedList:List<UserDAO>? = body?.let { Klaxon().parseArray(it) }
+
+        assertEquals(1, parsedList!!.size)
+        assertEquals(userData.name, parsedList[0].name)
+        assertEquals(newUser.userID, parsedList[0].userID)
+    }
+
+    @Test
+    fun `Get a user by non-existent firebaseUID`() {
+        val result = getEx("/users?FUID=0", trt, port)
+        val body = getBody(result)
+
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+        assertEquals("", body)
+    }
+
+    @Test
     fun `Get user with ID 0 and expect nothing`() {
         val result = getEx("/users/0", trt, port)
         val body = getBody(result)
@@ -104,7 +185,7 @@ class UserTests : RestTests(
     }
 
     @Test
-    fun `Create a new user and request him`() {
+    fun `Create a new user and request his details`() {
         val userData = UserDetailDAO(0, "Michael Meier", firstInstitution.institutionID, "wrong institution name",
             firstMajor.majorID, "wrong major name", "michael.meier@student.tum.edu", "f1r3B4s31D", false)
         val newUser = post<UserDetailDAO, UserDetailDAO>("/users", userData, trt, port)
@@ -216,6 +297,29 @@ class UserTests : RestTests(
         assertEquals(userData.contact, fetchedUser.contact)
         assertEquals(userData.isModerator, fetchedUser.isModerator)
 
+        assertEquals(newModerator.userID, fetchedMod.userID)
+        assertEquals(moderatorData.name, fetchedMod.name)
+        assertEquals(moderatorData.institutionID, fetchedMod.institutionID)
+        assertEquals(moderatorData.institutionName, fetchedMod.institutionName)
+        assertEquals(moderatorData.majorID, fetchedMod.majorID)
+        assertEquals(moderatorData.majorName, fetchedMod.majorName)
+        assertEquals(moderatorData.contact, fetchedMod.contact)
+        assertEquals(moderatorData.isModerator, fetchedMod.isModerator)
+    }
+
+    @Test
+    fun `Block a non-existent user`() {
+        val moderatorData = UserDetailDAO(0, "Felix Brinkschulte", firstInstitution.institutionID, firstInstitution.name,
+            firstMajor.majorID, firstMajor.name, "felix.brinkschulte@student.kit.edu", "64n07h3ra4gu1d", true)
+        val newModerator = post<UserDetailDAO, UserDetailDAO>("/users", moderatorData, trt, port)
+
+        val result = putEx("/users/0/state/${newModerator.userID}", "", trt, port)
+
+        val fetchedMod = get<UserDetailDAO>("/users/${newModerator.userID}/detail", trt, port)
+
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+
+        // Verify the mod's data remains untouched.
         assertEquals(newModerator.userID, fetchedMod.userID)
         assertEquals(moderatorData.name, fetchedMod.name)
         assertEquals(moderatorData.institutionID, fetchedMod.institutionID)
