@@ -4,6 +4,8 @@ import com.beust.klaxon.Klaxon
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
@@ -31,8 +33,8 @@ class SessionTests:RestTests() {
         val session = SessionDAO(0,group.groupID,"Mathebau", Date().time+100,45)
         val response = post<SessionDAO, SessionDAO>("/groups/${group.groupID}/sessions", session, trt, port)
         val list = getEx("/groups/${group.groupID}/sessions", trt, port)
-        Assertions.assertNotNull(list.body)
-        Assertions.assertNotEquals("[]", list.body)
+        assertNotNull(list.body)
+        assertNotEquals("[]", list.body)
         val sessionList:List<SessionDAO>? = list.body?.let { Klaxon().parseArray(it) }
         assertTrue(sessionList!!.contains(response))
     }
@@ -98,11 +100,49 @@ class SessionTests:RestTests() {
         assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
     }
 
-    @Test
-    fun `set Participation in Session`(){
-        val group = createAGroup(trt,port)
-        val session = createASession(trt, port)
+    @ParameterizedTest(name = "set Participation {0} in Session and get attendees")
+    @ValueSource(booleans = [true, false])
+    fun `set Participation Bools in Session and get attendees`(participation: Boolean){
+        val user = createAUser(trt, port)
+        val group = createAGroup(user, trt,port)
+        val session = createASession(group, trt, port)
 
-        //val response = put<>("/sessions/${session.sessionID}/participate/$user.",)
+        var response = getEx("/sessions/${session.sessionID}/attendee", trt, port) //get participation
+        assertNotNull(response.body)
+        assertEquals("[]", response.body)
+
+        response = putEx("/sessions/${session.sessionID}/participate/${user.userID}", participation, trt, port) //set participation
+        assertEquals(HttpStatus.OK, response.statusCode)
+
+        response = getEx("/sessions/${session.sessionID}/attendee", trt, port) //get participation
+        if (participation){
+            assertNotNull(response.body)
+            assertNotEquals("[]", response.body)
+            val sessionList:List<SessionAttendeeDAO>? = response.body?.let { Klaxon().parseArray(it) }
+            val userAttendeeDAO = SessionAttendeeDAO(sessionList!![0].sessionAttendeeID,session.sessionID, user.userID, participates = participation)
+            assertTrue(sessionList!!.contains(userAttendeeDAO))
+        } else {
+            assertNotNull(response.body)
+            assertEquals("[]", response.body)
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `Set Participation for a Session that does not exist`(participation:Boolean){
+        val user = createAUser(trt,port)
+        val session = createASession(trt, port)
+        var response = putEx("/sessions/56546/participate/${user.userID}", participation, trt, port) //set fake participation
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+
+        response = putEx("/sessions/${session.sessionID}/participate/561654", participation, trt, port) //set fake participation
+        //assertEquals(HttpStatus.NOT_FOUND, response.statusCode) //TODO
+    }
+
+    @Test
+    fun `Get Attendees for a Session that does not exist`(){
+        val response = getEx("/sessions/206540/attendee", trt, port) //get fake participation
+        assertNull(response.body)
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
     }
 }

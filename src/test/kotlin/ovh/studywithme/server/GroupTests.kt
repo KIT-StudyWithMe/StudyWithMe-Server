@@ -4,6 +4,8 @@ import com.beust.klaxon.Klaxon
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
@@ -27,11 +29,10 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Create a group and get it afterwards`() {
-                val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
-                val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
-                val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
-                val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
-                //val createdUser = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
+                val inst = createAInstitution(trt, port)
+                val major = createAMajor(trt, port)
+                val lecture = createALecture(major, trt, port)
+                val user = createAUser(inst,major, trt, port)
 
                 val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,SessionFrequency.ONCE,SessionMode.PRESENCE,3,100000,15)
                 val createdGroup = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
@@ -47,11 +48,6 @@ class GroupTests : RestTests(){
                 Assertions.assertEquals(1, createdGroup.memberCount)
         }
 
-        fun createASession(group:StudyGroupDAO) : SessionDAO {
-                val newSession = SessionDAO(0,group.groupID,"Infobau",546161,1054645)
-                return post("/groups/${group.groupID}/sessions",newSession, trt, port)
-        }
-
         @Test
         fun `Get a group`() {
                 val group = createAGroup(trt, port)
@@ -61,10 +57,10 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Create a Group with a user that does not exist`(){
-                val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port) //create a Instutution
-                val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port) //create a Major
-                val lecture = post<LectureDAO, LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port) //create a Lecture
+                val major = createAMajor(trt, port)
+                val lecture = createALecture(major, trt, port)
                 //do not create user
+
                 val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,
                         SessionFrequency.ONCE,
                         SessionMode.PRESENCE,3,100000,15)
@@ -75,32 +71,44 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Get a nonexistent Group`() {
-                //val group = createAGroup(trt, port)
-
                 val fetchedGroup = getEx("/groups/0",trt,port)
                 Assertions.assertEquals(HttpStatus.NOT_FOUND,fetchedGroup.statusCode)
         }
 
-        @Test
-        fun `User joins a Group`() {
+        @ParameterizedTest(name = "User joins a Group and gets accepted: {0}")
+        @ValueSource(booleans = [true, false])
+        fun `User joins a Group`(accepted: Boolean) {
                 val group = createAGroup(trt, port)
                 val user = createAUser(trt, port)
                 val userList = get<List<StudyGroupMemberDAO>>("/groups/${group.groupID}/users", trt, port)
 
                 val requestListBeforeJoin = getEx("/groups/${group.groupID}/requests", trt, port) //list requests before join
-                Assertions.assertEquals("[]", requestListBeforeJoin.body)
+                assertEquals("[]", requestListBeforeJoin.body)
 
                 put<String,Void>("/groups/${group.groupID}/join/${user.userID}", "",trt,port) //request
 
                 val requestList = getEx("/groups/${group.groupID}/requests", trt, port) //list requests while join
-                Assertions.assertNotEquals("[]", requestList.body)
+                assertNotEquals("[]", requestList.body)
 
-                put<Boolean,Void>("/groups/${group.groupID}/users/${user.userID}/membership", true,trt,port) //accept
+                put<Boolean,Void>("/groups/${group.groupID}/users/${user.userID}/membership", accepted,trt,port) //accept/decline
                 val userListAfterJoin = get<List<StudyGroupMemberDAO>>("/groups/${group.groupID}/users", trt, port)
-                Assertions.assertNotEquals(userList, userListAfterJoin)
 
+                assertNotEquals(accepted, userListAfterJoin.equals(userList)) //same if declined, not same if accepted
                 val requestListAfterJoin = getEx("/groups/${group.groupID}/requests", trt, port) //list requests after join
-                Assertions.assertEquals("[]", requestListAfterJoin.body)
+                assertEquals("[]", requestListAfterJoin.body)
+        }
+
+        @Test
+        fun `Toggle GroupMembership for a user and group that do not exist`() {
+                val user = createAUser(trt, port)
+                val group = createAGroup(user, trt, port)
+                var response = putEx("/groups/${group.groupID}/users/106540/membership", true ,trt,port) //fake accept
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+                assertNull(response.body)
+
+                response = putEx("/groups/206450/users/${user.userID}/membership", true ,trt,port) //fake accept
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+                assertNull(response.body)
         }
 
         @Test
@@ -191,13 +199,14 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Create group and check if it appears in the suggestions`(){
-                val newGroup1 = createAGroup(trt, port)
-                val lecture = get<LectureDAO>("/lectures/${newGroup1.lectureID}", trt, port)
-                val major = get<MajorDAO>("/majors/${lecture.majorID}", trt, port)
-                val institution = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0,"Insti"), trt, port)
-                val user = UserDetailDAO(0,"Hans", institution.institutionID, institution.name, major.majorID, major.name, "cont", "firebase", false)
-                val userResponse = post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
-                var fetchedGroups = getEx("/groups/suggestion/"+userResponse.userID, trt, port)
+                val major = createAMajor(trt, port)
+                val user = createAUser(major, trt, port)
+
+                val anotherGroupAdmin = createAUser(major, trt, port)
+                val lecture = createALecture(major, trt, port)
+                val newGroup1 = createAGroup(lecture, user, trt, port)
+
+                var fetchedGroups = getEx("/groups/suggestion/"+user.userID, trt, port)
                 assertNotNull(fetchedGroups.body)
                 assertNotEquals("[]",fetchedGroups.body)
                 var groupList: List<StudyGroupDAO>? = fetchedGroups.body?.let { Klaxon().parseArray(it) }
@@ -229,7 +238,7 @@ class GroupTests : RestTests(){
                 assertEquals(updatedGroup.sessionType,          gotGroup.sessionType)
                 assertEquals(updatedGroup.lectureChapter,       gotGroup.lectureChapter)
                 assertEquals(updatedGroup.exercise,             gotGroup.exercise)
-                assertNotEquals(gotGroup.memberCount,              updatedGroup.memberCount)
+                assertNotEquals(gotGroup.memberCount,           updatedGroup.memberCount)
 
                 assertEquals(newGroup.groupID,                  gotGroup!!.groupID)
                 assertNotEquals(newGroup.name,                  gotGroup.name)

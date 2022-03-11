@@ -109,7 +109,7 @@ open class RestTests(){
 	}
 
 	fun createAGroup(user:UserDetailDAO, trt:TestRestTemplate, port:Int) : StudyGroupDAO {
-		val major = createAMajor(trt, port)
+		val major:MajorDAO = get("/majors/${user.majorID}",trt,port)
 		val lecture = createALecture(major, trt, port)
 		return createAGroup(lecture, user, trt, port)
 	}
@@ -148,6 +148,21 @@ open class RestTests(){
 		return post("/users",user,trt,port) //create user
 	}
 
+	fun createAUser(major:MajorDAO, trt: TestRestTemplate, port: Int): UserDetailDAO{
+		val inst = createAInstitution(trt, port)
+		var user = UserDetailDAO(
+			0,
+			"Hans",
+			inst.institutionID,
+			inst.name,
+			major.majorID,
+			major.name,
+			"email@test.de",
+			"FHEASTH",
+			false)
+		return post("/users",user,trt,port) //create user
+	}
+
 	fun createAUser(inst: InstitutionDAO, major:MajorDAO, trt: TestRestTemplate, port: Int): UserDetailDAO{
 		var user = UserDetailDAO(
 			0,
@@ -165,6 +180,11 @@ open class RestTests(){
 	// -- Session
 	fun createASession(trt: TestRestTemplate, port: Int):SessionDAO {
 		val group = createAGroup(trt, port)
+		val session = SessionDAO(0,group.groupID,"Mathebau", Date().time+100,45)
+		return post("/groups/${group.groupID}/sessions", session, trt, port) //create session
+	}
+
+	fun createASession(group: StudyGroupDAO, trt: TestRestTemplate, port: Int):SessionDAO {
 		val session = SessionDAO(0,group.groupID,"Mathebau", Date().time+100,45)
 		return post("/groups/${group.groupID}/sessions", session, trt, port) //create session
 	}

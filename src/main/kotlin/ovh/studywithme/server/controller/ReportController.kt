@@ -59,5 +59,4 @@ class ReportController(private val groupReportRepository: GroupReportRepository,
         }
         return false
     }
-
 }
