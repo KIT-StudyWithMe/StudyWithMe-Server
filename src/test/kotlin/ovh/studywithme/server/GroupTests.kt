@@ -13,6 +13,7 @@ import ovh.studywithme.server.dao.*
 import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
 import ovh.studywithme.server.model.StudyGroupField
+import ovh.studywithme.server.model.StudyGroupMember
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -290,4 +291,167 @@ class GroupTests : RestTests(){
                 val result = getEx("/groups/105464506/users", trt, port)
                 assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
         }
+
+        @Test
+        fun `Remove last user in group`(){
+                val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
+                val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
+                val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
+                val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
+                var group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,SessionFrequency.ONCE,SessionMode.PRESENCE,3,100000,15)
+                group = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
+                val response = deleteEx("/groups/${group.groupID}/users/${user.userID}", trt, port)
+                assertEquals(HttpStatus.OK, response.statusCode)
+
+                val getGroup = getEx("/groups/${group.groupID}", trt, port)
+                //assertEquals(HttpStatus.NOT_FOUND, getGroup.statusCode) //TODO
+                
+                val getLecture = getEx("/lectures/${lecture.lectureID}", trt, port)
+                //assertEquals(HttpStatus.NOT_FOUND, getLecture.statusCode) //TODO
+        }
+
+        @Test
+        fun `Remove last user in group but lecture is used elsewhere`(){
+                val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
+                val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
+                val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
+                val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
+                var group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,SessionFrequency.ONCE,SessionMode.PRESENCE,3,100000,15)
+                val group2 = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
+                group = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port) //create group1
+                post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group2,trt,port)     //create group2
+
+                val response = deleteEx("/groups/${group.groupID}/users/${user.userID}", trt, port)  //delete last user in group1
+                assertEquals(HttpStatus.OK, response.statusCode)
+
+                val getGroup = getEx("/groups/${group.groupID}", trt, port) //get group1
+                //assertEquals(HttpStatus.NOT_FOUND, getGroup.statusCode) //TODO
+
+                val getLecture = getEx("/lectures/${lecture.lectureID}", trt, port) //get lecture of group1
+                assertEquals(HttpStatus.OK, getLecture.statusCode)
+                assertNotNull(getLecture.body)
+                assertNotEquals("[]",getLecture.body)
+                var lectureResponse: LectureDAO? = getLecture.body?.let { Klaxon().parse(it) }
+                assertEquals(lecture, lectureResponse)
+        }
+
+        @Test
+        fun `Make User Admin in Group`(){
+                val group = createAGroup()
+                val user = createAUser()
+
+                put<String,Void>("/groups/${group.groupID}/join/${user.userID}", "",trt,port) //request
+                put<Boolean,Void>("/groups/${group.groupID}/users/${user.userID}/membership", true,trt,port) //accept
+                val userListBeforeAdmin = getEx("/groups/${group.groupID}/users", trt, port)
+                assertNotNull(userListBeforeAdmin.body)
+                assertNotEquals("[]",userListBeforeAdmin.body)
+                var userParsed: List<StudyGroupMemberDAO>? = userListBeforeAdmin.body?.let { Klaxon().parseArray(it) }
+                assertEquals(true, userParsed!!.contains<StudyGroupMemberDAO>(StudyGroupMemberDAO(user.userID,group.groupID,user.name,false)))
+                assertEquals(false, userParsed!!.contains<StudyGroupMemberDAO>(StudyGroupMemberDAO(user.userID,group.groupID,user.name,true)))
+
+                postEx("/groups/${group.groupID}/users/${user.userID}/makeadmin", "", trt, port) //make admin
+                val userListAfterAdmin = getEx("/groups/${group.groupID}/users", trt, port)
+                assertNotNull(userListAfterAdmin.body)
+                assertNotEquals("[]",userListAfterAdmin.body)
+                userParsed = userListAfterAdmin.body?.let { Klaxon().parseArray(it) }
+                assertEquals(true, userParsed!!.contains<StudyGroupMemberDAO>(StudyGroupMemberDAO(user.userID,group.groupID,user.name,true)))
+                assertEquals(false, userParsed!!.contains<StudyGroupMemberDAO>(StudyGroupMemberDAO(user.userID,group.groupID,user.name,false)))
+        }
+
+        @Test
+        fun `Make User Admin that is already admin in Group`(){
+                val group = createAGroup()
+                val user = createAUser()
+
+                put<String,Void>("/groups/${group.groupID}/join/${user.userID}", "",trt,port) //request
+                put<Boolean,Void>("/groups/${group.groupID}/users/${user.userID}/membership", true,trt,port) //accept
+                postEx("/groups/${group.groupID}/users/${user.userID}/makeadmin", "", trt, port) //make admin
+                val secondAdmin = postEx("/groups/${group.groupID}/users/${user.userID}/makeadmin", "", trt, port) //make admin
+                assertEquals(HttpStatus.NOT_FOUND, secondAdmin.statusCode)
+                val userListAfterAdmin = getEx("/groups/${group.groupID}/users", trt, port)
+                assertNotNull(userListAfterAdmin.body)
+                assertNotEquals("[]",userListAfterAdmin.body)
+                val userParsed: List<StudyGroupMemberDAO>? = userListAfterAdmin.body?.let { Klaxon().parseArray(it) }
+                assertEquals(true, userParsed!!.contains<StudyGroupMemberDAO>(StudyGroupMemberDAO(user.userID,group.groupID,user.name,true)))
+                assertEquals(false, userParsed!!.contains<StudyGroupMemberDAO>(StudyGroupMemberDAO(user.userID,group.groupID,user.name,false)))
+        }
+
+        @Test
+        fun `Make User Admin that does not exist`(){
+                val group = createAGroup()
+                val user = createAUser()
+
+                //nonexistent user
+                var response = putEx("/groups/${group.groupID}/join/20405465", "",trt,port) //fake request
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+                response = putEx("/groups/${group.groupID}/users/20405465/membership", true,trt,port) //fake accept
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+                response = postEx("/groups/${group.groupID}/users/20405465/makeadmin", "", trt, port) //make admin
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+
+                //nonexistent group
+                response = putEx("/groups/20405465/join/${user.userID}", "",trt,port) //fake request
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+                response = putEx("/groups/20405465/users/${user.userID}/membership", true,trt,port) //fake accept
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+                response = postEx("/groups/20405465/users/${user.userID}/makeadmin", "", trt, port) //make admin
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        }
+
+        @Test
+        fun `Delete a user while joining`(){
+                /*
+                response = putEx("/groups/${group.groupID}/join/${user.userID}", "",trt,port) //real request
+                put<Boolean,Void>("/groups/${group.groupID}/users/${user.userID}/membership", true,trt,port) //accept
+                postEx("/groups/${group.groupID}/users/${user.userID}/makeadmin", "", trt, port) //make admin
+                val secondAdmin = postEx("/groups/${group.groupID}/users/${user.userID}/makeadmin", "", trt, port) //make admin
+                assertEquals(HttpStatus.NOT_FOUND, secondAdmin.statusCode)
+                val userListAfterAdmin = getEx("/groups/${group.groupID}/users", trt, port)
+                assertNotNull(userListAfterAdmin.body)
+                assertNotEquals("[]",userListAfterAdmin.body)
+                val userParsed: List<StudyGroupMemberDAO>? = userListAfterAdmin.body?.let { Klaxon().parseArray(it) }
+                assertEquals(true, userParsed!!.contains<StudyGroupMemberDAO>(StudyGroupMemberDAO(user.userID,group.groupID,user.name,true)))
+                assertEquals(false, userParsed!!.contains<StudyGroupMemberDAO>(StudyGroupMemberDAO(user.userID,group.groupID,user.name,false)))
+                 */ //TODO
+        }
+
+        @Test
+        fun `Delete a Group`(){
+                val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
+                val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
+                val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
+                val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
+                var group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,SessionFrequency.ONCE,SessionMode.PRESENCE,3,100000,15)
+                group = post("/groups/${user.userID}",group,trt,port) //create group
+
+                val response = deleteEx("/groups/${group.groupID}", trt,port) //delete group
+                assertEquals(HttpStatus.OK, response.statusCode)
+
+                val getGroup = getEx("/groups/${group.groupID}", trt, port) //get group1
+                assertEquals(HttpStatus.NOT_FOUND, getGroup.statusCode)
+
+                val getLecture = getEx("/lectures/${lecture.lectureID}", trt, port) //get lecture of group1
+                //assertEquals(HttpStatus.NOT_FOUND, getLecture.statusCode) //TODO
+                //assertNull(getLecture.body) //TODO
+                assertNotEquals("[]",getLecture.body)
+        }
+
+        @Test
+        fun `Delete a Group that does not exist`(){
+                val response = deleteEx("/groups/4604560", trt,port) //fake delete group
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+                assertNull(response.body)
+        }
+
+        @Test
+        fun `Remove a user from a Group that is not in that group`(){
+                val user = createAUser()
+                val group = createAGroup()
+                var response = deleteEx("/groups/${group.groupID}/users/2040654", trt,port) //fake user remove
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+
+                response = deleteEx("/groups/6065406/users/${user.userID}", trt,port) //fake user remove
+                assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        }
+
 }
