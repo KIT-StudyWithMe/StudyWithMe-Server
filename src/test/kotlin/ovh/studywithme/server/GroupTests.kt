@@ -47,16 +47,6 @@ class GroupTests : RestTests(){
                 Assertions.assertEquals(1, createdGroup.memberCount)
         }
 
-        fun createAGroup() : StudyGroupDAO {
-                val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
-                val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
-                val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
-                val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
-
-                val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,SessionFrequency.ONCE,SessionMode.PRESENCE,3,100000,15)
-                return post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
-        }
-
         fun createAUser() : UserDetailDAO {
                 val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
                 val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
@@ -71,14 +61,28 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Get a group`() {
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
                 val fetchedGroup = get<StudyGroupDAO>("/groups/${group.groupID}",trt,port)
                 Assertions.assertEquals(group,fetchedGroup)
         }
 
         @Test
+        fun `Create a Group with a user that does not exist`(){
+                val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port) //create a Instutution
+                val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port) //create a Major
+                val lecture = post<LectureDAO, LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port) //create a Lecture
+                //do not create user
+                val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,
+                        SessionFrequency.ONCE,
+                        SessionMode.PRESENCE,3,100000,15)
+                val response =  postEx("/groups/0",group,trt,port) //create group without a user
+                //assertEquals(HttpStatus.NOT_FOUND, response.statusCode) //TODO
+                //assertNull(response.body) //TODO
+        }
+
+        @Test
         fun `Get a nonexistent Group`() {
-                //val group = createAGroup()
+                //val group = createAGroup(trt, port)
 
                 val fetchedGroup = getEx("/groups/0",trt,port)
                 Assertions.assertEquals(HttpStatus.NOT_FOUND,fetchedGroup.statusCode)
@@ -86,7 +90,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `User joins a Group`() {
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
                 val user = createAUser()
                 val userList = get<List<StudyGroupMemberDAO>>("/groups/${group.groupID}/users", trt, port)
 
@@ -108,7 +112,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `User that does not exist joins a Group`() {
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
                 val userList = get<List<StudyGroupMemberDAO>>("/groups/${group.groupID}/users", trt, port)
 
                 val requestListBeforeJoin = getEx("/groups/${group.groupID}/requests", trt, port) //list requests before join
@@ -132,7 +136,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Toggle hidden status of a Group`() {
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
 
                 var hidden = get<Boolean>("/groups/${group.groupID}/hide",trt,port)
                 Assertions.assertFalse(hidden)
@@ -159,8 +163,8 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Test find all groups`() {
-                val newGroup1 = createAGroup()
-                val newGroup2 = createAGroup()
+                val newGroup1 = createAGroup(trt, port)
+                val newGroup2 = createAGroup(trt, port)
                 val fetchedGroups = getEx("/groups", trt, port)
                 assertNotNull(fetchedGroups.body)
                 val groupList: List<StudyGroupDAO>? = fetchedGroups.body?.let { Klaxon().parseArray(it) }
@@ -171,7 +175,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Create groups and check if they appear in getall groups by name`(){
-                val newGroup1 = createAGroup()
+                val newGroup1 = createAGroup(trt, port)
                 var fetchedGroups = getEx("/groups/?text="+java.net.URLEncoder.encode(newGroup1.name, "utf-8"), trt, port)
                 assertNotNull(fetchedGroups.body)
                 assertNotEquals("[]",fetchedGroups.body)
@@ -194,7 +198,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Create group and check if it appears in the suggestions`(){
-                val newGroup1 = createAGroup()
+                val newGroup1 = createAGroup(trt, port)
                 val lecture = get<LectureDAO>("/lectures/${newGroup1.lectureID}", trt, port)
                 val major = get<MajorDAO>("/majors/${lecture.majorID}", trt, port)
                 val institution = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0,"Insti"), trt, port)
@@ -217,7 +221,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Update Group`() {
-                val newGroup = createAGroup()
+                val newGroup = createAGroup(trt, port)
                 val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "New Major"), trt, port)
                 val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"New Lecture",major.majorID), trt, port)
                 val updatedGroup = StudyGroupDAO(newGroup.groupID,"changed Name", "changed Description", lecture.lectureID, SessionFrequency.MONTHLY, SessionMode.HYBRID, 1001, 1002, 855464)
@@ -247,7 +251,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Update a nonexistent Group`() {
-                val newGroup = createAGroup()
+                val newGroup = createAGroup(trt, port)
                 val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "New Majsisnrtaor"), trt, port)
                 val lecture = post<LectureDAO,LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"New Lecturieasnrte",major.majorID), trt, port)
                 var updatedGroup = StudyGroupDAO(400546,"changed Name", "changed Description", lecture.lectureID, SessionFrequency.MONTHLY, SessionMode.HYBRID, 1001, 1002, 855464)
@@ -266,7 +270,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Report a group`() {
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
                 val user = createAUser()
                 val response = putEx("/groups/${group.groupID}/report/${user.userID}", StudyGroupField.DESCRIPTION, trt, port)
                 assertEquals(HttpStatus.OK ,response.statusCode)
@@ -281,7 +285,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Report a group with a user that does not exist`() {
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
                 val response = putEx("/groups/${group.groupID}/report/1065460", StudyGroupField.DESCRIPTION, trt, port)
                 assertEquals(HttpStatus.NOT_FOUND ,response.statusCode)
         }
@@ -337,7 +341,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Make User Admin in Group`(){
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
                 val user = createAUser()
 
                 put<String,Void>("/groups/${group.groupID}/join/${user.userID}", "",trt,port) //request
@@ -360,7 +364,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Make User Admin that is already admin in Group`(){
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
                 val user = createAUser()
 
                 put<String,Void>("/groups/${group.groupID}/join/${user.userID}", "",trt,port) //request
@@ -378,7 +382,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Make User Admin that does not exist`(){
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
                 val user = createAUser()
 
                 //nonexistent user
@@ -446,7 +450,7 @@ class GroupTests : RestTests(){
         @Test
         fun `Remove a user from a Group that is not in that group`(){
                 val user = createAUser()
-                val group = createAGroup()
+                val group = createAGroup(trt, port)
                 var response = deleteEx("/groups/${group.groupID}/users/2040654", trt,port) //fake user remove
                 assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
 

@@ -9,7 +9,9 @@ import org.springframework.http.HttpEntity
 import org.junit.jupiter.api.Tag
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
-import ovh.studywithme.server.dao.InstitutionDAO
+import ovh.studywithme.server.dao.*
+import ovh.studywithme.server.model.SessionFrequency
+import ovh.studywithme.server.model.SessionMode
 import java.net.URI
 
 @ExtendWith(SpringExtension::class)
@@ -92,5 +94,17 @@ open class RestTests(){
 			HttpMethod.DELETE,
 			HttpEntity(""),
 			String::class.java)
+	}
+
+	fun createAGroup(trt:TestRestTemplate, port:Int) : StudyGroupDAO {
+		val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port) //create a Instutution
+		val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port) //create a Major
+		val lecture = post<LectureDAO, LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port) //create a Lecture
+		var user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
+		user = post("/users",user,trt,port) //create user
+		val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,
+			SessionFrequency.ONCE,
+			SessionMode.PRESENCE,3,100000,15)
+		return post<StudyGroupDAO, StudyGroupDAO>("/groups/${user.userID}",group,trt,port) //create group
 	}
 }

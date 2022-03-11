@@ -2,13 +2,15 @@ package ovh.studywithme.server
 
 import com.beust.klaxon.Klaxon
 import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import ovh.studywithme.server.dao.*
+import ovh.studywithme.server.model.Session
 import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
 import java.util.*
@@ -25,7 +27,7 @@ class SessionTests:RestTests() {
 
     @Test
     fun `Create a session and get it`() {
-        val group = createAGroup()
+        val group = createAGroup(trt, port)
         val session = SessionDAO(0,group.groupID,"Mathebau", Date().time+100,45)
         val response = post<SessionDAO, SessionDAO>("/groups/${group.groupID}/sessions", session, trt, port)
         val list = getEx("/groups/${group.groupID}/sessions", trt, port)
@@ -35,15 +37,77 @@ class SessionTests:RestTests() {
         assertTrue(sessionList!!.contains(response))
     }
 
-    fun createAGroup() : StudyGroupDAO {
-        val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
-        val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
-        val lecture = post<LectureDAO, LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port)
-        val user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
+    fun createASession():SessionDAO {
+        val group = createAGroup(trt, port)
+        val session = SessionDAO(0,group.groupID,"Mathebau", Date().time+100,45)
+        return post("/groups/${group.groupID}/sessions", session, trt, port) //create session
+    }
 
-        val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,
-            SessionFrequency.ONCE,
-            SessionMode.PRESENCE,3,100000,15)
-        return post<StudyGroupDAO, StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
+    @Test
+    fun `Get a session by its ID`(){
+        val session = createASession()
+        val response = get<SessionDAO>("/sessions/${session.sessionID}", trt, port) //get session
+        assertEquals(session, response)
+    }
+
+    @Test
+    fun `Get a session that does not exist`(){
+        val response = getEx("/sessions/7654054", trt, port) //get session
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        assertNull(response.body)
+    }
+
+    @Test
+    fun `Update a Session`(){
+        val session = createASession()
+        val newSession = SessionDAO(session.sessionID, session.groupID, "another place", Date().time, 400)
+        var response = put<SessionDAO,SessionDAO>("/sessions/${session.sessionID}", newSession, trt, port) //update session
+        assertEquals(newSession, response)
+
+        response = get("/sessions/${session.sessionID}", trt, port) //get session
+        assertEquals(newSession, response)
+    }
+
+    @Test
+    fun `Update a Session that does not exist`(){
+        val session = createASession()
+
+        val newSession = SessionDAO(20450654, session.groupID, "another place3", Date().time, 40000)
+
+        var response = putEx("/sessions/20450654", newSession, trt, port) //update fake session wrong sessionid
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+
+        val newSessionWrongGroup = SessionDAO(session.sessionID, 20654065, "another place2", Date().time, 40)
+
+        response = putEx("/sessions/${session.sessionID}", newSessionWrongGroup, trt, port) //update fake session wrong groupid
+        //assertEquals(HttpStatus.NOT_FOUND, response.statusCode) //TODO
+
+        val newSessionWrongTime = SessionDAO(session.sessionID, session.groupID, "another place2", Date().time, -1565)
+
+        response = putEx("/sessions/${session.sessionID}", newSessionWrongTime, trt, port) //update fake session wrong time
+        //assertEquals(HttpStatus.NOT_FOUND, response.statusCode) //TODO
+    }
+
+    @Test
+    fun `Delete a Session`(){
+        val session = createASession()
+        var response = deleteEx("/sessions/${session.sessionID}",trt, port)
+        assertEquals(HttpStatus.OK, response.statusCode)
+
+        response = getEx("/sessions/${session.sessionID}",trt,port)
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+    }
+
+    @Test
+    fun `Delete a Session that does not exist`(){
+        var response = deleteEx("/sessions/685464",trt, port)
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+    }
+
+    @Test
+    fun `set Participation in Session`(){
+        val session = createASession()
+
+        //val response = put<>("/sessions/${session.sessionID}/participate/$user.",)
     }
 }
