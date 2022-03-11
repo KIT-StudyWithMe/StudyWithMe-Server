@@ -47,13 +47,6 @@ class GroupTests : RestTests(){
                 Assertions.assertEquals(1, createdGroup.memberCount)
         }
 
-        fun createAUser() : UserDetailDAO {
-                val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port)
-                val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port)
-                val user =  UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
-                return post<UserDetailDAO, UserDetailDAO>("/users", user, trt, port)
-        }
-
         fun createASession(group:StudyGroupDAO) : SessionDAO {
                 val newSession = SessionDAO(0,group.groupID,"Infobau",546161,1054645)
                 return post("/groups/${group.groupID}/sessions",newSession, trt, port)
@@ -91,7 +84,7 @@ class GroupTests : RestTests(){
         @Test
         fun `User joins a Group`() {
                 val group = createAGroup(trt, port)
-                val user = createAUser()
+                val user = createAUser(trt, port)
                 val userList = get<List<StudyGroupMemberDAO>>("/groups/${group.groupID}/users", trt, port)
 
                 val requestListBeforeJoin = getEx("/groups/${group.groupID}/requests", trt, port) //list requests before join
@@ -271,14 +264,14 @@ class GroupTests : RestTests(){
         @Test
         fun `Report a group`() {
                 val group = createAGroup(trt, port)
-                val user = createAUser()
+                val user = createAUser(trt, port)
                 val response = putEx("/groups/${group.groupID}/report/${user.userID}", StudyGroupField.DESCRIPTION, trt, port)
                 assertEquals(HttpStatus.OK ,response.statusCode)
         }
 
         @Test
         fun `Report a group that does not exist`() {
-                val user = createAUser()
+                val user = createAUser(trt, port)
                 val response = putEx("/groups/1064040/report/${user.userID}", StudyGroupField.DESCRIPTION, trt, port)
                 assertEquals(HttpStatus.NOT_FOUND ,response.statusCode)
         }
@@ -342,7 +335,7 @@ class GroupTests : RestTests(){
         @Test
         fun `Make User Admin in Group`(){
                 val group = createAGroup(trt, port)
-                val user = createAUser()
+                val user = createAUser(trt, port)
 
                 put<String,Void>("/groups/${group.groupID}/join/${user.userID}", "",trt,port) //request
                 put<Boolean,Void>("/groups/${group.groupID}/users/${user.userID}/membership", true,trt,port) //accept
@@ -365,7 +358,7 @@ class GroupTests : RestTests(){
         @Test
         fun `Make User Admin that is already admin in Group`(){
                 val group = createAGroup(trt, port)
-                val user = createAUser()
+                val user = createAUser(trt, port)
 
                 put<String,Void>("/groups/${group.groupID}/join/${user.userID}", "",trt,port) //request
                 put<Boolean,Void>("/groups/${group.groupID}/users/${user.userID}/membership", true,trt,port) //accept
@@ -383,7 +376,7 @@ class GroupTests : RestTests(){
         @Test
         fun `Make User Admin that does not exist`(){
                 val group = createAGroup(trt, port)
-                val user = createAUser()
+                val user = createAUser(trt, port)
 
                 //nonexistent user
                 var response = putEx("/groups/${group.groupID}/join/20405465", "",trt,port) //fake request
@@ -449,7 +442,7 @@ class GroupTests : RestTests(){
 
         @Test
         fun `Remove a user from a Group that is not in that group`(){
-                val user = createAUser()
+                val user = createAUser(trt, port)
                 val group = createAGroup(trt, port)
                 var response = deleteEx("/groups/${group.groupID}/users/2040654", trt,port) //fake user remove
                 assertEquals(HttpStatus.NOT_FOUND, response.statusCode)

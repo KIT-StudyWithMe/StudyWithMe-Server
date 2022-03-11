@@ -10,9 +10,12 @@ import org.junit.jupiter.api.Tag
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import ovh.studywithme.server.dao.*
+import ovh.studywithme.server.model.GroupID
+import ovh.studywithme.server.model.Institution
 import ovh.studywithme.server.model.SessionFrequency
 import ovh.studywithme.server.model.SessionMode
 import java.net.URI
+import java.util.*
 
 @ExtendWith(SpringExtension::class)
 @Tag("integration")
@@ -96,15 +99,73 @@ open class RestTests(){
 			String::class.java)
 	}
 
+	// -- Group
 	fun createAGroup(trt:TestRestTemplate, port:Int) : StudyGroupDAO {
-		val inst = post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port) //create a Instutution
-		val major = post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port) //create a Major
-		val lecture = post<LectureDAO, LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port) //create a Lecture
-		var user = UserDetailDAO(0, "Hans", inst.institutionID, inst.name, major.majorID, major.name, "email@test.de","FHEASTH",false)
-		user = post("/users",user,trt,port) //create user
+		val inst = createAInstitution(trt, port)
+		val major = createAMajor(trt, port)
+		val lecture = createALecture(major, trt, port)
+		val user = createAUser(inst, major, trt, port)
+		return createAGroup(lecture, user, trt, port)
+	}
+
+	fun createAGroup(user:UserDetailDAO, trt:TestRestTemplate, port:Int) : StudyGroupDAO {
+		val major = createAMajor(trt, port)
+		val lecture = createALecture(major, trt, port)
+		return createAGroup(lecture, user, trt, port)
+	}
+
+	fun createAGroup(lecture: LectureDAO, user: UserDetailDAO, trt: TestRestTemplate, port: Int):StudyGroupDAO{
 		val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,
 			SessionFrequency.ONCE,
-			SessionMode.PRESENCE,3,100000,15)
+			SessionMode.PRESENCE,3,10,0)
 		return post<StudyGroupDAO, StudyGroupDAO>("/groups/${user.userID}",group,trt,port) //create group
+	}
+
+	// -- Institution
+	fun createAInstitution(trt:TestRestTemplate, port:Int):InstitutionDAO{
+		return post<InstitutionDAO, InstitutionDAO>("/institutions", InstitutionDAO(0, "FHKA"), trt, port) //create a Instutution
+	}
+
+	// -- Major
+	fun createAMajor(trt:TestRestTemplate, port:Int):MajorDAO{
+		return post<MajorDAO, MajorDAO>("/majors", MajorDAO(0, "Info"), trt, port) //create a Major
+	}
+
+	// -- Lecture
+	fun createALecture(trt: TestRestTemplate, port: Int):LectureDAO{
+		val major = createAMajor(trt, port)
+		return post<LectureDAO, LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port) //create a Lecture
+	}
+	fun createALecture(major: MajorDAO, trt: TestRestTemplate, port: Int):LectureDAO{
+		return post<LectureDAO, LectureDAO>("/majors/${major.majorID}/lectures", LectureDAO(0,"PSE",major.majorID), trt, port) //create a Lecture
+	}
+
+	// -- User
+	fun createAUser(trt: TestRestTemplate, port: Int): UserDetailDAO{
+		val inst = createAInstitution(trt, port)
+		val major = createAMajor(trt, port)
+		var user = createAUser(inst, major, trt, port)
+		return post("/users",user,trt,port) //create user
+	}
+
+	fun createAUser(inst: InstitutionDAO, major:MajorDAO, trt: TestRestTemplate, port: Int): UserDetailDAO{
+		var user = UserDetailDAO(
+			0,
+			"Hans",
+			inst.institutionID,
+			inst.name,
+			major.majorID,
+			major.name,
+			"email@test.de",
+			"FHEASTH",
+			false)
+		return post("/users",user,trt,port) //create user
+	}
+
+	// -- Session
+	fun createASession(trt: TestRestTemplate, port: Int):SessionDAO {
+		val group = createAGroup(trt, port)
+		val session = SessionDAO(0,group.groupID,"Mathebau", Date().time+100,45)
+		return post("/groups/${group.groupID}/sessions", session, trt, port) //create session
 	}
 }

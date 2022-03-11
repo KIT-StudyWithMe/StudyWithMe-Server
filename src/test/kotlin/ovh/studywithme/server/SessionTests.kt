@@ -37,15 +37,9 @@ class SessionTests:RestTests() {
         assertTrue(sessionList!!.contains(response))
     }
 
-    fun createASession():SessionDAO {
-        val group = createAGroup(trt, port)
-        val session = SessionDAO(0,group.groupID,"Mathebau", Date().time+100,45)
-        return post("/groups/${group.groupID}/sessions", session, trt, port) //create session
-    }
-
     @Test
     fun `Get a session by its ID`(){
-        val session = createASession()
+        val session = createASession(trt, port)
         val response = get<SessionDAO>("/sessions/${session.sessionID}", trt, port) //get session
         assertEquals(session, response)
     }
@@ -59,7 +53,7 @@ class SessionTests:RestTests() {
 
     @Test
     fun `Update a Session`(){
-        val session = createASession()
+        val session = createASession(trt, port)
         val newSession = SessionDAO(session.sessionID, session.groupID, "another place", Date().time, 400)
         var response = put<SessionDAO,SessionDAO>("/sessions/${session.sessionID}", newSession, trt, port) //update session
         assertEquals(newSession, response)
@@ -70,7 +64,7 @@ class SessionTests:RestTests() {
 
     @Test
     fun `Update a Session that does not exist`(){
-        val session = createASession()
+        val session = createASession(trt, port)
 
         val newSession = SessionDAO(20450654, session.groupID, "another place3", Date().time, 40000)
 
@@ -90,7 +84,7 @@ class SessionTests:RestTests() {
 
     @Test
     fun `Delete a Session`(){
-        val session = createASession()
+        val session = createASession(trt, port)
         var response = deleteEx("/sessions/${session.sessionID}",trt, port)
         assertEquals(HttpStatus.OK, response.statusCode)
 
@@ -106,7 +100,8 @@ class SessionTests:RestTests() {
 
     @Test
     fun `set Participation in Session`(){
-        val session = createASession()
+        val group = createAGroup(trt,port)
+        val session = createASession(trt, port)
 
         //val response = put<>("/sessions/${session.sessionID}/participate/$user.",)
     }
