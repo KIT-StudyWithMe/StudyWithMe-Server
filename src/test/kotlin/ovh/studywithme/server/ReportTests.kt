@@ -6,16 +6,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.http.HttpStatus
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.TestInstance
-import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.http.HttpStatus
 import ovh.studywithme.server.dao.*
 import ovh.studywithme.server.model.*
 
@@ -212,5 +209,26 @@ class ReportTests : RestTests() {
 
         assertEquals(true, parsedList!!.map { it.reporterID }.contains(user1.userID))
         assertEquals(false, parsedList.map { it.reporterID }.contains(user2.userID))
+    }
+
+    @Test
+    fun `Try deleting non-existent group report`() {
+        val result = deleteEx("/reports/group/0/0/${StudyGroupField.DESCRIPTION}", trt, port)
+
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+    }
+
+    @Test
+    fun `Try deleting non-existent user report`() {
+        val result = deleteEx("/reports/user/0/0/${UserField.CONTACT}", trt, port)
+
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+    }
+
+    @Test
+    fun `Try deleting non-existent session report`() {
+        val result = deleteEx("/reports/session/0/0/${SessionField.PLACE}", trt, port)
+
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
     }
 }
