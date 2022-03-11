@@ -21,4 +21,13 @@ interface UserRepository : JpaRepository<User, Long> {
      * @return A list of all users that the given firebase token is stored for.
      */
     fun findByfirebaseUID(firebaseUID : String) : List<User>
+
+    /**
+     * Finds and returns all users in the database that have a specific major.
+     * This call is used to determine when a major has to be deleted
+     *
+     * @param majorID A major ID.
+     * @return A list of all users that the given firebase token is stored for.
+     */
+    fun findBymajorID(majorID : Long) : List<User>
 } //TODO check that firebase uid is unique

@@ -13,6 +13,7 @@ import ovh.studywithme.server.repository.MajorRepository
 import ovh.studywithme.server.repository.LectureRepository
 import java.util.*
 import org.springframework.stereotype.Service
+import ovh.studywithme.server.repository.UserRepository
 
 /**
  * Implementation of the interface controller interface.
@@ -23,7 +24,10 @@ import org.springframework.stereotype.Service
  * @constructor Create an information controller, all variables are instanced by Spring's autowire
  */
 @Service
-    class InformationController(private val institutionRepository: InstitutionRepository, private val majorRepository: MajorRepository, private val lectureRepository: LectureRepository) : InformationControllerInterface {
+    class InformationController(private val institutionRepository: InstitutionRepository,
+                                private val majorRepository: MajorRepository,
+                                private val userRepository: UserRepository,
+                                private val lectureRepository: LectureRepository) : InformationControllerInterface {
 
     override fun getAllInstitutions():List<InstitutionDAO> {
         return institutionRepository.findAll().map{InstitutionDAO(it)}
@@ -109,12 +113,28 @@ import org.springframework.stereotype.Service
         return LectureDAO(lectureRepository.save(lecture.toLecture()))
     }
 
-    override fun deleteLecture(majorID: Long, lectureID:Long) : Boolean {
+    override fun deleteLecture(lectureID:Long) : Boolean {
         val lecture : Lecture? = lectureRepository.findById(lectureID).unwrap()
         if (lecture == null) {
             return false
         } else {
+            val lectureMajor = lectureRepository.getById(lectureID).majorID
             lectureRepository.deleteById(lectureID)
+            if (userRepository.findBymajorID(lectureMajor).isEmpty()){
+                deleteMajor(lectureMajor)
+            }
+            return true
+        }
+    }
+
+    override fun deleteLecture(majorID: Long, lectureID:Long) : Boolean {
+        val lecture : Lecture? = lectureRepository.findById(lectureID).unwrap()
+        if (lecture == null) {
+            return false
+        } else if (lecture.majorID != majorID) {
+            return false
+        } else {
+            deleteLecture(lectureID)
             return true
         }
     }

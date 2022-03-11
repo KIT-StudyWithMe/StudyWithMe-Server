@@ -26,6 +26,7 @@ class GroupController(private val groupRepository: GroupRepository,
                       private val groupReportRepository: GroupReportRepository,
                       private val userRepository: UserRepository,
                       private val lectureRepository: LectureRepository,
+                      private val majorRepository: MajorRepository,
                       private val informationController: InformationController) : GroupControllerInterface {
 
     private fun getMemberCount(groupID: Long): Int {
@@ -130,6 +131,9 @@ class GroupController(private val groupRepository: GroupRepository,
     override fun deleteUserFromGroup(groupID: Long, userID: Long): Boolean {
         if (groupMemberRepository.existsByGroupIDAndUserID(groupID, userID)) {
             groupMemberRepository.deleteByGroupIDAndUserID(groupID, userID)
+            if (groupMemberRepository.findByGroupID(userID).size == 0) {
+                deleteGroup(groupID)
+            }
             return true
         }
         return false
@@ -138,8 +142,11 @@ class GroupController(private val groupRepository: GroupRepository,
     override fun deleteGroup(groupID: Long): Boolean {
         if (groupRepository.existsById(groupID)) {
             groupMemberRepository.deleteByGroupID(groupID)
+            val groupLecture = groupRepository.getById(groupID).lectureID
             groupRepository.deleteById(groupID)
-            //TODO delete Lecture if its no longer needed
+            if (groupRepository.findByLectureID(groupLecture).isEmpty()) {
+                informationController.deleteLecture(groupLecture)
+            }
             return true
         }
         return false

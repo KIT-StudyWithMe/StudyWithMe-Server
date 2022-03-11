@@ -35,7 +35,7 @@ class GroupTests : RestTests(){
                 val user = createAUser(inst,major, trt, port)
 
                 val group = StudyGroupDAO(0,"Beste Lerngruppe?","Die coolsten!!",lecture.lectureID,SessionFrequency.ONCE,SessionMode.PRESENCE,3,100000,15)
-                val createdGroup = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port)
+                val createdGroup = post<StudyGroupDAO,StudyGroupDAO>("/groups/${user.userID}",group,trt,port) //createGroup
 
                 Assertions.assertNotEquals(0, createdGroup.groupID)
                 Assertions.assertEquals(group.name, createdGroup.name)
@@ -46,6 +46,19 @@ class GroupTests : RestTests(){
                 Assertions.assertEquals(group.lectureChapter, createdGroup.lectureChapter)
                 Assertions.assertEquals(group.exercise, createdGroup.exercise)
                 Assertions.assertEquals(1, createdGroup.memberCount)
+        }
+
+        @Test
+        fun `Create a group and confirm the creator is Admin`() {
+                val inst = createAInstitution(trt, port)
+                val major = createAMajor(trt, port)
+                val user = createAUser(inst,major, trt, port)
+                val group = createAGroup(user, trt, port)
+                val response = getEx("/groups/${group.groupID}/users", trt, port)
+                assertNotNull(response.body)
+                assertNotEquals("[]",response.body)
+                var userList: List<StudyGroupMemberDAO>? = response.body?.let { Klaxon().parseArray(it) }
+                assertEquals(true, userList!!.filter { it.userID == user.userID&&it.isAdmin==true}.isNotEmpty())
         }
 
         @Test
@@ -144,12 +157,12 @@ class GroupTests : RestTests(){
 
                 postEx("/groups/${group.groupID}/hide","",trt,port) //hide group
                 hidden = get<Boolean>("/groups/${group.groupID}/hide",trt,port)
-                Assertions.assertTrue(hidden)
-                //TODO getGroups does not contain group
+                assertTrue(hidden)
+                //TODO check that getGroups does not contain group
 
                 postEx("/groups/${group.groupID}/hide","",trt,port) //unhide group
                 hidden = get<Boolean>("/groups/${group.groupID}/hide",trt,port)
-                Assertions.assertFalse(hidden)
+                assertFalse(hidden)
         }
 
         @Test
@@ -310,10 +323,13 @@ class GroupTests : RestTests(){
                 assertEquals(HttpStatus.OK, response.statusCode)
 
                 val getGroup = getEx("/groups/${group.groupID}", trt, port)
-                //assertEquals(HttpStatus.NOT_FOUND, getGroup.statusCode) //TODO
+                assertEquals(HttpStatus.NOT_FOUND, getGroup.statusCode)
                 
                 val getLecture = getEx("/lectures/${lecture.lectureID}", trt, port)
-                //assertEquals(HttpStatus.NOT_FOUND, getLecture.statusCode) //TODO
+                assertEquals(HttpStatus.NOT_FOUND, getLecture.statusCode)
+
+                val getMajor = getEx("/majors/${major.majorID}", trt, port)
+                assertEquals(HttpStatus.NOT_FOUND, getMajor.statusCode)
         }
 
         @Test

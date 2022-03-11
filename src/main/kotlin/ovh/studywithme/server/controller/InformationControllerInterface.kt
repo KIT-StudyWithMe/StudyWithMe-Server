@@ -129,8 +129,16 @@ interface InformationControllerInterface {
     /**
      * Delete a lecture that is identified by its id.
      *
-     * @param majorID The unique identifier of the major the lecture was created for.
      * @param lectureID The lecture's unique identifier.
+     * @return A boolean which is true if the lecture was found and then deleted and false otherwise.
+     */
+    fun deleteLecture(lectureID:Long) : Boolean
+
+    /**
+     * Delete a lecture that is identified by its id and check if the majorid belongs to it.
+     *
+     * @param lectureID The lecture's unique identifier.
+     * @param majorID Check if that majorID is the majorID of the lecture
      * @return A boolean which is true if the lecture was found and then deleted and false otherwise.
      */
     fun deleteLecture(majorID: Long, lectureID:Long) : Boolean
