@@ -188,7 +188,7 @@ class GroupTests : RestTests(){
         }
 
         @Test
-        fun `Create groups and check if they appear in getall groups by name`(){
+        fun `Create groups and check if they appear in getall groups by name, text and lectures`(){
                 val newGroup1 = createAGroup(trt, port)
                 var fetchedGroups = getEx("/groups/?text="+java.net.URLEncoder.encode(newGroup1.name, "utf-8"), trt, port)
                 assertNotNull(fetchedGroups.body)
